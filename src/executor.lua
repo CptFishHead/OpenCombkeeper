@@ -1,0 +1,200 @@
+-- Pure state machine for OpenOS. Hardware callbacks perform physical actions.
+local M={}
+
+local function copy(value,seen)
+  if type(value)~='table' then return value end
+  seen=seen or {}; if seen[value] then return seen[value] end
+  local result={}; seen[value]=result
+  for key,row in pairs(value) do result[copy(key,seen)]=copy(row,seen) end
+  return result
+end
+
+local function indexMutations(plan)
+  local result={}
+  for _,mutation in ipairs(plan.mutations or {}) do result[mutation.result]=mutation end
+  return result
+end
+
+local function taskIndex(tasks)
+  local result={}
+  for _,task in ipairs(tasks) do
+    assert(type(task.id)=='string' and not result[task.id],'Duplicate manual task')
+    result[task.id]=task
+  end
+  return result
+end
+
+function M.new(plan,hardware,persisted)
+  assert(type(plan)=='table' and plan.schema==1,'Unsupported plan')
+  hardware=hardware or {}
+  local self={plan=plan,hardware=hardware,mutations=indexMutations(plan)}
+  if persisted then
+    assert(persisted.schema==1,'Unsupported executor state')
+    self.state=copy(persisted)
+  else
+    self.state={schema=1,status='ready',lines={},tasks=copy(plan.manualTasks or {}),history={}}
+    for _,line in ipairs(plan.lines or {}) do
+      self.state.lines[#self.state.lines+1]={id=line.id,role=line.role,target=line.target,
+        route=copy(line.species),position=1,status='waiting_input'}
+    end
+  end
+  self.tasks=taskIndex(self.state.tasks)
+  return setmetatable(self,{__index=M})
+end
+
+function M:save()
+  if self.hardware.save then self.hardware.save(copy(self.state)) end
+end
+
+function M:record(kind,data)
+  self.state.history[#self.state.history+1]={kind=kind,data=copy(data)}
+  self:save()
+end
+
+function M:activateTask(id)
+  local task=assert(self.tasks[id],'Unknown task')
+  if task.status=='done' then return false end
+  if task.type=='advanced_mutation' then
+    local total=(self.hardware.countQueens and self.hardware.countQueens()) or 0
+    task.baseline=0
+    if total~=0 then
+      task.status='clear_return_container'
+      self:record('task_blocked_container',{id=id,count=total})
+      return false
+    end
+  elseif task.type=='provide_drones' then
+    task.baseline=0
+  else
+    error('Unsupported task type: '..tostring(task.type))
+  end
+  task.status='waiting_player'; self:record('task_activated',{id=id,baseline=task.baseline})
+  return true
+end
+
+function M:checkTask(id)
+  local task=assert(self.tasks[id],'Unknown task')
+  if task.status=='done' then return true end
+  if task.type=='advanced_mutation' and task.status=='clear_return_container' then
+    local count=(self.hardware.countQueens and self.hardware.countQueens()) or 0
+    if count==0 then
+      task.baseline=0; task.status='waiting_player'
+      self:record('return_container_cleared',{id=id})
+    end
+    return false
+  end
+  if task.baseline==nil then return false end
+  local ready=false
+  if task.type=='advanced_mutation' then
+    local count=(self.hardware.countQueens and self.hardware.countQueens(task.result)) or 0
+    ready=count>task.baseline
+  elseif task.type=='provide_drones' then
+    local count=(self.hardware.countDrones and self.hardware.countDrones(task.species)) or 0
+    ready=count>=task.count
+  end
+  if ready then
+    if task.type=='advanced_mutation' then
+      local line
+      for _,candidate in ipairs(self.state.lines) do if candidate.id==task.line then line=candidate end end
+      assert(line and line.position==task.step,'Stale advanced mutation task')
+      assert(line.route[line.position+1]==task.result,'Advanced mutation result does not match line')
+      line.position=line.position+1; line.status='waiting_input'
+    end
+    task.status='done'; self:record('task_done',{id=id})
+  end
+  return ready
+end
+
+function M:checkAllTasks()
+  local done,total=0,0
+  for _,task in ipairs(self.state.tasks) do
+    total=total+1
+    if task.status=='done' then done=done+1
+    elseif task.baseline~=nil and self:checkTask(task.id) then done=done+1 end
+  end
+  return done,total
+end
+
+local function manualTaskFor(state,lineId,step)
+  local id='mutation:'..lineId..':'..step
+  for _,task in ipairs(state.tasks) do if task.id==id then return task end end
+end
+
+function M:nextAction()
+  if self.state.status=='blocked' or self.state.status=='done' then return nil end
+  for _,line in ipairs(self.state.lines) do
+    if line.status=='lost' then self.state.status='blocked'; return nil end
+    if line.position<#line.route then
+      local result=line.route[line.position+1]
+      local mutation=assert(self.mutations[result],'Missing mutation for '..result)
+      local task=manualTaskFor(self.state,line.id,line.position)
+      if task and task.status~='done' then
+        if task.baseline==nil then self:activateTask(task.id) end
+        if task.status=='waiting_player' and not task.prepared then
+          return {type='prepare_manual_mutation',task=task.id,line=line.id,step=line.position,
+            carrier=line.route[line.position],result=result,parents=copy(mutation.parents),
+            conditions=copy(mutation.conditions or {})}
+        end
+        return {type='manual_task',task=task.id,line=line.id,result=result}
+      end
+      return {type='mutation',line=line.id,step=line.position,carrier=line.route[line.position],
+        result=result,parents=copy(mutation.parents),conditions=copy(mutation.conditions or {})}
+    elseif line.status~='delivered' then
+      return {type=line.role=='producer' and 'deliver_producer' or 'store_drone_source',
+        line=line.id,species=line.target}
+    end
+  end
+  for _,task in ipairs(self.state.tasks) do
+    if task.status~='done' then
+      if task.baseline==nil then self:activateTask(task.id) end
+      return {type='manual_task',task=task.id}
+    end
+  end
+  self.state.status='done'; self:record('plan_done',{}); return nil
+end
+
+function M:complete(action,result)
+  assert(type(action)=='table' and type(result)=='table','Action and result required')
+  local line
+  for _,candidate in ipairs(self.state.lines) do if candidate.id==action.line then line=candidate end end
+  if action.type=='mutation' then
+    assert(line and line.position==action.step,'Stale mutation action')
+    if result.kind=='genetic_waste' then
+      line.status='lost'; self.state.status='blocked'
+      self:record('line_lost',{line=line.id,expected=action.result}); return false
+    end
+    assert(result.kind=='queen' and result.species,'Mutation result must be a queen')
+    if result.species~=action.result then
+      line.status='blocked'; self.state.status='blocked'
+      self:record('wrong_species',{line=line.id,expected=action.result,actual=result.species}); return false
+    end
+    line.position=line.position+1; line.status='waiting_input'
+    self:record('mutation_done',{line=line.id,species=result.species}); return true
+  elseif action.type=='deliver_producer' or action.type=='store_drone_source' then
+    assert(line and line.target==action.species,'Stale delivery action')
+    assert(result.accepted==true,'Destination did not accept line')
+    line.status='delivered'; self:record('line_delivered',{line=line.id,species=line.target}); return true
+  elseif action.type=='prepare_manual_mutation' then
+    local task=assert(self.tasks[action.task],'Unknown task')
+    assert(line and line.position==action.step and task.line==line.id,'Stale manual preparation action')
+    assert(task.status=='waiting_player' and not task.prepared,'Manual mutation is already prepared')
+    assert(result.accepted==true,'Advanced mutatron did not accept parents')
+    task.prepared=true
+    self:record('manual_mutation_prepared',{task=task.id,line=line.id,result=task.result}); return true
+  end
+  error('Unsupported action completion: '..tostring(action.type))
+end
+
+function M:summary()
+  local counts={waiting=0,delivered=0,lost=0,tasks=0,tasksDone=0}
+  for _,line in ipairs(self.state.lines) do
+    if line.status=='delivered' then counts.delivered=counts.delivered+1
+    elseif line.status=='lost' then counts.lost=counts.lost+1
+    else counts.waiting=counts.waiting+1 end
+  end
+  for _,task in ipairs(self.state.tasks) do
+    counts.tasks=counts.tasks+1; if task.status=='done' then counts.tasksDone=counts.tasksDone+1 end
+  end
+  counts.status=self.state.status; return counts
+end
+
+return M

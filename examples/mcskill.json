@@ -1,0 +1,21 @@
+{
+  "mode": "best",
+  "successProbability": 0.99,
+  "allowConditionalMutations": true,
+  "startingSpecies": {
+    "extrabees.species.basalt": 32,
+    "extrabees.species.marble": 32,
+    "extrabees.species.rock": 32,
+    "extrabees.species.water": 32,
+    "forestry.speciesEnded": 32,
+    "forestry.speciesForest": 32,
+    "forestry.speciesMeadows": 32,
+    "forestry.speciesMarshy": 32,
+    "forestry.speciesModest": 32,
+    "forestry.speciesMonastic": 32,
+    "forestry.speciesSteadfast": 32,
+    "forestry.speciesTropical": 32,
+    "forestry.speciesValiant": 32,
+    "forestry.speciesWintry": 32
+  }
+}

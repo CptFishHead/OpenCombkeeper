@@ -1,0 +1,5958 @@
+{
+  "schema": 1,
+  "scope": "client",
+  "sources": {
+    "forestry": "forestry_1.12.2-5.8.2.422.jar",
+    "binnie": "binnie-mods-1.12.2-2.5.1.203.jar",
+    "gendustry": "gendustry-1.6.5.8-mc1.12.2.jar",
+    "note": "Server registry and server-only overrides are not included."
+  },
+  "species": [
+    {
+      "uid": "extrabees.species.abyss",
+      "name": "Глубинный",
+      "requirements": {
+        "temperature": "HELLISH",
+        "humidity": "ARID",
+        "flowers": "EnumAllele.Flowers.NETHER",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/shadow",
+          "chance": 0.25,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.acidic",
+      "name": "Кислый",
+      "requirements": {
+        "temperature": "WARM",
+        "humidity": "DAMP",
+        "flowers": "EnumAllele.Flowers.JUNGLE",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/silky",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/acidic",
+          "chance": 0.16,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.alcohol",
+      "name": "Броженный",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/wheaten",
+          "chance": 0.3,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/alcohol",
+          "chance": 0.1,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.ancient",
+      "name": "Древний",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/old",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.arid",
+      "name": "Засушливый",
+      "requirements": {
+        "temperature": "HOT",
+        "humidity": "ARID",
+        "flowers": "ExtraBeesFlowers.DEAD",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/barren",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.artic",
+      "name": "Холодный",
+      "requirements": {
+        "temperature": "ICY",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/frozen",
+          "chance": 0.25,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.barren",
+      "name": "Бесплодный",
+      "requirements": {
+        "temperature": "HOT",
+        "humidity": "ARID",
+        "flowers": "ExtraBeesFlowers.DEAD",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/barren",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.basalt",
+      "name": "Озлобленный",
+      "requirements": {
+        "temperature": "HELLISH",
+        "humidity": "ARID",
+        "flowers": "EnumAllele.Flowers.NETHER",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/simmering",
+          "chance": 0.25,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.bauxite",
+      "name": "Бокситовый",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.ROCK",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/stone",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/bauxite",
+          "chance": 0.04,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.black",
+      "name": "Эбеновый",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.75,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/black",
+          "chance": 0.25,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.blooming",
+      "name": "Цветущий",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.SAPLING",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.35,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.blue",
+      "name": "Прусский",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.75,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/blue",
+          "chance": 0.25,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.blutonium",
+      "name": "Блутониум",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.ROCK",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/barren",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/blutonium",
+          "chance": 0.01,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.boggy",
+      "name": "Промокший",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/mossy",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.bone",
+      "name": "Скелетный",
+      "requirements": {
+        "temperature": "HOT",
+        "humidity": "ARID",
+        "flowers": "ExtraBeesFlowers.DEAD",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/barren",
+          "chance": 0.3,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/bone",
+          "chance": 0.1,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.brown",
+      "name": "Сепия",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.75,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/brown",
+          "chance": 0.25,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.caustic",
+      "name": "Едкий",
+      "requirements": {
+        "temperature": "WARM",
+        "humidity": "DAMP",
+        "flowers": "EnumAllele.Flowers.JUNGLE",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/silky",
+          "chance": 0.25,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/acidic",
+          "chance": 0.03,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.celebratory",
+      "name": "Праздничный",
+      "requirements": {
+        "temperature": "ICY",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "any"
+      },
+      "combs": []
+    },
+    {
+      "uid": "extrabees.species.cinnabar",
+      "name": "Киноварный",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.ROCK",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/stone",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/cinnabar",
+          "chance": 0.04,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.classical",
+      "name": "Классический",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.coal",
+      "name": "Окаменелый",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/old",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/coal",
+          "chance": 0.08,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.coffee",
+      "name": "С кофеином",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/wheaten",
+          "chance": 0.3,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/coffee",
+          "chance": 0.08,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.copper",
+      "name": "Коррозийный",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.ROCK",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/stone",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/copper",
+          "chance": 0.06,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.corrosive",
+      "name": "Коррозийный",
+      "requirements": {
+        "temperature": "WARM",
+        "humidity": "DAMP",
+        "flowers": "EnumAllele.Flowers.JUNGLE",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/silky",
+          "chance": 0.2,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.creeper",
+      "name": "Пресмыкающийся",
+      "requirements": {
+        "temperature": "HOT",
+        "humidity": "ARID",
+        "flowers": "ExtraBeesFlowers.DEAD",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/barren",
+          "chance": 0.3,
+          "kind": "product"
+        },
+        {
+          "id": "forestry:comb/powdery",
+          "chance": 0.08,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.creosote",
+      "name": "Смолистый",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/coal",
+          "chance": 0.1,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/creosote",
+          "chance": 0.07,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.cyan",
+      "name": "Бирюзовый",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.75,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/cyan",
+          "chance": 0.25,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.cyanite",
+      "name": "Кианит",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.ROCK",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/barren",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/cyanite",
+          "chance": 0.01,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.darkened",
+      "name": "Затемненный",
+      "requirements": {
+        "temperature": "HELLISH",
+        "humidity": "ARID",
+        "flowers": "EnumAllele.Flowers.NETHER",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/shadow",
+          "chance": 0.1,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.decomposing",
+      "name": "Разлагающийся",
+      "requirements": {
+        "temperature": "HOT",
+        "humidity": "ARID",
+        "flowers": "ExtraBeesFlowers.DEAD",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/barren",
+          "chance": 0.3,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/compost",
+          "chance": 0.08,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.desolate",
+      "name": "Заброшенный",
+      "requirements": {
+        "temperature": "HOT",
+        "humidity": "ARID",
+        "flowers": "ExtraBeesFlowers.DEAD",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/barren",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.diamond",
+      "name": "Алмазный",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.ROCK",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/stone",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/diamond",
+          "chance": 0.01,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.distilled",
+      "name": "Дистиллированный",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/old",
+          "chance": 0.1,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.ecstatic",
+      "name": "Экстатический",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.REDSTONE",
+        "needsSky": false,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/redstone",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/ic2energy",
+          "chance": 0.08,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.emerald",
+      "name": "Изумрудный",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.ROCK",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/stone",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/emerald",
+          "chance": 0.04,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.energetic",
+      "name": "Энергичный",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.REDSTONE",
+        "needsSky": false,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/redstone",
+          "chance": 0.12,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.excited",
+      "name": "Возбужденный",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.REDSTONE",
+        "needsSky": false,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/redstone",
+          "chance": 0.1,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.farm",
+      "name": "Разводимый",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/wheaten",
+          "chance": 0.3,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/seed",
+          "chance": 0.1,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.freezing",
+      "name": "Абсолютный",
+      "requirements": {
+        "temperature": "ICY",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/frozen",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/glacial",
+          "chance": 0.1,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.fruit",
+      "name": "Фруктовый",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.SUGAR",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.3,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/fruit",
+          "chance": 0.2,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.fuel",
+      "name": "Изысканный",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/oil",
+          "chance": 0.1,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/fuel",
+          "chance": 0.04,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.fungal",
+      "name": "Грибковый",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/mossy",
+          "chance": 0.3,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/fungal",
+          "chance": 0.15,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.glowstone",
+      "name": "Сердитый",
+      "requirements": {
+        "temperature": "HELLISH",
+        "humidity": "ARID",
+        "flowers": "EnumAllele.Flowers.NETHER",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/glowstone",
+          "chance": 0.15,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.glutinous",
+      "name": "Клейкий",
+      "requirements": {
+        "temperature": "WARM",
+        "humidity": "DAMP",
+        "flowers": "EnumAllele.Flowers.JUNGLE",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/silky",
+          "chance": 0.25,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.gnawing",
+      "name": "Мучительный",
+      "requirements": {
+        "temperature": "HOT",
+        "humidity": "ARID",
+        "flowers": "ExtraBeesFlowers.WOOD",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/barren",
+          "chance": 0.25,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/sawdust",
+          "chance": 0.25,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.gold",
+      "name": "Сверкающий",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.ROCK",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/stone",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/gold",
+          "chance": 0.02,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.granite",
+      "name": "Крепкий",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.ROCK",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/stone",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.gray",
+      "name": "Шиферный",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.75,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/gray",
+          "chance": 0.25,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.greek",
+      "name": "Греческий",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.green",
+      "name": "Природный",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.75,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/green",
+          "chance": 0.25,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.growing",
+      "name": "Подрастающий",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.LEAVES",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.35,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.hazardous",
+      "name": "Опасный",
+      "requirements": {
+        "temperature": "HOT",
+        "humidity": "ARID",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/saltpeter",
+          "chance": 0.12,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.infectious",
+      "name": "Инфекционный",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.JUNGLE",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/silky",
+          "chance": 0.25,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.ink",
+      "name": "В пятнах",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "DAMP",
+        "flowers": "ExtraBeesFlowers.WATER",
+        "needsSky": true,
+        "worksInRain": true,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/water",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.iron",
+      "name": "Ржавый",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.ROCK",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/stone",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/iron",
+          "chance": 0.05,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.jaded",
+      "name": "Измученный",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.3,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/purple",
+          "chance": 0.15,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.lapis",
+      "name": "Лазуритовый",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.ROCK",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/stone",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/lapis",
+          "chance": 0.05,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.latex",
+      "name": "Упругий",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/resin",
+          "chance": 0.1,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/latex",
+          "chance": 0.05,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.lead",
+      "name": "Leaden",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.ROCK",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/stone",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/lead",
+          "chance": 0.05,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.lightblue",
+      "name": "Лазурный",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.75,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/lightblue",
+          "chance": 0.25,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.lightgray",
+      "name": "Пепельный",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.75,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/lightgray",
+          "chance": 0.25,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.limegreen",
+      "name": "Лаймовый",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.75,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/limegreen",
+          "chance": 0.25,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.magenta",
+      "name": "Фуксия",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.75,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/magenta",
+          "chance": 0.25,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.malicious",
+      "name": "Злонамеренный",
+      "requirements": {
+        "temperature": "WARM",
+        "humidity": "DAMP",
+        "flowers": "EnumAllele.Flowers.JUNGLE",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/silky",
+          "chance": 0.25,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.marble",
+      "name": "Мраморный",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.milk",
+      "name": "Бычий",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/wheaten",
+          "chance": 0.3,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/milk",
+          "chance": 0.1,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.mineral",
+      "name": "Устойчивый",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.ROCK",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/stone",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.mystical",
+      "name": "Мистический",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.MYSTICAL",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": []
+    },
+    {
+      "uid": "extrabees.species.nickel",
+      "name": "Глянцевый",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.ROCK",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/stone",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/nickel",
+          "chance": 0.05,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.nuclear",
+      "name": "Ядерный",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.ROCK",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/barren",
+          "chance": 0.2,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.ocean",
+      "name": "Океанический",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "DAMP",
+        "flowers": "ExtraBeesFlowers.WATER",
+        "needsSky": true,
+        "worksInRain": true,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/water",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.oil",
+      "name": "Масляный",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/old",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/oil",
+          "chance": 0.05,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.orange",
+      "name": "Янтарный",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.75,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/orange",
+          "chance": 0.25,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.pink",
+      "name": "Лавандовый",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.75,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/pink",
+          "chance": 0.25,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.platinum",
+      "name": "Ценный",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.ROCK",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/stone",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/platinum",
+          "chance": 0.01,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.prehistoric",
+      "name": "Доисторический",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/old",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.primeval",
+      "name": "Первобытный",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/old",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.purple",
+      "name": "Индиговый",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.75,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/purple",
+          "chance": 0.25,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.pyrite",
+      "name": "Пиритовый",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.ROCK",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/stone",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/pyrite",
+          "chance": 0.05,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.quantum",
+      "name": "Квантовый",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/quartz",
+          "chance": 0.25,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/certus",
+          "chance": 0.15,
+          "kind": "specialty"
+        },
+        {
+          "id": "extrabees:comb/enderpearl",
+          "chance": 0.15,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.radioactive",
+      "name": "Радиоактивный",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.ROCK",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/barren",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/uranium",
+          "chance": 0.02,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.red",
+      "name": "Бордовый",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.75,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/red",
+          "chance": 0.25,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.relic",
+      "name": "Реликтовый",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/old",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.resin",
+      "name": "Смолистый",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/old",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/resin",
+          "chance": 0.05,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.ripening",
+      "name": "Созревающий",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.FRUIT",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.3,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/fruit",
+          "chance": 0.1,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.river",
+      "name": "Речной",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "DAMP",
+        "flowers": "ExtraBeesFlowers.WATER",
+        "needsSky": true,
+        "worksInRain": true,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/water",
+          "chance": 0.3,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/clay",
+          "chance": 0.2,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.rock",
+      "name": "Скалистый",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.ROCK",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/stone",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.roman",
+      "name": "Римский",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.rotten",
+      "name": "Ветхие",
+      "requirements": {
+        "temperature": "HOT",
+        "humidity": "ARID",
+        "flowers": "ExtraBeesFlowers.DEAD",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/barren",
+          "chance": 0.3,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/rotten",
+          "chance": 0.1,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.ruby",
+      "name": "Рубиновый",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.ROCK",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/stone",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/ruby",
+          "chance": 0.03,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.sapphire",
+      "name": "Сапфировый",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.ROCK",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/stone",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/sapphire",
+          "chance": 0.03,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.shadow",
+      "name": "Затененный",
+      "requirements": {
+        "temperature": "HELLISH",
+        "humidity": "ARID",
+        "flowers": "EnumAllele.Flowers.NETHER",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/shadow",
+          "chance": 0.05,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.silver",
+      "name": "Сияющий",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.ROCK",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/stone",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/silver",
+          "chance": 0.02,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.sodalite",
+      "name": "Содалитовый",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.ROCK",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/stone",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/sodalite",
+          "chance": 0.04,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.spatial",
+      "name": "Пространственный",
+      "requirements": {
+        "temperature": "COLD",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.END",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/quartz",
+          "chance": 0.25,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/certus",
+          "chance": 0.05,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.sphalerite",
+      "name": "Сфалеритовый",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.ROCK",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/stone",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/sphalerite",
+          "chance": 0.04,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.sticky",
+      "name": "Липкий",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.JUNGLE",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/silky",
+          "chance": 0.25,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/slime",
+          "chance": 0.12,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.stone",
+      "name": "Терпимый",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.ROCK",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/stone",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.sugar",
+      "name": "Сахаристый",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.SUGAR",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.4,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.swamp",
+      "name": "Сырой",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "DAMP",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/mossy",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.sweet",
+      "name": "Подслащенный",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.SUGAR",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.4,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.tempered",
+      "name": "Разъяренный",
+      "requirements": {
+        "temperature": "HELLISH",
+        "humidity": "ARID",
+        "flowers": "EnumAllele.Flowers.NETHER",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/simmering",
+          "chance": 0.25,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.thriving",
+      "name": "Процветающий",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.LEAVES",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.35,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.tin",
+      "name": "Потускневший",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.ROCK",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/stone",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/tin",
+          "chance": 0.06,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.titanium",
+      "name": "Неприступный",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.ROCK",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/stone",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/titanium",
+          "chance": 0.02,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.tungstate",
+      "name": "Неодолимый",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.ROCK",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/stone",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/tungsten",
+          "chance": 0.01,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.unstable",
+      "name": "Нестабильный",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.ROCK",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/barren",
+          "chance": 0.2,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.unusual",
+      "name": "Аномальный",
+      "requirements": {
+        "temperature": "COLD",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.END",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/quartz",
+          "chance": 0.25,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.virulent",
+      "name": "Вирулентный",
+      "requirements": {
+        "temperature": "WARM",
+        "humidity": "DAMP",
+        "flowers": "EnumAllele.Flowers.JUNGLE",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/silky",
+          "chance": 0.25,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/venomous",
+          "chance": 0.12,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.viscous",
+      "name": "Вязкий",
+      "requirements": {
+        "temperature": "WARM",
+        "humidity": "DAMP",
+        "flowers": "EnumAllele.Flowers.JUNGLE",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/silky",
+          "chance": 0.25,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.volcanic",
+      "name": "Вулканический",
+      "requirements": {
+        "temperature": "HELLISH",
+        "humidity": "ARID",
+        "flowers": "EnumAllele.Flowers.NETHER",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/simmering",
+          "chance": 0.25,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/blaze",
+          "chance": 0.1,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.water",
+      "name": "Водяной",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "DAMP",
+        "flowers": "ExtraBeesFlowers.WATER",
+        "needsSky": true,
+        "worksInRain": true,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/water",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.white",
+      "name": "Отбеленный",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.75,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/white",
+          "chance": 0.25,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.yellorium",
+      "name": "Еллориум",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.ROCK",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/barren",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/yellorium",
+          "chance": 0.02,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.yellow",
+      "name": "Шафран",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.75,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/yellow",
+          "chance": 0.25,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "extrabees.species.zinc",
+      "name": "Гальванизированный",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "ExtraBeesFlowers.ROCK",
+        "needsSky": false,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "extrabees:comb/stone",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "extrabees:comb/zinc",
+          "chance": 0.05,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesAgrarian",
+      "name": "Земельная",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.WHEAT",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/wheaten",
+          "chance": 0.35,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesAustere",
+      "name": "Суровая",
+      "requirements": {
+        "temperature": "HOT",
+        "humidity": "ARID",
+        "flowers": "EnumAllele.Flowers.CACTI",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/parched",
+          "chance": 0.2,
+          "kind": "product"
+        },
+        {
+          "id": "forestry:comb/powdery",
+          "chance": 0.5,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesAvenging",
+      "name": "Мстящая",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/irradiated",
+          "chance": 0.4,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesBoggy",
+      "name": "Болотистая",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "DAMP",
+        "flowers": "EnumAllele.Flowers.MUSHROOMS",
+        "needsSky": true,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/mossy",
+          "chance": 0.39,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesCommon",
+      "name": "Обычная",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.35,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesCultivated",
+      "name": "Развитая",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.4,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesDemonic",
+      "name": "Одержимая",
+      "requirements": {
+        "temperature": "HELLISH",
+        "humidity": "ARID",
+        "flowers": "EnumAllele.Flowers.NETHER",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/simmering",
+          "chance": 0.45,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesDiligent",
+      "name": "Прилежная",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/stringy",
+          "chance": 0.2,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesEdenic",
+      "name": "Райская",
+      "requirements": {
+        "temperature": "WARM",
+        "humidity": "DAMP",
+        "flowers": "EnumAllele.Flowers.JUNGLE",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/silky",
+          "chance": 0.2,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesEnded",
+      "name": "Драконья",
+      "requirements": {
+        "temperature": "COLD",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.END",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/mysterious",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesExotic",
+      "name": "Редкая",
+      "requirements": {
+        "temperature": "WARM",
+        "humidity": "DAMP",
+        "flowers": "EnumAllele.Flowers.JUNGLE",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/silky",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesFarmerly",
+      "name": "Прошлая",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.WHEAT",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/wheaten",
+          "chance": 0.27,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesFiendish",
+      "name": "Жестокая",
+      "requirements": {
+        "temperature": "HELLISH",
+        "humidity": "ARID",
+        "flowers": "EnumAllele.Flowers.NETHER",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/simmering",
+          "chance": 0.55,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesForest",
+      "name": "Лесная",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesFrugal",
+      "name": "Бережливая",
+      "requirements": {
+        "temperature": "HOT",
+        "humidity": "ARID",
+        "flowers": "EnumAllele.Flowers.CACTI",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/parched",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesGlacial",
+      "name": "Ледниковая",
+      "requirements": {
+        "temperature": "ICY",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.SNOW",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/frozen",
+          "chance": 0.2,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesHermitic",
+      "name": "Уединённая",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.WHEAT",
+        "needsSky": false,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/mellow",
+          "chance": 0.2,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesHeroic",
+      "name": "Героическая",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": false,
+        "worksInRain": false,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/cocoa",
+          "chance": 0.4,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesIcy",
+      "name": "Ледяная",
+      "requirements": {
+        "temperature": "ICY",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.SNOW",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/frozen",
+          "chance": 0.2,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesImperial",
+      "name": "Имперская",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/dripping",
+          "chance": 0.2,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesIndustrious",
+      "name": "Трудолюбивая",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/stringy",
+          "chance": 0.2,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesLeporine",
+      "name": "Заячья",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/silky",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesMajestic",
+      "name": "Величавая",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/dripping",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesMarshy",
+      "name": "Болотная",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "DAMP",
+        "flowers": "EnumAllele.Flowers.MUSHROOMS",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/mossy",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesMeadows",
+      "name": "Луговая",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesMerry",
+      "name": "Весёлая",
+      "requirements": {
+        "temperature": "ICY",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/frozen",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesMiry",
+      "name": "Топкая",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "DAMP",
+        "flowers": "EnumAllele.Flowers.MUSHROOMS",
+        "needsSky": true,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/mossy",
+          "chance": 0.36,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesModest",
+      "name": "Скромная",
+      "requirements": {
+        "temperature": "HOT",
+        "humidity": "ARID",
+        "flowers": "EnumAllele.Flowers.CACTI",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/parched",
+          "chance": 0.2,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesMonastic",
+      "name": "Монашья",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.WHEAT",
+        "needsSky": false,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/wheaten",
+          "chance": 0.3,
+          "kind": "product"
+        },
+        {
+          "id": "forestry:comb/mellow",
+          "chance": 0.1,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesNoble",
+      "name": "Знатная",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/dripping",
+          "chance": 0.2,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesPhantasmal",
+      "name": "Воображаемая",
+      "requirements": {
+        "temperature": "COLD",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.END",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/mysterious",
+          "chance": 0.4,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesRural",
+      "name": "Сельская",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.WHEAT",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/wheaten",
+          "chance": 0.2,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesSecluded",
+      "name": "Укромная",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.WHEAT",
+        "needsSky": false,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/mellow",
+          "chance": 0.2,
+          "kind": "specialty"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesSinister",
+      "name": "Зловещая",
+      "requirements": {
+        "temperature": "HELLISH",
+        "humidity": "ARID",
+        "flowers": "EnumAllele.Flowers.NETHER",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/simmering",
+          "chance": 0.45,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesSpectral",
+      "name": "Призрачная",
+      "requirements": {
+        "temperature": "COLD",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.END",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/mysterious",
+          "chance": 0.5,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesSteadfast",
+      "name": "Стойкая",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": false,
+        "worksInRain": false,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/cocoa",
+          "chance": 0.2,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesTipsy",
+      "name": "Пьяная",
+      "requirements": {
+        "temperature": "ICY",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/frozen",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesTricky",
+      "name": "Хитрая",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.GOURD",
+        "needsSky": true,
+        "worksInRain": true,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/honey",
+          "chance": 0.4,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesTropical",
+      "name": "Тропическая",
+      "requirements": {
+        "temperature": "WARM",
+        "humidity": "DAMP",
+        "flowers": "EnumAllele.Flowers.JUNGLE",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/silky",
+          "chance": 0.2,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesUnweary",
+      "name": "Неутомимая",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/stringy",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesValiant",
+      "name": "Доблестная",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": false,
+        "worksInRain": false,
+        "time": "any"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/cocoa",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesVengeful",
+      "name": "Мстительная",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/irradiated",
+          "chance": 0.4,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesVindictive",
+      "name": "Карательная",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/irradiated",
+          "chance": 0.25,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "forestry.speciesWintry",
+      "name": "Зимняя",
+      "requirements": {
+        "temperature": "ICY",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.SNOW",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "forestry:comb/frozen",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "gendustry.bee.black",
+      "name": "Чёрная",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "gendustry:comb/black",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "gendustry.bee.blue",
+      "name": "Синяя",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "gendustry:comb/blue",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "gendustry.bee.brown",
+      "name": "Коричневая",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "gendustry:comb/brown",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "gendustry.bee.cyan",
+      "name": "Бирюзовая",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "gendustry:comb/cyan",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "gendustry.bee.gray",
+      "name": "Серая",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "gendustry:comb/gray",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "gendustry.bee.green",
+      "name": "Зелёная",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "gendustry:comb/green",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "gendustry.bee.lightblue",
+      "name": "Светло-синяя",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "gendustry:comb/lightblue",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "gendustry.bee.lime",
+      "name": "Лаймовая",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "gendustry:comb/lime",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "gendustry.bee.magenta",
+      "name": "Сиреневая",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "gendustry:comb/magenta",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "gendustry.bee.orange",
+      "name": "Оранжевая",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "gendustry:comb/orange",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "gendustry.bee.pink",
+      "name": "Розовая",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "gendustry:comb/pink",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "gendustry.bee.purple",
+      "name": "Фиолетовая",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "gendustry:comb/purple",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "gendustry.bee.red",
+      "name": "Красная",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "gendustry:comb/red",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "gendustry.bee.silver",
+      "name": "Светло-серая",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "gendustry:comb/silver",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "gendustry.bee.white",
+      "name": "Белая",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "gendustry:comb/white",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    },
+    {
+      "uid": "gendustry.bee.yellow",
+      "name": "Жёлтая",
+      "requirements": {
+        "temperature": "NORMAL",
+        "humidity": "NORMAL",
+        "flowers": "EnumAllele.Flowers.VANILLA",
+        "needsSky": true,
+        "worksInRain": false,
+        "time": "day"
+      },
+      "combs": [
+        {
+          "id": "gendustry:comb/yellow",
+          "chance": 0.3,
+          "kind": "product"
+        }
+      ]
+    }
+  ],
+  "mutations": [
+    {
+      "result": "forestry.speciesNoble",
+      "parents": [
+        "forestry.speciesCommon",
+        "forestry.speciesCultivated"
+      ],
+      "chance": 10,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesMajestic",
+      "parents": [
+        "forestry.speciesNoble",
+        "forestry.speciesCultivated"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesImperial",
+      "parents": [
+        "forestry.speciesNoble",
+        "forestry.speciesMajestic"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesDiligent",
+      "parents": [
+        "forestry.speciesCommon",
+        "forestry.speciesCultivated"
+      ],
+      "chance": 10,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesUnweary",
+      "parents": [
+        "forestry.speciesDiligent",
+        "forestry.speciesCultivated"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesIndustrious",
+      "parents": [
+        "forestry.speciesDiligent",
+        "forestry.speciesUnweary"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesHeroic",
+      "parents": [
+        "forestry.speciesSteadfast",
+        "forestry.speciesValiant"
+      ],
+      "chance": 6,
+      "conditions": [
+        "restrictBiomeType(BiomeDictionary.Type.FOREST)"
+      ]
+    },
+    {
+      "result": "forestry.speciesSinister",
+      "parents": [
+        "forestry.speciesCultivated",
+        "forestry.speciesModest"
+      ],
+      "chance": 60,
+      "conditions": [
+        "restrictBiomeType(BiomeDictionary.Type.NETHER)"
+      ]
+    },
+    {
+      "result": "forestry.speciesSinister",
+      "parents": [
+        "forestry.speciesCultivated",
+        "forestry.speciesTropical"
+      ],
+      "chance": 60,
+      "conditions": [
+        "restrictBiomeType(BiomeDictionary.Type.NETHER)"
+      ]
+    },
+    {
+      "result": "forestry.speciesFiendish",
+      "parents": [
+        "forestry.speciesSinister",
+        "forestry.speciesCultivated"
+      ],
+      "chance": 40,
+      "conditions": [
+        "restrictBiomeType(BiomeDictionary.Type.NETHER)"
+      ]
+    },
+    {
+      "result": "forestry.speciesFiendish",
+      "parents": [
+        "forestry.speciesSinister",
+        "forestry.speciesModest"
+      ],
+      "chance": 40,
+      "conditions": [
+        "restrictBiomeType(BiomeDictionary.Type.NETHER)"
+      ]
+    },
+    {
+      "result": "forestry.speciesFiendish",
+      "parents": [
+        "forestry.speciesSinister",
+        "forestry.speciesTropical"
+      ],
+      "chance": 40,
+      "conditions": [
+        "restrictBiomeType(BiomeDictionary.Type.NETHER)"
+      ]
+    },
+    {
+      "result": "forestry.speciesDemonic",
+      "parents": [
+        "forestry.speciesSinister",
+        "forestry.speciesFiendish"
+      ],
+      "chance": 25,
+      "conditions": [
+        "restrictBiomeType(BiomeDictionary.Type.NETHER)"
+      ]
+    },
+    {
+      "result": "forestry.speciesFrugal",
+      "parents": [
+        "forestry.speciesModest",
+        "forestry.speciesSinister"
+      ],
+      "chance": 16,
+      "conditions": [
+        "restrictTemperature(EnumTemperature.HOT, EnumTemperature.HELLISH)",
+        "restrictHumidity(EnumHumidity.ARID)"
+      ]
+    },
+    {
+      "result": "forestry.speciesFrugal",
+      "parents": [
+        "forestry.speciesModest",
+        "forestry.speciesFiendish"
+      ],
+      "chance": 10,
+      "conditions": [
+        "restrictTemperature(EnumTemperature.HOT, EnumTemperature.HELLISH)",
+        "restrictHumidity(EnumHumidity.ARID)"
+      ]
+    },
+    {
+      "result": "forestry.speciesAustere",
+      "parents": [
+        "forestry.speciesModest",
+        "forestry.speciesFrugal"
+      ],
+      "chance": 8,
+      "conditions": [
+        "restrictTemperature(EnumTemperature.HOT, EnumTemperature.HELLISH)",
+        "restrictHumidity(EnumHumidity.ARID)"
+      ]
+    },
+    {
+      "result": "forestry.speciesExotic",
+      "parents": [
+        "forestry.speciesAustere",
+        "forestry.speciesTropical"
+      ],
+      "chance": 12,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesEdenic",
+      "parents": [
+        "forestry.speciesExotic",
+        "forestry.speciesTropical"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesSpectral",
+      "parents": [
+        "forestry.speciesHermitic",
+        "forestry.speciesEnded"
+      ],
+      "chance": 4,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesPhantasmal",
+      "parents": [
+        "forestry.speciesSpectral",
+        "forestry.speciesEnded"
+      ],
+      "chance": 2,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesIcy",
+      "parents": [
+        "forestry.speciesIndustrious",
+        "forestry.speciesWintry"
+      ],
+      "chance": 12,
+      "conditions": [
+        "restrictTemperature(EnumTemperature.ICY, EnumTemperature.COLD)"
+      ]
+    },
+    {
+      "result": "forestry.speciesGlacial",
+      "parents": [
+        "forestry.speciesIcy",
+        "forestry.speciesWintry"
+      ],
+      "chance": 8,
+      "conditions": [
+        "restrictTemperature(EnumTemperature.ICY, EnumTemperature.COLD)"
+      ]
+    },
+    {
+      "result": "forestry.speciesVindictive",
+      "parents": [
+        "forestry.speciesMonastic",
+        "forestry.speciesDemonic"
+      ],
+      "chance": 4,
+      "conditions": [
+        "setIsSecret()"
+      ]
+    },
+    {
+      "result": "forestry.speciesVengeful",
+      "parents": [
+        "forestry.speciesDemonic",
+        "forestry.speciesVindictive"
+      ],
+      "chance": 8,
+      "conditions": [
+        "setIsSecret()"
+      ]
+    },
+    {
+      "result": "forestry.speciesVengeful",
+      "parents": [
+        "forestry.speciesMonastic",
+        "forestry.speciesVindictive"
+      ],
+      "chance": 8,
+      "conditions": [
+        "setIsSecret()"
+      ]
+    },
+    {
+      "result": "forestry.speciesAvenging",
+      "parents": [
+        "forestry.speciesVengeful",
+        "forestry.speciesVindictive"
+      ],
+      "chance": 4,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesLeporine",
+      "parents": [
+        "forestry.speciesMeadows",
+        "forestry.speciesForest"
+      ],
+      "chance": 10,
+      "conditions": [
+        "restrictDateRange(3, 29, 4, 15)",
+        "setIsSecret()"
+      ]
+    },
+    {
+      "result": "forestry.speciesMerry",
+      "parents": [
+        "forestry.speciesWintry",
+        "forestry.speciesForest"
+      ],
+      "chance": 10,
+      "conditions": [
+        "restrictDateRange(12, 21, 12, 27)",
+        "setIsSecret()"
+      ]
+    },
+    {
+      "result": "forestry.speciesTipsy",
+      "parents": [
+        "forestry.speciesWintry",
+        "forestry.speciesMeadows"
+      ],
+      "chance": 10,
+      "conditions": [
+        "restrictDateRange(12, 27, 1, 2)",
+        "setIsSecret()"
+      ]
+    },
+    {
+      "result": "forestry.speciesTricky",
+      "parents": [
+        "forestry.speciesSinister",
+        "forestry.speciesCommon"
+      ],
+      "chance": 10,
+      "conditions": [
+        "restrictDateRange(10, 15, 11, 3)",
+        "setIsSecret()"
+      ]
+    },
+    {
+      "result": "forestry.speciesRural",
+      "parents": [
+        "forestry.speciesMeadows",
+        "forestry.speciesDiligent"
+      ],
+      "chance": 12,
+      "conditions": [
+        "restrictBiomeType(BiomeDictionary.Type.PLAINS)"
+      ]
+    },
+    {
+      "result": "forestry.speciesFarmerly",
+      "parents": [
+        "forestry.speciesRural",
+        "forestry.speciesUnweary"
+      ],
+      "chance": 10,
+      "conditions": [
+        "restrictBiomeType(BiomeDictionary.Type.PLAINS)"
+      ]
+    },
+    {
+      "result": "forestry.speciesAgrarian",
+      "parents": [
+        "forestry.speciesFarmerly",
+        "forestry.speciesIndustrious"
+      ],
+      "chance": 6,
+      "conditions": [
+        "restrictBiomeType(BiomeDictionary.Type.PLAINS)"
+      ]
+    },
+    {
+      "result": "forestry.speciesMiry",
+      "parents": [
+        "forestry.speciesMarshy",
+        "forestry.speciesNoble"
+      ],
+      "chance": 15,
+      "conditions": [
+        "restrictTemperature(EnumTemperature.WARM)",
+        "restrictHumidity(EnumHumidity.DAMP)"
+      ]
+    },
+    {
+      "result": "forestry.speciesBoggy",
+      "parents": [
+        "forestry.speciesMarshy",
+        "forestry.speciesMiry"
+      ],
+      "chance": 9,
+      "conditions": [
+        "restrictTemperature(EnumTemperature.WARM)",
+        "restrictHumidity(EnumHumidity.DAMP)"
+      ]
+    },
+    {
+      "result": "forestry.speciesSecluded",
+      "parents": [
+        "forestry.speciesMonastic",
+        "forestry.speciesAustere"
+      ],
+      "chance": 12,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesHermitic",
+      "parents": [
+        "forestry.speciesMonastic",
+        "forestry.speciesSecluded"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesForest",
+        "forestry.speciesMarshy"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesForest",
+        "forestry.speciesMeadows"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesForest",
+        "forestry.speciesModest"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesForest",
+        "forestry.speciesTropical"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesForest",
+        "forestry.speciesWintry"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesMarshy",
+        "forestry.speciesMeadows"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesMarshy",
+        "forestry.speciesModest"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesMarshy",
+        "forestry.speciesTropical"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesMarshy",
+        "forestry.speciesWintry"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesMeadows",
+        "forestry.speciesModest"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesMeadows",
+        "forestry.speciesTropical"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesMeadows",
+        "forestry.speciesWintry"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesModest",
+        "forestry.speciesTropical"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesModest",
+        "forestry.speciesWintry"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesTropical",
+        "forestry.speciesWintry"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCultivated",
+      "parents": [
+        "forestry.speciesCommon",
+        "forestry.speciesForest"
+      ],
+      "chance": 12,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCultivated",
+      "parents": [
+        "forestry.speciesCommon",
+        "forestry.speciesMarshy"
+      ],
+      "chance": 12,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCultivated",
+      "parents": [
+        "forestry.speciesCommon",
+        "forestry.speciesMeadows"
+      ],
+      "chance": 12,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCultivated",
+      "parents": [
+        "forestry.speciesCommon",
+        "forestry.speciesModest"
+      ],
+      "chance": 12,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCultivated",
+      "parents": [
+        "forestry.speciesCommon",
+        "forestry.speciesTropical"
+      ],
+      "chance": 12,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCultivated",
+      "parents": [
+        "forestry.speciesCommon",
+        "forestry.speciesWintry"
+      ],
+      "chance": 12,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.arid",
+      "parents": [
+        "forestry.speciesMeadows",
+        "forestry.speciesFrugal"
+      ],
+      "chance": 10,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.arid",
+      "parents": [
+        "forestry.speciesForest",
+        "forestry.speciesFrugal"
+      ],
+      "chance": 10,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.barren",
+      "parents": [
+        "forestry.speciesCommon",
+        "extrabees.species.arid"
+      ],
+      "chance": 10,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.desolate",
+      "parents": [
+        "extrabees.species.arid",
+        "extrabees.species.barren"
+      ],
+      "chance": 10,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.decomposing",
+      "parents": [
+        "forestry.speciesMarshy",
+        "extrabees.species.barren"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.gnawing",
+      "parents": [
+        "forestry.speciesForest",
+        "extrabees.species.barren"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.rotten",
+      "parents": [
+        "forestry.speciesMeadows",
+        "extrabees.species.desolate"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.bone",
+      "parents": [
+        "forestry.speciesForest",
+        "extrabees.species.desolate"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.creeper",
+      "parents": [
+        "forestry.speciesModest",
+        "extrabees.species.desolate"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.stone",
+      "parents": [
+        "forestry.speciesDiligent",
+        "extrabees.species.rock"
+      ],
+      "chance": 12,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.granite",
+      "parents": [
+        "forestry.speciesUnweary",
+        "extrabees.species.stone"
+      ],
+      "chance": 10,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.mineral",
+      "parents": [
+        "forestry.speciesIndustrious",
+        "extrabees.species.granite"
+      ],
+      "chance": 6,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.copper",
+      "parents": [
+        "forestry.speciesWintry",
+        "extrabees.species.mineral"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.copper",
+      "parents": [
+        "forestry.speciesModest",
+        "extrabees.species.mineral"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.tin",
+      "parents": [
+        "forestry.speciesMarshy",
+        "extrabees.species.mineral"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.tin",
+      "parents": [
+        "forestry.speciesTropical",
+        "extrabees.species.mineral"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.iron",
+      "parents": [
+        "forestry.speciesMeadows",
+        "extrabees.species.mineral"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.iron",
+      "parents": [
+        "forestry.speciesForest",
+        "extrabees.species.mineral"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.lead",
+      "parents": [
+        "forestry.speciesMeadows",
+        "extrabees.species.mineral"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.lead",
+      "parents": [
+        "forestry.speciesModest",
+        "extrabees.species.mineral"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.zinc",
+      "parents": [
+        "forestry.speciesWintry",
+        "extrabees.species.mineral"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.zinc",
+      "parents": [
+        "forestry.speciesTropical",
+        "extrabees.species.mineral"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.titanium",
+      "parents": [
+        "forestry.speciesCultivated",
+        "extrabees.species.mineral"
+      ],
+      "chance": 3,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.tungstate",
+      "parents": [
+        "forestry.speciesCommon",
+        "extrabees.species.mineral"
+      ],
+      "chance": 3,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.nickel",
+      "parents": [
+        "forestry.speciesForest",
+        "extrabees.species.mineral"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.nickel",
+      "parents": [
+        "forestry.speciesMarshy",
+        "extrabees.species.mineral"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.gold",
+      "parents": [
+        "forestry.speciesMajestic",
+        "extrabees.species.iron"
+      ],
+      "chance": 2,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.gold",
+      "parents": [
+        "forestry.speciesMajestic",
+        "extrabees.species.copper"
+      ],
+      "chance": 2,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.gold",
+      "parents": [
+        "forestry.speciesMajestic",
+        "extrabees.species.nickel"
+      ],
+      "chance": 2,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.gold",
+      "parents": [
+        "forestry.speciesMajestic",
+        "extrabees.species.tungstate"
+      ],
+      "chance": 2,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.silver",
+      "parents": [
+        "forestry.speciesMajestic",
+        "extrabees.species.zinc"
+      ],
+      "chance": 2,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.silver",
+      "parents": [
+        "forestry.speciesMajestic",
+        "extrabees.species.tin"
+      ],
+      "chance": 2,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.silver",
+      "parents": [
+        "forestry.speciesMajestic",
+        "extrabees.species.lead"
+      ],
+      "chance": 2,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.silver",
+      "parents": [
+        "forestry.speciesMajestic",
+        "extrabees.species.titanium"
+      ],
+      "chance": 2,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.platinum",
+      "parents": [
+        "extrabees.species.gold",
+        "extrabees.species.silver"
+      ],
+      "chance": 2,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.lapis",
+      "parents": [
+        "extrabees.species.water",
+        "extrabees.species.mineral"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.sodalite",
+      "parents": [
+        "extrabees.species.lapis",
+        "forestry.speciesDiligent"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.pyrite",
+      "parents": [
+        "extrabees.species.iron",
+        "forestry.speciesSinister"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.bauxite",
+      "parents": [
+        "extrabees.species.mineral",
+        "forestry.speciesDiligent"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.cinnabar",
+      "parents": [
+        "extrabees.species.mineral",
+        "forestry.speciesSinister"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.sphalerite",
+      "parents": [
+        "extrabees.species.tin",
+        "forestry.speciesSinister"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.emerald",
+      "parents": [
+        "forestry.speciesForest",
+        "extrabees.species.lapis"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.ruby",
+      "parents": [
+        "forestry.speciesModest",
+        "extrabees.species.lapis"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.sapphire",
+      "parents": [
+        "extrabees.species.water",
+        "extrabees.species.lapis"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.diamond",
+      "parents": [
+        "forestry.speciesCultivated",
+        "extrabees.species.lapis"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.unstable",
+      "parents": [
+        "extrabees.species.prehistoric",
+        "extrabees.species.mineral"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.nuclear",
+      "parents": [
+        "extrabees.species.unstable",
+        "extrabees.species.iron"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.nuclear",
+      "parents": [
+        "extrabees.species.unstable",
+        "extrabees.species.copper"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.nuclear",
+      "parents": [
+        "extrabees.species.unstable",
+        "extrabees.species.tin"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.nuclear",
+      "parents": [
+        "extrabees.species.unstable",
+        "extrabees.species.zinc"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.nuclear",
+      "parents": [
+        "extrabees.species.unstable",
+        "extrabees.species.nickel"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.nuclear",
+      "parents": [
+        "extrabees.species.unstable",
+        "extrabees.species.lead"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.radioactive",
+      "parents": [
+        "extrabees.species.nuclear",
+        "extrabees.species.gold"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.radioactive",
+      "parents": [
+        "extrabees.species.nuclear",
+        "extrabees.species.silver"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.yellorium",
+      "parents": [
+        "forestry.speciesFrugal",
+        "extrabees.species.nuclear"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.cyanite",
+      "parents": [
+        "extrabees.species.nuclear",
+        "extrabees.species.yellorium"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.blutonium",
+      "parents": [
+        "extrabees.species.cyanite",
+        "extrabees.species.yellorium"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.ancient",
+      "parents": [
+        "forestry.speciesNoble",
+        "forestry.speciesDiligent"
+      ],
+      "chance": 10,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.primeval",
+      "parents": [
+        "forestry.speciesSecluded",
+        "extrabees.species.ancient"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.prehistoric",
+      "parents": [
+        "extrabees.species.primeval",
+        "extrabees.species.ancient"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.relic",
+      "parents": [
+        "forestry.speciesImperial",
+        "extrabees.species.prehistoric"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.coal",
+      "parents": [
+        "extrabees.species.primeval",
+        "extrabees.species.growing"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.coal",
+      "parents": [
+        "forestry.speciesRural",
+        "extrabees.species.primeval"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.resin",
+      "parents": [
+        "forestry.speciesMiry",
+        "extrabees.species.primeval"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.oil",
+      "parents": [
+        "extrabees.species.ocean",
+        "extrabees.species.primeval"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.oil",
+      "parents": [
+        "forestry.speciesFrugal",
+        "extrabees.species.primeval"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.distilled",
+      "parents": [
+        "forestry.speciesIndustrious",
+        "extrabees.species.oil"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.fuel",
+      "parents": [
+        "extrabees.species.distilled",
+        "extrabees.species.oil"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.creosote",
+      "parents": [
+        "extrabees.species.distilled",
+        "extrabees.species.coal"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.latex",
+      "parents": [
+        "extrabees.species.distilled",
+        "extrabees.species.resin"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.river",
+      "parents": [
+        "forestry.speciesDiligent",
+        "extrabees.species.water"
+      ],
+      "chance": 10,
+      "conditions": [
+        "restrictBiomeType(new BiomeDictionary.Type[]{BiomeDictionary.Type.RIVER})"
+      ]
+    },
+    {
+      "result": "extrabees.species.ocean",
+      "parents": [
+        "forestry.speciesDiligent",
+        "extrabees.species.water"
+      ],
+      "chance": 10,
+      "conditions": [
+        "restrictBiomeType(new BiomeDictionary.Type[]{BiomeDictionary.Type.OCEAN})"
+      ]
+    },
+    {
+      "result": "extrabees.species.ink",
+      "parents": [
+        "extrabees.species.black",
+        "extrabees.species.ocean"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.growing",
+      "parents": [
+        "forestry.speciesForest",
+        "forestry.speciesDiligent"
+      ],
+      "chance": 10,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.farm",
+      "parents": [
+        "forestry.speciesFarmerly",
+        "forestry.speciesMeadows"
+      ],
+      "chance": 10,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.thriving",
+      "parents": [
+        "forestry.speciesUnweary",
+        "extrabees.species.growing"
+      ],
+      "chance": 10,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.blooming",
+      "parents": [
+        "forestry.speciesIndustrious",
+        "extrabees.species.thriving"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.sweet",
+      "parents": [
+        "forestry.speciesValiant",
+        "forestry.speciesDiligent"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.sugar",
+      "parents": [
+        "forestry.speciesRural",
+        "extrabees.species.sweet"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.ripening",
+      "parents": [
+        "extrabees.species.sweet",
+        "extrabees.species.growing"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.fruit",
+      "parents": [
+        "extrabees.species.sweet",
+        "extrabees.species.thriving"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.alcohol",
+      "parents": [
+        "forestry.speciesFarmerly",
+        "forestry.speciesMeadows"
+      ],
+      "chance": 10,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.milk",
+      "parents": [
+        "forestry.speciesFarmerly",
+        "extrabees.species.water"
+      ],
+      "chance": 10,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.coffee",
+      "parents": [
+        "forestry.speciesFarmerly",
+        "forestry.speciesTropical"
+      ],
+      "chance": 10,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.swamp",
+      "parents": [
+        "forestry.speciesMiry",
+        "extrabees.species.water"
+      ],
+      "chance": 10,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.boggy",
+      "parents": [
+        "forestry.speciesBoggy",
+        "extrabees.species.swamp"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.fungal",
+      "parents": [
+        "forestry.speciesBoggy",
+        "forestry.speciesMiry"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.fungal",
+      "parents": [
+        "forestry.speciesBoggy",
+        "extrabees.species.swamp"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.roman",
+      "parents": [
+        "extrabees.species.marble",
+        "forestry.speciesHeroic"
+      ],
+      "chance": 10,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.greek",
+      "parents": [
+        "extrabees.species.roman",
+        "extrabees.species.marble"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.classical",
+      "parents": [
+        "extrabees.species.greek",
+        "extrabees.species.roman"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.tempered",
+      "parents": [
+        "forestry.speciesFiendish",
+        "extrabees.species.basalt"
+      ],
+      "chance": 30,
+      "conditions": [
+        "restrictBiomeType(new BiomeDictionary.Type[]{BiomeDictionary.Type.NETHER})"
+      ]
+    },
+    {
+      "result": "extrabees.species.volcanic",
+      "parents": [
+        "forestry.speciesDemonic",
+        "extrabees.species.tempered"
+      ],
+      "chance": 20,
+      "conditions": [
+        "restrictBiomeType(new BiomeDictionary.Type[]{BiomeDictionary.Type.NETHER})"
+      ]
+    },
+    {
+      "result": "extrabees.species.glowstone",
+      "parents": [
+        "extrabees.species.tempered",
+        "extrabees.species.excited"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.malicious",
+      "parents": [
+        "forestry.speciesSinister",
+        "forestry.speciesTropical"
+      ],
+      "chance": 10,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.infectious",
+      "parents": [
+        "forestry.speciesTropical",
+        "extrabees.species.malicious"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.virulent",
+      "parents": [
+        "extrabees.species.malicious",
+        "extrabees.species.infectious"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.viscous",
+      "parents": [
+        "forestry.speciesExotic",
+        "extrabees.species.water"
+      ],
+      "chance": 10,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.glutinous",
+      "parents": [
+        "forestry.speciesExotic",
+        "extrabees.species.viscous"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.sticky",
+      "parents": [
+        "extrabees.species.viscous",
+        "extrabees.species.glutinous"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.corrosive",
+      "parents": [
+        "extrabees.species.malicious",
+        "extrabees.species.viscous"
+      ],
+      "chance": 10,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.caustic",
+      "parents": [
+        "forestry.speciesFiendish",
+        "extrabees.species.corrosive"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.acidic",
+      "parents": [
+        "extrabees.species.corrosive",
+        "extrabees.species.caustic"
+      ],
+      "chance": 4,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.excited",
+      "parents": [
+        "forestry.speciesValiant",
+        "forestry.speciesCultivated"
+      ],
+      "chance": 10,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.energetic",
+      "parents": [
+        "forestry.speciesDiligent",
+        "extrabees.species.excited"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.ecstatic",
+      "parents": [
+        "extrabees.species.excited",
+        "extrabees.species.energetic"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.artic",
+      "parents": [
+        "forestry.speciesWintry",
+        "forestry.speciesDiligent"
+      ],
+      "chance": 10,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.freezing",
+      "parents": [
+        "extrabees.species.ocean",
+        "extrabees.species.artic"
+      ],
+      "chance": 10,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.shadow",
+      "parents": [
+        "forestry.speciesSinister",
+        "extrabees.species.rock"
+      ],
+      "chance": 10,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.darkened",
+      "parents": [
+        "extrabees.species.shadow",
+        "extrabees.species.rock"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.abyss",
+      "parents": [
+        "extrabees.species.shadow",
+        "extrabees.species.darkened"
+      ],
+      "chance": 8,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.red",
+      "parents": [
+        "forestry.speciesForest",
+        "forestry.speciesValiant"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.yellow",
+      "parents": [
+        "forestry.speciesMeadows",
+        "forestry.speciesValiant"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.blue",
+      "parents": [
+        "forestry.speciesValiant",
+        "extrabees.species.water"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.green",
+      "parents": [
+        "forestry.speciesTropical",
+        "forestry.speciesValiant"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.black",
+      "parents": [
+        "forestry.speciesValiant",
+        "extrabees.species.rock"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.white",
+      "parents": [
+        "forestry.speciesWintry",
+        "forestry.speciesValiant"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.brown",
+      "parents": [
+        "forestry.speciesMarshy",
+        "forestry.speciesValiant"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.orange",
+      "parents": [
+        "extrabees.species.red",
+        "extrabees.species.yellow"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.cyan",
+      "parents": [
+        "extrabees.species.green",
+        "extrabees.species.blue"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.purple",
+      "parents": [
+        "extrabees.species.red",
+        "extrabees.species.blue"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.gray",
+      "parents": [
+        "extrabees.species.black",
+        "extrabees.species.white"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.lightblue",
+      "parents": [
+        "extrabees.species.blue",
+        "extrabees.species.white"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.pink",
+      "parents": [
+        "extrabees.species.red",
+        "extrabees.species.white"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.limegreen",
+      "parents": [
+        "extrabees.species.green",
+        "extrabees.species.white"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.magenta",
+      "parents": [
+        "extrabees.species.purple",
+        "extrabees.species.pink"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.lightgray",
+      "parents": [
+        "extrabees.species.gray",
+        "extrabees.species.white"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.celebratory",
+      "parents": [
+        "forestry.speciesAustere",
+        "extrabees.species.excited"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.jaded",
+      "parents": [
+        "forestry.speciesEnded",
+        "extrabees.species.relic"
+      ],
+      "chance": 2,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.hazardous",
+      "parents": [
+        "forestry.speciesAustere",
+        "extrabees.species.desolate"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.quantum",
+      "parents": [
+        "forestry.speciesSpectral",
+        "extrabees.species.spatial"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.unusual",
+      "parents": [
+        "forestry.speciesSecluded",
+        "forestry.speciesEnded"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.spatial",
+      "parents": [
+        "forestry.speciesHermitic",
+        "extrabees.species.unusual"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "extrabees.species.mystical",
+      "parents": [
+        "forestry.speciesNoble",
+        "forestry.speciesMonastic"
+      ],
+      "chance": 5,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesForest",
+        "extrabees.species.water"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesMeadows",
+        "extrabees.species.water"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesModest",
+        "extrabees.species.water"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesTropical",
+        "extrabees.species.water"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesMarshy",
+        "extrabees.species.water"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesWintry",
+        "extrabees.species.water"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "extrabees.species.rock",
+        "extrabees.species.water"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "extrabees.species.basalt",
+        "extrabees.species.water"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesForest",
+        "extrabees.species.rock"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesMeadows",
+        "extrabees.species.rock"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesModest",
+        "extrabees.species.rock"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesTropical",
+        "extrabees.species.rock"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesMarshy",
+        "extrabees.species.rock"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesWintry",
+        "extrabees.species.rock"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "extrabees.species.basalt",
+        "extrabees.species.rock"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesForest",
+        "extrabees.species.basalt"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesMeadows",
+        "extrabees.species.basalt"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesModest",
+        "extrabees.species.basalt"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesTropical",
+        "extrabees.species.basalt"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesMarshy",
+        "extrabees.species.basalt"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "forestry.speciesWintry",
+        "extrabees.species.basalt"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCultivated",
+      "parents": [
+        "forestry.speciesCommon",
+        "extrabees.species.water"
+      ],
+      "chance": 12,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCultivated",
+      "parents": [
+        "forestry.speciesCommon",
+        "extrabees.species.rock"
+      ],
+      "chance": 12,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCultivated",
+      "parents": [
+        "forestry.speciesCommon",
+        "extrabees.species.basalt"
+      ],
+      "chance": 12,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "extrabees.species.water",
+        "extrabees.species.marble"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "extrabees.species.rock",
+        "extrabees.species.marble"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "extrabees.species.marble",
+        "forestry.speciesForest"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "extrabees.species.marble",
+        "forestry.speciesMeadows"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "extrabees.species.marble",
+        "forestry.speciesModest"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "extrabees.species.marble",
+        "forestry.speciesTropical"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCommon",
+      "parents": [
+        "extrabees.species.marble",
+        "forestry.speciesMarshy"
+      ],
+      "chance": 15,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesCultivated",
+      "parents": [
+        "extrabees.species.marble",
+        "forestry.speciesCommon"
+      ],
+      "chance": 12,
+      "conditions": []
+    },
+    {
+      "result": "forestry.speciesSinister",
+      "parents": [
+        "forestry.speciesCultivated",
+        "extrabees.species.basalt"
+      ],
+      "chance": 60,
+      "conditions": [
+        "restrictBiomeType(new BiomeDictionary.Type[]{BiomeDictionary.Type.NETHER})"
+      ]
+    },
+    {
+      "result": "forestry.speciesFiendish",
+      "parents": [
+        "forestry.speciesSinister",
+        "extrabees.species.basalt"
+      ],
+      "chance": 40,
+      "conditions": [
+        "restrictBiomeType(new BiomeDictionary.Type[]{BiomeDictionary.Type.NETHER})"
+      ]
+    },
+    {
+      "result": "gendustry.bee.blue",
+      "parents": [
+        "forestry.speciesDiligent",
+        "forestry.speciesForest"
+      ],
+      "chance": 10.0,
+      "conditions": []
+    },
+    {
+      "result": "gendustry.bee.red",
+      "parents": [
+        "forestry.speciesDiligent",
+        "forestry.speciesCommon"
+      ],
+      "chance": 10.0,
+      "conditions": []
+    },
+    {
+      "result": "gendustry.bee.yellow",
+      "parents": [
+        "forestry.speciesDiligent",
+        "forestry.speciesModest"
+      ],
+      "chance": 10.0,
+      "conditions": []
+    },
+    {
+      "result": "gendustry.bee.brown",
+      "parents": [
+        "forestry.speciesDiligent",
+        "forestry.speciesTropical"
+      ],
+      "chance": 10.0,
+      "conditions": []
+    },
+    {
+      "result": "gendustry.bee.white",
+      "parents": [
+        "forestry.speciesDiligent",
+        "forestry.speciesWintry"
+      ],
+      "chance": 10.0,
+      "conditions": []
+    },
+    {
+      "result": "gendustry.bee.black",
+      "parents": [
+        "forestry.speciesDiligent",
+        "gendustry.bee.white"
+      ],
+      "chance": 10.0,
+      "conditions": []
+    },
+    {
+      "result": "gendustry.bee.purple",
+      "parents": [
+        "gendustry.bee.blue",
+        "gendustry.bee.red"
+      ],
+      "chance": 10.0,
+      "conditions": []
+    },
+    {
+      "result": "gendustry.bee.orange",
+      "parents": [
+        "gendustry.bee.red",
+        "gendustry.bee.yellow"
+      ],
+      "chance": 10.0,
+      "conditions": []
+    },
+    {
+      "result": "gendustry.bee.green",
+      "parents": [
+        "gendustry.bee.yellow",
+        "gendustry.bee.blue"
+      ],
+      "chance": 10.0,
+      "conditions": []
+    },
+    {
+      "result": "gendustry.bee.gray",
+      "parents": [
+        "gendustry.bee.white",
+        "gendustry.bee.black"
+      ],
+      "chance": 10.0,
+      "conditions": []
+    },
+    {
+      "result": "gendustry.bee.silver",
+      "parents": [
+        "gendustry.bee.white",
+        "gendustry.bee.gray"
+      ],
+      "chance": 10.0,
+      "conditions": []
+    },
+    {
+      "result": "gendustry.bee.cyan",
+      "parents": [
+        "gendustry.bee.green",
+        "gendustry.bee.blue"
+      ],
+      "chance": 10.0,
+      "conditions": []
+    },
+    {
+      "result": "gendustry.bee.pink",
+      "parents": [
+        "gendustry.bee.red",
+        "gendustry.bee.white"
+      ],
+      "chance": 10.0,
+      "conditions": []
+    },
+    {
+      "result": "gendustry.bee.lightblue",
+      "parents": [
+        "gendustry.bee.blue",
+        "gendustry.bee.white"
+      ],
+      "chance": 10.0,
+      "conditions": []
+    },
+    {
+      "result": "gendustry.bee.lime",
+      "parents": [
+        "gendustry.bee.green",
+        "gendustry.bee.white"
+      ],
+      "chance": 10.0,
+      "conditions": []
+    },
+    {
+      "result": "gendustry.bee.magenta",
+      "parents": [
+        "gendustry.bee.pink",
+        "gendustry.bee.blue"
+      ],
+      "chance": 10.0,
+      "conditions": []
+    }
+  ]
+}
