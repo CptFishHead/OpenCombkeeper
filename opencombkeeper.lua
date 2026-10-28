@@ -1,4 +1,4 @@
--- OpenCombkeeper 0.3.1 OpenOS entry point.
+-- OpenCombkeeper 0.3.2 OpenOS entry point.
 local function loadFile(path)
   local chunk,reason=loadfile(path)
   assert(chunk,reason)
@@ -80,7 +80,9 @@ elseif command=='run' then
     local action=engine:nextAction()
     if not action then break end
     if action.type=='manual_task' then
-      print('WAIT '..action.task..' (run: opencombkeeper check)')
+      print('WAIT '..action.task..' -> '..tostring(action.result))
+      if action.parents then print('PARENTS '..table.concat(action.parents,' + ')) end
+      print('Return the result to ME, then run: opencombkeeper check')
       break
     end
     assert(hardware.perform,'Hardware adapter has no perform(action)')

@@ -64,9 +64,6 @@ class ExecutorTest(unittest.TestCase):
         hardware = self.lua.table()
         hardware["countQueens"] = lambda uid=None: counts["value"]
         engine = self.module.new(self.plan(manual=True), hardware, None)
-        action = engine.nextAction(engine)
-        self.assertEqual("prepare_manual_mutation", action["type"])
-        self.assertTrue(engine.complete(engine, action, table(self.lua, {"accepted": True})))
         wait = engine.nextAction(engine)
         self.assertEqual("manual_task", wait["type"])
         self.assertFalse(engine.checkTask(engine, wait["task"]))
@@ -79,7 +76,7 @@ class ExecutorTest(unittest.TestCase):
         hardware["countQueens"] = lambda uid=None: 1
         engine = self.module.new(self.plan(manual=True), hardware, None)
         action = engine.nextAction(engine)
-        self.assertEqual("prepare_manual_mutation", action["type"])
+        self.assertEqual("manual_task", action["type"])
         task = engine.tasks[action["task"]]
         self.assertEqual(1, task["baseline"])
 
@@ -100,11 +97,10 @@ class ExecutorTest(unittest.TestCase):
         hardware["countQueens"] = lambda uid=None: 0
         hardware["manualCapacity"] = lambda: 2
         engine = self.module.new(plan, hardware, None)
-        first = engine.nextAction(engine)
-        engine.complete(engine, first, table(self.lua, {"accepted": True}))
-        second = engine.nextAction(engine)
-        self.assertEqual("prepare_manual_mutation", second["type"])
-        self.assertNotEqual(first["task"], second["task"])
+        action = engine.nextAction(engine)
+        self.assertEqual("manual_task", action["type"])
+        self.assertTrue(engine.tasks["mutation:1:1"]["prepared"])
+        self.assertTrue(engine.tasks["mutation:2:1"]["prepared"])
 
     def test_same_result_tasks_get_distinct_thresholds(self):
         plan = table(self.lua, {"schema": 1,
@@ -121,11 +117,9 @@ class ExecutorTest(unittest.TestCase):
         hardware["countQueens"] = lambda uid=None: 3
         hardware["manualCapacity"] = lambda: 2
         engine = self.module.new(plan, hardware, None)
-        first = engine.nextAction(engine)
-        engine.complete(engine, first, table(self.lua, {"accepted": True}))
-        second = engine.nextAction(engine)
-        self.assertEqual(3, engine.tasks[first["task"]]["baseline"])
-        self.assertEqual(4, engine.tasks[second["task"]]["baseline"])
+        self.assertEqual("manual_task", engine.nextAction(engine)["type"])
+        self.assertEqual(3, engine.tasks["mutation:1:1"]["baseline"])
+        self.assertEqual(4, engine.tasks["mutation:2:1"]["baseline"])
 
     def test_queued_manual_task_does_not_capture_early_baseline(self):
         plan = table(self.lua, {"schema": 1,
@@ -141,7 +135,6 @@ class ExecutorTest(unittest.TestCase):
         hardware = self.lua.table(); hardware["countQueens"] = lambda uid=None: 0
         hardware["manualCapacity"] = lambda: 1
         engine = self.module.new(plan, hardware, None)
-        first = engine.nextAction(engine); engine.complete(engine, first, table(self.lua, {"accepted": True}))
         self.assertEqual("manual_task", engine.nextAction(engine)["type"])
         self.assertIsNone(engine.tasks["mutation:2:1"]["baseline"])
 

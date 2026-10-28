@@ -9,11 +9,11 @@ local BIND_TIMEOUT=20
 local interfaceName='appliedenergistics2:interface'
 local machineKinds={
   ['gendustry:mutatron']='mutatron',
-  ['gendustry:mutatron_advanced']='advanced_mutatron',
   ['gendustry:imprinter']='imprinter',
   ['gendustry:industrial_apiary']='apiary'
 }
 local ignoredMachines={
+  ['gendustry:mutatron_advanced']=true,
   ['gendustry:sampler']=true,
   ['forestry:analyzer']=true
 }
@@ -122,7 +122,7 @@ end
 
 function M:scan()
   local found=self:discover()
-  self:print('OpenCombkeeper 0.3.1 - read-only discovery')
+  self:print('OpenCombkeeper 0.3.2 - read-only discovery')
   self:print('Transposers: '..#found.transposers)
   for _,module in ipairs(found.modules) do
     self:print('TRANSPOSER '..module.entry.address)
@@ -178,13 +178,6 @@ function M:validate(topology)
   assert(climates.plains==4 and climates.jungle==1 and climates.desert==1
     and climates.winter==1 and climates.hell==1,
     'Climate layout must be 4 plains + jungle + desert + winter + hell')
-  assert(type(topology.advancedMutatrons)=='table' and #topology.advancedMutatrons==4,
-    'Exactly 4 advanced mutatrons are required')
-  for index,endpoint in ipairs(topology.advancedMutatrons) do
-    validateEndpoint(endpoint,'advanced mutatron '..index)
-    assert(modules[endpoint.transposer],'Advanced mutatron is outside bound modules')
-    local key=endpointKey(endpoint); assert(not used[key],'Duplicate role endpoint '..key); used[key]='advanced'
-  end
   validateEndpoint(topology.producerOutput,'producer output')
   assert(modules[topology.producerOutput.transposer],'Producer output is outside bound modules')
   local key=endpointKey(topology.producerOutput)
@@ -311,7 +304,6 @@ function M:verify(topology)
       end
     end
   end
-  for _,endpoint in ipairs(topology.advancedMutatrons) do checkEndpoint(endpoint,'advanced mutatron') end
   checkEndpoint(topology.producerOutput,'producer output')
   table.sort(issues,function(a,b) return a.kind==b.kind and a.message<b.message or a.kind<b.kind end)
   return issues
@@ -371,7 +363,6 @@ function M:display(topology)
     show('apiary',module.apiary); show('mutatron',module.mutatron)
     show('imprinter',module.imprinter); show('local-chest',module.chest)
   end
-  for _,endpoint in ipairs(topology.advancedMutatrons) do show('advanced-mutatron',endpoint) end
   show('producer-output',topology.producerOutput)
 end
 
@@ -537,43 +528,39 @@ function M:bind(recover)
     if not cleaned then self:print('Cleanup pending: '..tostring(cleanupReason)) end
     error(tostring(reason))
   end
-  local topology={schema=SCHEMA,modules={},productionModules={},advancedMutatrons={}}
+  local topology={schema=SCHEMA,modules={},productionModules={}}
   local outputCandidates={}
   table.sort(bound,function(a,b) return a.entry.address<b.entry.address end)
   for _,module in ipairs(bound) do
     topology.modules[#topology.modules+1]={transposer=module.entry.address,interfaceSide=module.side,interface=module.interface}
-    local roles={apiaries={},mutatrons={},imprinters={},advanced={},containers={}}
+    local roles={apiaries={},mutatrons={},imprinters={},containers={}}
     for _,inventory in ipairs(module.others) do
       local endpoint={transposer=module.entry.address,side=inventory.side,name=inventory.name}
       local kind=machineKinds[inventory.name]
       if kind=='apiary' then roles.apiaries[#roles.apiaries+1]=endpoint
       elseif kind=='mutatron' then roles.mutatrons[#roles.mutatrons+1]=endpoint
-      elseif kind=='advanced_mutatron' then roles.advanced[#roles.advanced+1]=endpoint
       elseif kind=='imprinter' then roles.imprinters[#roles.imprinters+1]=endpoint
       elseif not ignoredMachines[inventory.name] then roles.containers[#roles.containers+1]=endpoint end
     end
-    for _,endpoint in ipairs(roles.advanced) do topology.advancedMutatrons[#topology.advancedMutatrons+1]=endpoint end
     local production=#roles.apiaries+#roles.mutatrons+#roles.imprinters>0
     if production then
       assert(#roles.apiaries==1 and #roles.mutatrons==1 and #roles.imprinters==1 and #roles.containers==1,
         'Incomplete production module '..module.entry.address
           ..': need exactly one apiary, mutatron, imprinter and chest')
-      assert(#roles.advanced==0,'Advanced mutatron must not share production module '..module.entry.address)
       local climate,signature=climateOfApiary(module.entry.proxy,roles.apiaries[1].side)
       topology.productionModules[#topology.productionModules+1]={
         id=#topology.productionModules+1,transposer=module.entry.address,climate=climate,
         climateSignature=signature,apiary=roles.apiaries[1],mutatron=roles.mutatrons[1],
         imprinter=roles.imprinters[1],chest=roles.containers[1]}
-    elseif #roles.advanced==0 then
+    else
       for _,endpoint in ipairs(roles.containers) do outputCandidates[#outputCandidates+1]=endpoint end
     end
   end
   assert(#topology.productionModules==8,'Need exactly 8 complete production modules; found '..#topology.productionModules)
-  assert(#topology.advancedMutatrons==4,'Need exactly 4 advanced mutatrons; found '..#topology.advancedMutatrons)
   assert(#outputCandidates>0,'No standalone final-producer chest found')
   topology.producerOutput=self:chooseContainer('producerOutput','Final producer output',outputCandidates,{})
   self:save(topology)
-  self:print('Saved '..#bound..' bindings: 8 production modules, 4 advanced mutatrons, 1 output chest.')
+  self:print('Saved '..#bound..' bindings: 8 production modules and 1 output chest.')
   self:print('No bees moved; only apiary upgrade slots were read.')
   self:display(topology)
   return topology

@@ -34,8 +34,8 @@ function M.countQueens(species)
 end
 
 function M.manualCapacity()
-  -- One prepared player task per discovered advanced mutatron.
-  return M.topology and #M.topology.advancedMutatrons or 0
+  -- Four physical advanced mutatrons are operated entirely by the player.
+  return 4
 end
 
 function M.countDrones(species)
@@ -47,8 +47,6 @@ function M.perform(action)
   -- For production actions use productionModule(action.profile,
   -- action.moduleSlot). The planner pins every line to this exact module.
   -- Supported actions:
-  -- prepare_manual_mutation: load both parents into the advanced mutatron and
-  --                          return {accepted=true} after slot verification.
   -- mutation: move the carrier princess and requested drone through the normal
   --           mutatron, then return {kind='queen',species='...'} or
   --           {kind='genetic_waste'}.

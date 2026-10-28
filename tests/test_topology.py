@@ -25,8 +25,10 @@ function makeTopologyEnvironment()
     proxies[id]={getInterfaceConfiguration=function(slot) return requests[id][slot] end,
       setInterfaceConfiguration=function(slot,databaseAddress,databaseSlot,count)
         requests[id][slot]=databaseAddress and {database=databaseAddress,slot=databaseSlot,count=count} or nil
-        stacks[transposerId][0]=stacks[transposerId][0] or {}
-        stacks[transposerId][0][1]=databaseAddress and {name='minecraft:cobblestone',size=1} or nil
+        if transposerId then
+          stacks[transposerId][0]=stacks[transposerId][0] or {}
+          stacks[transposerId][0][1]=databaseAddress and {name='minecraft:cobblestone',size=1} or nil
+        end
         if not databaseAddress and control.clearDescriptorOnRequestClear then databaseSlots[1]=nil end
         return true
       end,
@@ -44,11 +46,9 @@ function makeTopologyEnvironment()
       [2]='gendustry:mutatron',[3]='gendustry:imprinter',[4]='minecraft:chest'},upgrades)
     addInterface(n,id)
   end
-  for n=9,12 do
-    local id='t'..string.format('%02d',n)
-    addTransposer(id,{[0]='appliedenergistics2:interface',[1]='gendustry:mutatron_advanced'})
-    addInterface(n,id)
-  end
+  -- Advanced mutatrons are fully manual. Their four OC-visible interfaces are
+  -- deliberately not topology modules and never receive a transposer marker.
+  for n=9,12 do addInterface(n,nil) end
   addTransposer('t13',{[0]='appliedenergistics2:interface',[1]='minecraft:chest'}); addInterface(13,'t13')
   all[#all+1]={address='db',kind='database',methods={computeHash=false,get=false,indexOf=false},proxy=proxies.db}
   local env={path='/data/topology',pendingPath='/data/bind-pending'}
@@ -85,8 +85,8 @@ class TopologyTest(unittest.TestCase):
     def test_bind_discovers_exact_installation_and_climates(self):
         topology = self.engine.bind(self.engine, False)
         self.assertEqual("OCTOPOLOGY2", topology["schema"])
-        self.assertEqual(13, len(topology["modules"])); self.assertEqual(8, len(topology["productionModules"]))
-        self.assertEqual(4, len(topology["advancedMutatrons"]))
+        self.assertEqual(9, len(topology["modules"])); self.assertEqual(8, len(topology["productionModules"]))
+        self.assertIsNone(topology["advancedMutatrons"])
         climates = [topology["productionModules"][i]["climate"] for i in range(1, 9)]
         self.assertEqual(["plains"] * 4 + ["jungle", "desert", "winter", "hell"], climates)
         self.assertEqual("t13", topology["producerOutput"]["transposer"])
@@ -95,7 +95,7 @@ class TopologyTest(unittest.TestCase):
     def test_bind_refreshes_descriptor_after_each_interface(self):
         self.control["clearDescriptorOnRequestClear"] = True
         topology = self.engine.bind(self.engine, False)
-        self.assertEqual(13, len(topology["modules"]))
+        self.assertEqual(9, len(topology["modules"]))
 
     def test_bind_reset_tolerates_descriptor_already_gone(self):
         self.control["files"]["/data/bind-pending"] = "OCBIND1\ni1 db 1\n"
@@ -103,7 +103,7 @@ class TopologyTest(unittest.TestCase):
         self.assertIsNone(self.control["files"]["/data/bind-pending"])
 
     def test_changed_machine_requests_rebind(self):
-        topology = self.engine.bind(self.engine, False); self.control["names"]["t09"][1] = "minecraft:chest"
+        topology = self.engine.bind(self.engine, False); self.control["names"]["t01"][2] = "minecraft:chest"
         self.assertIn("changed", self.issue_kinds(self.engine.verify(self.engine, topology)))
 
     def test_changed_emulator_requests_rebind(self):

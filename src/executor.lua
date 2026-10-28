@@ -134,12 +134,11 @@ function M:nextAction()
       if task and task.status~='done' then
         if not task.prepared and prepared<capacity then
           if task.baseline==nil then self:activateTask(task.id) end
-          return {type='prepare_manual_mutation',task=task.id,line=line.id,step=line.position,
-            profile=line.profile,moduleSlot=line.moduleSlot,carrier=line.route[line.position],result=result,
-            parents=copy(mutation.parents),
-            calendarConditions=copy(mutation.calendarConditions or {})}
+          task.prepared=true; prepared=prepared+1
+          self:record('manual_task_queued',{task=task.id,line=line.id,result=task.result})
         end
-        waiting=waiting or {type='manual_task',task=task.id,line=line.id,result=result}
+        waiting=waiting or {type='manual_task',task=task.id,line=line.id,result=result,
+          parents=copy(mutation.parents),calendarConditions=copy(mutation.calendarConditions or {})}
       else
         return {type='mutation',line=line.id,step=line.position,profile=line.profile,moduleSlot=line.moduleSlot,
           carrier=line.route[line.position],result=result,parents=copy(mutation.parents),
@@ -181,13 +180,6 @@ function M:complete(action,result)
     assert(line and line.target==action.species,'Stale delivery action')
     assert(result.accepted==true,'Destination did not accept line')
     line.status='delivered'; self:record('line_delivered',{line=line.id,species=line.target}); return true
-  elseif action.type=='prepare_manual_mutation' then
-    local task=assert(self.tasks[action.task],'Unknown task')
-    assert(line and line.position==action.step and task.line==line.id,'Stale manual preparation action')
-    assert(task.status=='waiting_player' and not task.prepared,'Manual mutation is already prepared')
-    assert(result.accepted==true,'Advanced mutatron did not accept parents')
-    task.prepared=true
-    self:record('manual_mutation_prepared',{task=task.id,line=line.id,result=task.result}); return true
   end
   error('Unsupported action completion: '..tostring(action.type))
 end
