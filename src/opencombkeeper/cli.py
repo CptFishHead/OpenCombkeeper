@@ -44,6 +44,7 @@ def runtime_plan(plan):
     return {
         "schema": plan["schema"],
         "startingPrincesses": plan["startingPrincesses"],
+        "startingDrones": plan["startingDrones"],
         "mutations": [{key: row[key] for key in mutation_keys if key in row} for row in plan["mutations"]],
         "lines": [{key: row[key] for key in line_keys if key in row} for row in plan["lines"]],
         "manualTasks": [{key: row[key] for key in task_keys if key in row} for row in plan["manualTasks"]],

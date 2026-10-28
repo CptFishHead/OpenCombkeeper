@@ -98,6 +98,15 @@ class PlannerUnitTest(unittest.TestCase):
         self.assertEqual({"forest": 1, "meadows": 1}, plan["startingPrincesses"])
         self.assertEqual({"forest", "meadows"}, {line["species"][0] for line in plan["lines"]})
 
+    def test_starting_drones_are_counted_before_execution(self):
+        catalog = {"species": [species("forest"), species("drone"),
+                               species("wanted", [comb("c", 1)])],
+                   "mutations": [{"result": "wanted", "parents": ["forest", "drone"], "chance": 10}]}
+        plan = Planner(catalog, {"mode": "best",
+                                 "startingSpecies": {"forest": 2, "drone": 2},
+                                 "carrierPriority": ["forest"]}).build()
+        self.assertEqual({"drone": 1}, plan["startingDrones"])
+
     def test_line_is_assigned_to_climate_profile(self):
         hot = species("hot", [comb("c", 1)])
         hot["requirements"] = {"temperature": "HOT", "humidity": "ARID"}

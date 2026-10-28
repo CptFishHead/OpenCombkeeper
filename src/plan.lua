@@ -11,6 +11,20 @@ return {
     ["forestry.speciesValiant"]=2,
     ["forestry.speciesWintry"]=1
   },
+  startingDrones={
+    ["extrabees.species.basalt"]=21,
+    ["extrabees.species.rock"]=4,
+    ["extrabees.species.water"]=8,
+    ["forestry.speciesEnded"]=3,
+    ["forestry.speciesForest"]=27,
+    ["forestry.speciesMarshy"]=6,
+    ["forestry.speciesMeadows"]=5,
+    ["forestry.speciesModest"]=22,
+    ["forestry.speciesMonastic"]=6,
+    ["forestry.speciesTropical"]=9,
+    ["forestry.speciesValiant"]=19,
+    ["forestry.speciesWintry"]=6
+  },
   mutations={
     {
       result="extrabees.species.black",

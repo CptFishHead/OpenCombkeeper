@@ -582,19 +582,32 @@ local function new(environment)
     end
     assert(freeOutput,'Final producer output chest is full')
     local princesses={}
+    local drones={}
     for _,value in pairs(readME()) do
       local uid,kind=bee(value)
       if uid and kind=='princess' then princesses[uid]=(princesses[uid] or 0)+(tonumber(value.size) or 0) end
+      if uid and kind=='drone' then drones[uid]=(drones[uid] or 0)+(tonumber(value.size) or 0) end
     end
-    local shortages={}
+    local princessShortages={}
     for uid,count in pairs(plan and plan.startingPrincesses or {}) do
       if (princesses[uid] or 0)<count then
-        shortages[#shortages+1]=uid..': need '..count..', found '..(princesses[uid] or 0)
+        princessShortages[#princessShortages+1]=uid..': need '..count..', found '..(princesses[uid] or 0)
       end
     end
-    table.sort(shortages)
-    assert(#shortages==0,'Missing starting princesses:\n  '..table.concat(shortages,'\n  '))
-    output('HARDWARE OK: production modules, output chest, ME network, OC database and starting princesses')
+    local droneShortages={}
+    for uid,count in pairs(plan and plan.startingDrones or {}) do
+      if (drones[uid] or 0)<count then
+        droneShortages[#droneShortages+1]=uid..': need '..count..', found '..(drones[uid] or 0)
+      end
+    end
+    table.sort(princessShortages); table.sort(droneShortages)
+    local sections={}
+    if #princessShortages>0 then sections[#sections+1]='Missing starting princesses:\n  '
+      ..table.concat(princessShortages,'\n  ') end
+    if #droneShortages>0 then sections[#sections+1]='Missing starting drones:\n  '
+      ..table.concat(droneShortages,'\n  ') end
+    assert(#sections==0,table.concat(sections,'\n'))
+    output('HARDWARE OK: production modules, output chest, ME network, OC database and starting bees')
     return true
   end
 

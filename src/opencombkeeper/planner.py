@@ -262,6 +262,15 @@ class Planner:
         paths = self._line_paths(targets, required, depth, recipe)
         self._balance_carriers(paths, recipe)
         starting = Counter(path["species"][0] for path in paths)
+        starting_drones: Counter[str] = Counter()
+        for path in paths:
+            route = path["species"]
+            for carrier_uid, result_uid in zip(route, route[1:]):
+                other_parents = list(recipe[result_uid].parents)
+                other_parents.remove(carrier_uid)
+                drone_uid = other_parents[0] if other_parents else carrier_uid
+                if self.starting_counts.get(drone_uid, 0) > 0:
+                    starting_drones[drone_uid] += 1
         shortages = {uid: need - self.starting_counts.get(uid, 0) for uid, need in starting.items()
                      if need > self.starting_counts.get(uid, 0)}
         selected_mutations = []
@@ -319,6 +328,7 @@ class Planner:
             },
             "unreachableCombs": sorted(all_combs - set(producers)),
             "startingPrincesses": dict(sorted(starting.items())),
+            "startingDrones": dict(sorted(starting_drones.items())),
             "startingShortages": shortages,
             "combs": comb_plan,
             "targets": sorted(targets),

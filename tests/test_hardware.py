@@ -241,6 +241,13 @@ class HardwareTest(unittest.TestCase):
         with self.assertRaises(Exception):
             self.module.check(self.action("{startingPrincesses={root=2}}"))
 
+    def test_hardware_check_validates_starting_drones(self):
+        self.assertTrue(self.module.check(self.action(
+            "{startingPrincesses={root=1},startingDrones={donor=1}}")))
+        with self.assertRaises(Exception):
+            self.module.check(self.action(
+                "{startingPrincesses={root=1},startingDrones={donor=2}}"))
+
     def test_empty_reset_clears_failed_operation(self):
         with self.assertRaises(Exception):
             self.module.perform(self.action(
