@@ -249,34 +249,6 @@ local function new(environment)
     return moved,value
   end
 
-  local function fluidPresent(module,endpoint)
-    if module.t.getFluidInTank==nil then return true end
-    local ok,value=pcall(module.t.getFluidInTank,endpoint.side)
-    if not ok or type(value)~='table' then return true end
-    local amount=tonumber(value.amount)
-    for _,tank in pairs(value) do
-      if type(tank)=='table' and tonumber(tank.amount) then amount=(amount or 0)+tank.amount end
-    end
-    return amount==nil or amount>0
-  end
-
-  local function ensureLabware(module,endpoint,slot)
-    local present=inventory(module.t,endpoint.side,slot)
-    if alive(present) then
-      assert(present.label=='Genetics Labware',endpoint.name..' slot '..slot..' must contain Genetics Labware')
-      return true
-    end
-    for chestSlot=1,call(module.t.getInventorySize,module.chest.side) do
-      local value=inventory(module.t,module.chest.side,chestSlot)
-      if alive(value) and value.label=='Genetics Labware' then
-        local moved=call(module.t.transferItem,module.chest.side,endpoint.side,value.size,chestSlot,slot)
-        assert(type(moved)=='number' and moved>0,'Cannot load Genetics Labware from module chest')
-        return true
-      end
-    end
-    error('Put Genetics Labware in the local chest of module '..module.address)
-  end
-
   local function ensureTemplate(module)
     local template=inventory(module.t,module.imprinter.side,1)
     if alive(template) then
@@ -297,7 +269,7 @@ local function new(environment)
   local function imprintBee(module,species,kind)
     assertMachineSlotEmpty(module,module.imprinter,3,'Imprinter input')
     assertMachineSlotEmpty(module,module.imprinter,4,'Imprinter output')
-    ensureTemplate(module); ensureLabware(module,module.imprinter,2)
+    ensureTemplate(module)
     requestBee(module,species,kind,module.imprinter,3)
     phase('processing',{processor='imprinter',module=module.address,species=species,kind=kind})
     for elapsed=0,PROCESS_TIMEOUT do
@@ -342,7 +314,6 @@ local function new(environment)
     local module=M.production[action.profile] and M.production[action.profile][action.moduleSlot]
     assert(module,'No production module '..tostring(action.profile)..'/'..tostring(action.moduleSlot))
     for _,slot in ipairs({1,2,3}) do assertMachineSlotEmpty(module,module.mutatron,slot,'Mutatron') end
-    assert(fluidPresent(module,module.mutatron),'Mutatron needs mutagen at module '..module.address)
     assert(findBee(assert(action.carrier),'princess'),'ME needs '..action.carrier..' / princess')
     assert(findBee(assert(action.drone),'drone'),'ME needs '..action.drone..' / drone')
     local droneReady=false
@@ -354,7 +325,6 @@ local function new(environment)
     if not imprintBee(module,action.carrier,'princess') then
       return {kind='genetic_waste'}
     end
-    ensureLabware(module,module.mutatron,4)
     requestBee(module,action.drone,'drone',module.mutatron,2)
     requestBee(module,action.carrier,'princess',module.mutatron,1)
     phase('processing',{processor='mutatron',module=module.address})
@@ -543,7 +513,6 @@ local function new(environment)
           assertMachineSlotEmpty(module,module.apiary,machineSlot,'Apiary output preflight')
         end
         local label=profile..'/'..slot..' ('..module.address..')'
-        assert(fluidPresent(module,module.mutatron),'Mutatron needs mutagen at module '..label)
         local template=inventory(module.t,module.imprinter.side,1)
         for chestSlot=1,call(module.t.getInventorySize,module.chest.side) do
           local value=inventory(module.t,module.chest.side,chestSlot)
