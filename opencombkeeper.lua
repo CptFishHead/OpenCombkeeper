@@ -1,4 +1,4 @@
--- OpenCombkeeper 0.4.5 OpenOS entry point.
+-- OpenCombkeeper 0.4.6 OpenOS entry point.
 local function loadFile(path)
   local chunk,reason=loadfile(path)
   assert(chunk,reason)
@@ -42,9 +42,98 @@ local topologyEngine=loadFile(root..'/topology.lua').new({
 })
 
 local command=(...) or 'run'
+local argument=select(2,...)
+
+local effectRules={
+  {key='radiation',label='Радиация (разрушает блоки)',default=false,
+    species={'forestry.speciesVindictive','forestry.speciesVengeful','forestry.speciesAvenging'}},
+  {key='entityRadiation',label='Нестабильность (урон существам)',species={'extrabees.species.unstable','extrabees.species.nuclear','extrabees.species.radioactive','extrabees.species.yellorium','extrabees.species.cyanite','extrabees.species.blutonium'}},
+  {key='acid',label='Кислота (меняет камень и землю)',species={'extrabees.species.corrosive','extrabees.species.caustic','extrabees.species.acidic'}},
+  {key='ectoplasm',label='Эктоплазма (ставит блоки)',species={'extrabees.species.viscous','extrabees.species.glutinous','extrabees.species.sticky'}},
+  {key='creepers',label='Появление криперов',species={'extrabees.species.creeper'}},
+  {key='lightning',label='Молнии',species={'extrabees.species.excited','extrabees.species.energetic'}},
+  {key='meteor',label='Метеоры и огненные шары',species={'extrabees.species.tempered','extrabees.species.volcanic'}},
+  {key='explosions',label='Взрывы',species={'forestry.speciesAustere','extrabees.species.hazardous'}},
+  {key='ignition',label='Поджигание существ',species={'forestry.speciesDemonic'}},
+  {key='freezing',label='Замерзание воды',species={'forestry.speciesWintry','forestry.speciesIcy','forestry.speciesGlacial'}},
+  {key='aggressive',label='Агрессивность',species={'forestry.speciesSinister','forestry.speciesFiendish','extrabees.species.basalt','extrabees.species.glowstone'}},
+  {key='poison',label='Яд',species={'forestry.speciesTropical','forestry.speciesExotic','extrabees.species.malicious','extrabees.species.infectious','extrabees.species.virulent'}}
+}
+local effectsPath=dataRoot..'/effects'
+local function effectOptions()
+  local text=readText(effectsPath)
+  local value=text and serialization.unserialize(text) or {schema='EFFECTS1',effects={}}
+  assert(type(value)=='table' and value.schema=='EFFECTS1' and type(value.effects)=='table','Invalid effects configuration')
+  for _,rule in ipairs(effectRules) do if value.effects[rule.key]==nil then value.effects[rule.key]=rule.default~=false end end
+  return value
+end
+local function saveEffects(value)
+  if not filesystem.exists(dataRoot) then assert(filesystem.makeDirectory(dataRoot)) end
+  local temporary=effectsPath..'.new'; writeText(temporary,serialization.serialize(value))
+  if filesystem.exists(effectsPath) then assert(filesystem.remove(effectsPath)) end
+  assert(filesystem.rename(temporary,effectsPath))
+end
+local function effectsMenu()
+  local options=effectOptions()
+  if argument then
+    local found
+    for _,rule in ipairs(effectRules) do if rule.key==argument then
+      options.effects[rule.key]=not options.effects[rule.key]; found=true
+    end end
+    assert(found,'Unknown effect: '..tostring(argument)); saveEffects(options)
+  end
+  print('Опасные эффекты: разрешено [x] / запрещено [ ]')
+  for _,rule in ipairs(effectRules) do print((options.effects[rule.key] and '[x] ' or '[ ] ')..rule.key..' — '..rule.label) end
+  print('Переключить: opencombkeeper effects <key>')
+  return true
+end
+
+local function applyEffectPolicy(plan)
+  local options=effectOptions(); local blocked={}
+  for _,rule in ipairs(effectRules) do if not options.effects[rule.key] then
+    for _,uid in ipairs(rule.species) do blocked[uid]=rule.key end
+  end end
+  local mutations={}; for _,row in ipairs(plan.mutations or {}) do mutations[row.result]=row end
+  local rejected,changed={},true
+  while changed do
+    changed=false
+    for _,line in ipairs(plan.lines or {}) do if not rejected[line.id] then
+      local reason
+      for _,uid in ipairs(line.species or {}) do reason=reason or blocked[uid] end
+      for step=2,#(line.species or {}) do
+        local mutation=mutations[line.species[step]]
+        for _,uid in ipairs(mutation and mutation.parents or {}) do reason=reason or blocked[uid] end
+      end
+      if reason then rejected[line.id]=reason; blocked[line.target]=reason; changed=true end
+    end end
+  end
+  local lines,kept={},{}
+  for _,line in ipairs(plan.lines or {}) do if not rejected[line.id] then lines[#lines+1]=line; kept[line.id]=true end end
+  local tasks={}
+  for _,task in ipairs(plan.manualTasks or {}) do
+    if (not task.line or kept[task.line]) and not (task.species and blocked[task.species]) then tasks[#tasks+1]=task end
+  end
+  plan.lines=lines; plan.manualTasks=tasks
+  local princesses,drones={},{}
+  local rootDrones=plan.startingDrones or {}
+  for _,line in ipairs(lines) do
+    local route=line.species; princesses[route[1]]=(princesses[route[1]] or 0)+1
+    for step=2,#route do
+      local parents={table.unpack(mutations[route[step]].parents)}
+      for index,uid in ipairs(parents) do if uid==route[step-1] then table.remove(parents,index); break end end
+      local uid=parents[1] or route[step-1]
+      if rootDrones[uid] then drones[uid]=(drones[uid] or 0)+1 end
+    end
+  end
+  plan.startingPrincesses=princesses; plan.startingDrones=drones
+  local count=0; for _ in pairs(rejected) do count=count+1 end
+  if count>0 then print('EFFECT POLICY: skipped '..count..' unsafe lines') end
+  return plan
+end
 
 local function execute()
 if command=='scan' then topologyEngine:scan(); return true end
+if command=='effects' then return effectsMenu() end
 if command=='bind' or command=='rebind' then topologyEngine:bind(false); return true end
 if command=='bind-reset' then topologyEngine:bind(true); return true end
 if command=='topology' or command=='modules' then
@@ -56,7 +145,7 @@ end
 if command=='topology-check' then topologyEngine:ensure(false); return true end
 
 local topology=topologyEngine:ensure(command=='run')
-local plan=loadFile(root..'/plan.lua')
+local plan=applyEffectPolicy(loadFile(root..'/plan.lua'))
 local executor=loadFile(root..'/executor.lua')
 
 -- The entry point intentionally refuses to move items without an installed
@@ -99,7 +188,7 @@ elseif command=='run' then
   end
   local summary=engine:summary(); print('Status: '..summary.status)
 else
-  error('Usage: opencombkeeper scan|bind|rebind|bind-reset|topology|topology-check|hardware-check|hardware-reset|hardware-recover|check|status|run')
+  error('Usage: opencombkeeper scan|bind|rebind|bind-reset|topology|topology-check|effects|hardware-check|hardware-reset|hardware-recover|check|status|run')
 end
 return true
 end

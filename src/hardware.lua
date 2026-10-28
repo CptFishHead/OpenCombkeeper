@@ -34,10 +34,17 @@ local function new(environment)
 
   local function call(method,...)
     assert(method~=nil,'Component method unavailable')
-    local ok,value,reason=pcall(method,...)
-    assert(ok,tostring(value))
-    assert(value~=false,tostring(reason or 'Component operation rejected'))
-    return value,reason
+    local args={...}
+    for attempt=1,201 do
+      local ok,value,reason=pcall(method,table.unpack(args))
+      assert(ok,tostring(value))
+      if value~=false or tostring(reason)~='cooldown' then
+        assert(value~=false,tostring(reason or 'Component operation rejected'))
+        return value,reason
+      end
+      if attempt==201 then error('Component cooldown did not clear within 20 seconds') end
+      sleep(0.1)
+    end
   end
 
   local function defaultReadText(path)

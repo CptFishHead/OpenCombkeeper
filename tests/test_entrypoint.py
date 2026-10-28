@@ -44,7 +44,7 @@ function runEntrypoint(source,command)
     if path:match('hardware%.lua$') then return function() return hardware end end
     return nil,'unexpected path '..path
   end
-  io.open=function() return {close=function() return true end} end
+  io.open=function() return {read=function() return nil end,close=function() return true end} end
   print=function() end
   local chunk,reason=load(source)
   assert(chunk,reason)
