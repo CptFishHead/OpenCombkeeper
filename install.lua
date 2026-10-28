@@ -5,6 +5,9 @@ local shell=require('shell')
 local computer=require('computer')
 local args={...}
 local action=args[1] or 'install'
+local release=args[2] or 'main'
+assert(release=='main' or release:match('^%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x$'),
+  'Release must be main or a 40-character commit SHA')
 local base='https://raw.githubusercontent.com/CptFishHead/OpenCombkeeper/'
 local root='/home/.opencombkeeper'
 local work='/home/.opencombkeeper-install'
@@ -92,7 +95,7 @@ local function install()
   local stage=unique(work,'stage-')
   local fresh=tostring(math.floor(computer.uptime()*1000))
   print('Downloading release manifest...')
-  download(base..'main/package.manifest?fresh='..fresh,stage..'/package.manifest')
+  download(base..release..'/package.manifest?fresh='..fresh,stage..'/package.manifest')
   local manifestText=assert(read(stage..'/package.manifest')); local manifest=parse(manifestText)
   if action=='update' and read(root..'/package.manifest')==manifestText then
     local ok=pcall(check); if ok then print('Already up to date.'); return true end
