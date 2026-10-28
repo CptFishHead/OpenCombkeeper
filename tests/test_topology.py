@@ -127,6 +127,12 @@ class TopologyTest(unittest.TestCase):
         self.control["stacks"]["t05"][1][3]["label"] = "Desert Emulation Upgrade"
         self.assertIn("changed", self.issue_kinds(self.engine.verify(self.engine, topology)))
 
+    def test_legacy_topology_without_upgrade_signature_uses_climate(self):
+        topology = self.engine.bind(self.engine, False)
+        for index in range(1, len(topology["productionModules"]) + 1):
+            topology["productionModules"][index]["climateSignature"] = None
+        self.assertEqual(0, len(self.engine.verify(self.engine, topology)))
+
     def test_temporarily_missing_component_is_unavailable(self):
         topology = self.engine.bind(self.engine, False); self.control["hide"] = "t01"
         self.assertIn("unavailable", self.issue_kinds(self.engine.verify(self.engine, topology)))

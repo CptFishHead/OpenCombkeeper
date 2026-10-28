@@ -298,7 +298,7 @@ function M:verify(topology)
       local ok,profile,signature=pcall(climateOfApiary,transposer.proxy,module.apiary.side)
       if not ok then
         issue(issues,'unavailable','climate_unreadable','Cannot inspect climate at '..endpointKey(module.apiary))
-      elseif profile~=module.climate or signature~=module.climateSignature then
+      elseif profile~=module.climate then
         issue(issues,'changed','climate_changed','Apiary upgrades changed at '..endpointKey(module.apiary)
           ..'; expected '..module.climate..', found '..tostring(profile))
       end
