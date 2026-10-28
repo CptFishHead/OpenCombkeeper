@@ -740,10 +740,18 @@ local function new(environment)
       local path=JOURNAL..'-manual-'..tostring(task.id):gsub('[^%w%-]','_')
       local row=parse(path)
       if row then
-        assert(row.phase=='blocked' and row.action and row.action.type=='prepare_manual'
-          and (tostring(row.failure):find('different bee variant',1,true)
-            or tostring(row.failure):find('cannot materialize exact bee variant',1,true)),
+        assert(row.phase=='blocked' and row.action and row.action.type=='prepare_manual',
           'Manual preparation is not safe for automatic retry: '..task.id)
+        for _,module in ipairs(M.advanced or {}) do
+          assert(emptyBuffer(module),'Cannot retry manual preparation: advanced interface buffer is occupied at '..module.address)
+          if call(module.interface.getInterfaceConfiguration,REQUEST_SLOT)~=nil then
+            call(module.interface.setInterfaceConfiguration,REQUEST_SLOT)
+          end
+          for machineSlot=1,2 do
+            assert(not alive(inventory(module.t,module.mutatron.side,machineSlot)),
+              'Cannot retry manual preparation: advanced mutatron input '..machineSlot..' is occupied at '..module.address)
+          end
+        end
         if row.database and row.databaseSlot then
           local proxy=call(component.proxy,row.database)
           if call(proxy.get,row.databaseSlot)~=nil then call(proxy.clear,row.databaseSlot) end
