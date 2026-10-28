@@ -66,6 +66,26 @@ class PlannerUnitTest(unittest.TestCase):
         plan = Planner(catalog, {"mode": "best", "startingSpecies": {"root": 1}})
         self.assertEqual({"root": 1}, plan.build()["startingShortages"])
 
+    def test_carrier_priority_selects_common_root_through_intermediate_parent(self):
+        catalog = {"species": [species("rare"), species("forest"), species("middle"),
+                               species("wanted", [comb("c", 1)])],
+                   "mutations": [{"result": "middle", "parents": ["forest", "forest"], "chance": 10},
+                                 {"result": "wanted", "parents": ["rare", "middle"], "chance": 10}]}
+        config = {"mode": "best", "startingSpecies": {"rare": 2, "forest": 2},
+                  "carrierPriority": ["forest"]}
+        plan = Planner(catalog, config).build()
+        self.assertEqual(["forest", "middle", "wanted"], plan["lines"][0]["species"])
+
+    def test_starting_drone_source_does_not_consume_princess(self):
+        catalog = {"species": [species("forest"), species("drone"),
+                               species("wanted", [comb("c", 1)])],
+                   "mutations": [{"result": "wanted", "parents": ["forest", "drone"], "chance": 10}]}
+        config = {"mode": "best", "startingSpecies": {"forest": 2, "drone": 2},
+                  "carrierPriority": ["forest"]}
+        plan = Planner(catalog, config).build()
+        self.assertEqual({"forest": 1}, plan["startingPrincesses"])
+        self.assertEqual([], [line for line in plan["lines"] if line["role"] == "drone_source"])
+
     def test_line_is_assigned_to_climate_profile(self):
         hot = species("hot", [comb("c", 1)])
         hot["requirements"] = {"temperature": "HOT", "humidity": "ARID"}

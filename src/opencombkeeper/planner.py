@@ -47,6 +47,12 @@ class Planner:
         unknown = set(self.starting_counts) - set(self.species)
         if unknown:
             raise ValueError("unknown starting species: " + ", ".join(sorted(unknown)))
+        self.carrier_priority = [str(uid) for uid in config.get("carrierPriority", ())]
+        unknown_priority = set(self.carrier_priority) - set(self.starting_counts)
+        if unknown_priority:
+            raise ValueError("carrierPriority must reference starting species: " +
+                             ", ".join(sorted(unknown_priority)))
+        self.carrier_rank = {uid: rank for rank, uid in enumerate(self.carrier_priority)}
         self.mutations = [Mutation(row["result"], tuple(row["parents"]), float(row["chance"]),
                                    tuple(row.get("conditions", ()))) for row in catalog["mutations"]]
         self.mutations = [m for m in self.mutations if self.allow_conditional or not m.conditions]
@@ -58,6 +64,11 @@ class Planner:
 
     def _reachability(self):
         depth = {uid: 0 for uid, count in self.starting_counts.items() if count > 0}
+        carrier = {
+            uid: (self.carrier_rank.get(uid, len(self.carrier_rank)),
+                  uid not in self.carrier_rank)
+            for uid in depth
+        }
         recipe: dict[str, Mutation] = {}
         changed = True
         while changed:
@@ -66,8 +77,9 @@ class Planner:
                 if not all(parent in depth for parent in mutation.parents):
                     continue
                 candidate_depth = max(depth[parent] for parent in mutation.parents) + 1
+                candidate_carrier = min(carrier[parent] for parent in mutation.parents)
                 candidate_score = (
-                    candidate_depth,
+                    candidate_carrier, candidate_depth,
                     len(mutation.conditions),
                     len(self.by_pair[mutation.pair]) > 1,
                     mutation.pair,
@@ -75,14 +87,15 @@ class Planner:
                 )
                 current = recipe.get(mutation.result)
                 if current is None:
-                    current_score = (10**9, 10**9, True, ("", ""), "")
+                    current_score = ((10**9, True), 10**9, 10**9, True, ("", ""), "")
                 else:
                     current_score = (
-                        depth[mutation.result], len(current.conditions),
+                        carrier[mutation.result], depth[mutation.result], len(current.conditions),
                         len(self.by_pair[current.pair]) > 1, current.pair, current.result,
                     )
                 if candidate_score < current_score:
                     depth[mutation.result] = candidate_depth
+                    carrier[mutation.result] = candidate_carrier
                     recipe[mutation.result] = mutation
                     changed = True
         return depth, recipe
@@ -150,20 +163,26 @@ class Planner:
         return required
 
     def _carrier_path(self, target: str, depth: dict[str, int], recipe: dict[str, Mutation], preferred=frozenset()):
-        reverse_path = [target]
-        seen = {target}
-        current = target
-        while current not in self.starting_counts or self.starting_counts[current] <= 0:
-            mutation = recipe.get(current)
+        def route(uid: str, seen: frozenset[str]):
+            if uid in seen:
+                raise ValueError(f"cycle in selected recipes at {uid}")
+            if self.starting_counts.get(uid, 0) > 0:
+                return [uid]
+            mutation = recipe.get(uid)
             if mutation is None:
                 raise ValueError(f"no carrier path for {target}")
-            parent = min(mutation.parents, key=lambda uid: (uid not in preferred, depth[uid], uid))
-            if parent in seen:
-                raise ValueError(f"cycle in selected recipes at {parent}")
-            reverse_path.append(parent)
-            seen.add(parent)
-            current = parent
-        return list(reversed(reverse_path))
+            candidates = [route(parent, seen | {uid}) for parent in mutation.parents]
+
+            def key(path):
+                root = path[0]
+                parent = path[-1]
+                return (self.carrier_rank.get(root, len(self.carrier_rank)),
+                        root not in self.carrier_rank,
+                        parent not in preferred, len(path), depth[parent], root, parent)
+
+            return min(candidates, key=key) + [uid]
+
+        return route(target, frozenset())
 
     def _line_paths(self, targets: set[str], required: set[str], depth, recipe):
         paths: list[dict[str, Any]] = []
@@ -180,6 +199,8 @@ class Planner:
             covered.update(path)
         for dependency in sorted(required - covered, key=lambda uid: (-depth[uid], uid)):
             if dependency in covered:
+                continue
+            if self.starting_counts.get(dependency, 0) > 0:
                 continue
             path = self._carrier_path(dependency, depth, recipe)
             paths.append({"role": "drone_source", "target": dependency, "species": path,
