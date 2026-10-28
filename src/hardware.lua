@@ -319,6 +319,24 @@ local function new(environment)
     end
   end
 
+  local function ownedFinalQueen(module,species)
+    local exact=localBee(module,species,'queen')
+    if exact then return exact end
+    local candidates={}
+    for slot=1,call(module.t.getInventorySize,module.chest.side) do
+      local uid,kind=bee(inventory(module.t,module.chest.side,slot))
+      if kind=='queen' then candidates[#candidates+1]={slot=slot,uid=uid} end
+    end
+    if #candidates==1 then
+      output('WARN queen UID unavailable/mismatched in owned module chest; using its only queen for '..species)
+      return candidates[1].slot
+    end
+    if #candidates>1 then
+      local found={}; for _,row in ipairs(candidates) do found[#found+1]=tostring(row.uid or '?')..'@'..row.slot end
+      error('Several queens in owned module chest; cannot choose '..species..': '..table.concat(found,', '))
+    end
+  end
+
   local function storeSlot(module,endpoint,slot,count)
     local value=inventory(module.t,endpoint.side,slot)
     if not alive(value) then return 0 end
@@ -461,7 +479,8 @@ local function new(environment)
   local function deliverProducer(operation,action)
     local assigned=assert(M.production[action.profile] and M.production[action.profile][action.moduleSlot],
       'Missing producer source module')
-    local source,sourceSlot=localBeeAnywhere(action.species,'queen',assigned)
+    local source,sourceSlot=assigned,ownedFinalQueen(assigned,action.species)
+    if not sourceSlot then source,sourceSlot=localBeeAnywhere(action.species,'queen') end
     if sourceSlot then
       local sourceQueen=copy(inventory(source.t,source.chest.side,sourceSlot))
       assert(emptyBuffer(source),'Source ME interface buffer is occupied')
