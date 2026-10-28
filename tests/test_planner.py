@@ -86,6 +86,18 @@ class PlannerUnitTest(unittest.TestCase):
         self.assertEqual({"forest": 1}, plan["startingPrincesses"])
         self.assertEqual([], [line for line in plan["lines"] if line["role"] == "drone_source"])
 
+    def test_equivalent_preferred_carriers_are_balanced(self):
+        catalog = {"species": [species("forest"), species("meadows"), species("rare"), species("common"),
+                               species("a", [comb("a", 1)]), species("b", [comb("b", 1)])],
+                   "mutations": [{"result": "common", "parents": ["forest", "meadows"], "chance": 10},
+                                 {"result": "a", "parents": ["common", "rare"], "chance": 10},
+                                 {"result": "b", "parents": ["common", "rare"], "chance": 10}]}
+        config = {"mode": "best", "startingSpecies": {"forest": 4, "meadows": 4, "rare": 4},
+                  "carrierPriority": ["forest", "meadows"]}
+        plan = Planner(catalog, config).build()
+        self.assertEqual({"forest": 1, "meadows": 1}, plan["startingPrincesses"])
+        self.assertEqual({"forest", "meadows"}, {line["species"][0] for line in plan["lines"]})
+
     def test_line_is_assigned_to_climate_profile(self):
         hot = species("hot", [comb("c", 1)])
         hot["requirements"] = {"temperature": "HOT", "humidity": "ARID"}

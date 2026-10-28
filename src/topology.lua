@@ -122,7 +122,7 @@ end
 
 function M:scan()
   local found=self:discover()
-  self:print('OpenCombkeeper 0.4.1 - read-only discovery')
+  self:print('OpenCombkeeper 0.4.2 - read-only discovery')
   self:print('Transposers: '..#found.transposers)
   for _,module in ipairs(found.modules) do
     self:print('TRANSPOSER '..module.entry.address)

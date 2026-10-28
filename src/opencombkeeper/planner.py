@@ -78,8 +78,9 @@ class Planner:
                     continue
                 candidate_depth = max(depth[parent] for parent in mutation.parents) + 1
                 candidate_carrier = min(carrier[parent] for parent in mutation.parents)
+                candidate_parent_carriers = tuple(sorted(carrier[parent] for parent in mutation.parents))
                 candidate_score = (
-                    candidate_carrier, candidate_depth,
+                    candidate_carrier, candidate_parent_carriers, candidate_depth,
                     len(mutation.conditions),
                     len(self.by_pair[mutation.pair]) > 1,
                     mutation.pair,
@@ -87,10 +88,12 @@ class Planner:
                 )
                 current = recipe.get(mutation.result)
                 if current is None:
-                    current_score = ((10**9, True), 10**9, 10**9, True, ("", ""), "")
+                    current_score = ((10**9, True), ((10**9, True),),
+                                     10**9, 10**9, True, ("", ""), "")
                 else:
                     current_score = (
-                        carrier[mutation.result], depth[mutation.result], len(current.conditions),
+                        carrier[mutation.result], tuple(sorted(carrier[parent] for parent in current.parents)),
+                        depth[mutation.result], len(current.conditions),
                         len(self.by_pair[current.pair]) > 1, current.pair, current.result,
                     )
                 if candidate_score < current_score:
@@ -229,6 +232,26 @@ class Planner:
             return "winter"
         return "plains"
 
+    def _balance_carriers(self, paths, recipe):
+        """Share equivalent first steps between preferred starting princesses."""
+        if len(self.carrier_priority) < 2:
+            return
+        loads: Counter[str] = Counter()
+        for path in paths:
+            route = path["species"]
+            if len(route) == 1:
+                loads[route[0]] += 1
+        for path in paths:
+            route = path["species"]
+            if len(route) < 2:
+                continue
+            mutation = recipe[route[1]]
+            candidates = [uid for uid in self.carrier_priority
+                          if uid in mutation.parents and self.starting_counts.get(uid, 0) > 0]
+            if route[0] in candidates:
+                route[0] = min(candidates, key=lambda uid: (loads[uid], self.carrier_rank[uid]))
+            loads[route[0]] += 1
+
     def build(self) -> dict[str, Any]:
         depth, recipe = self._reachability()
         producers = self._producers(depth)
@@ -237,6 +260,7 @@ class Planner:
         targets = {row["species"] for row in selected.values()}
         required = self._closure(targets, recipe)
         paths = self._line_paths(targets, required, depth, recipe)
+        self._balance_carriers(paths, recipe)
         starting = Counter(path["species"][0] for path in paths)
         shortages = {uid: need - self.starting_counts.get(uid, 0) for uid, need in starting.items()
                      if need > self.starting_counts.get(uid, 0)}

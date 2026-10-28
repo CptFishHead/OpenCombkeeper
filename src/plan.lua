@@ -3,9 +3,9 @@ return {
   startingPrincesses={
     ["extrabees.species.rock"]=3,
     ["extrabees.species.water"]=4,
-    ["forestry.speciesForest"]=98,
+    ["forestry.speciesForest"]=71,
     ["forestry.speciesMarshy"]=1,
-    ["forestry.speciesMeadows"]=1,
+    ["forestry.speciesMeadows"]=28,
     ["forestry.speciesSteadfast"]=1,
     ["forestry.speciesTropical"]=2,
     ["forestry.speciesValiant"]=2,
@@ -86,7 +86,7 @@ return {
       result="forestry.speciesCommon",
       parents={
         "forestry.speciesForest",
-        "extrabees.species.basalt"
+        "forestry.speciesMeadows"
       },
       calendarConditions={
 
@@ -186,7 +186,7 @@ return {
       result="forestry.speciesCultivated",
       parents={
         "forestry.speciesCommon",
-        "extrabees.species.basalt"
+        "forestry.speciesForest"
       },
       calendarConditions={
 
@@ -356,7 +356,7 @@ return {
       result="forestry.speciesFiendish",
       parents={
         "forestry.speciesSinister",
-        "extrabees.species.basalt"
+        "forestry.speciesCultivated"
       },
       calendarConditions={
 
@@ -1412,7 +1412,6 @@ return {
       moduleSlot=1,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
         "forestry.speciesSinister",
         "forestry.speciesFrugal",
@@ -1428,7 +1427,6 @@ return {
       moduleSlot=2,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
         "forestry.speciesSinister",
         "forestry.speciesFrugal",
@@ -1444,7 +1442,6 @@ return {
       moduleSlot=3,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
         "forestry.speciesMajestic",
         "extrabees.species.gold",
@@ -1459,7 +1456,6 @@ return {
       moduleSlot=4,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
         "forestry.speciesSinister",
         "forestry.speciesFrugal",
@@ -1474,11 +1470,9 @@ return {
       moduleSlot=1,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
-        "forestry.speciesSinister",
-        "extrabees.species.malicious",
-        "extrabees.species.corrosive",
+        "forestry.speciesFiendish",
+        "extrabees.species.caustic",
         "extrabees.species.acidic"
       }
     },
@@ -1502,7 +1496,7 @@ return {
       moduleProfile="plains",
       moduleSlot=2,
       species={
-        "forestry.speciesForest",
+        "forestry.speciesMeadows",
         "forestry.speciesCommon",
         "forestry.speciesDiligent",
         "extrabees.species.ocean",
@@ -1517,7 +1511,7 @@ return {
       moduleProfile="plains",
       moduleSlot=3,
       species={
-        "forestry.speciesForest",
+        "forestry.speciesMeadows",
         "forestry.speciesCommon",
         "forestry.speciesNoble",
         "forestry.speciesMiry",
@@ -1533,7 +1527,6 @@ return {
       moduleSlot=4,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
         "forestry.speciesMajestic",
         "extrabees.species.gold",
@@ -1548,7 +1541,6 @@ return {
       moduleSlot=1,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
         "forestry.speciesSinister",
         "forestry.speciesFrugal",
@@ -1567,7 +1559,6 @@ return {
       moduleSlot=2,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
         "forestry.speciesSinister",
         "forestry.speciesFrugal",
@@ -1596,7 +1587,6 @@ return {
       moduleSlot=3,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
         "extrabees.species.diamond"
       }
@@ -1620,7 +1610,6 @@ return {
       moduleSlot=1,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
         "forestry.speciesMajestic",
         "extrabees.species.gold"
@@ -1672,9 +1661,9 @@ return {
       moduleSlot=3,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
-        "forestry.speciesDiligent",
-        "forestry.speciesIndustrious",
+        "forestry.speciesCultivated",
+        "forestry.speciesUnweary",
+        "extrabees.species.granite",
         "extrabees.species.mineral",
         "extrabees.species.lapis",
         "extrabees.species.ruby"
@@ -1688,9 +1677,9 @@ return {
       moduleSlot=4,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
-        "forestry.speciesDiligent",
-        "forestry.speciesIndustrious",
+        "forestry.speciesCultivated",
+        "forestry.speciesUnweary",
+        "extrabees.species.granite",
         "extrabees.species.mineral",
         "extrabees.species.lapis",
         "extrabees.species.sapphire"
@@ -1704,7 +1693,6 @@ return {
       moduleSlot=1,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
         "forestry.speciesMajestic",
         "extrabees.species.silver"
@@ -1717,7 +1705,7 @@ return {
       moduleProfile="plains",
       moduleSlot=2,
       species={
-        "forestry.speciesForest",
+        "forestry.speciesMeadows",
         "forestry.speciesCommon",
         "forestry.speciesDiligent",
         "extrabees.species.sodalite"
@@ -1731,7 +1719,6 @@ return {
       moduleSlot=3,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
         "forestry.speciesSinister",
         "extrabees.species.sphalerite"
@@ -1745,7 +1732,6 @@ return {
       moduleSlot=1,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
         "forestry.speciesSinister",
         "forestry.speciesFrugal",
@@ -1762,7 +1748,7 @@ return {
       moduleProfile="plains",
       moduleSlot=4,
       species={
-        "forestry.speciesForest",
+        "forestry.speciesMeadows",
         "forestry.speciesCommon",
         "forestry.speciesDiligent",
         "extrabees.species.bauxite"
@@ -1776,7 +1762,6 @@ return {
       moduleSlot=1,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
         "forestry.speciesSinister",
         "extrabees.species.cinnabar"
@@ -1790,9 +1775,9 @@ return {
       moduleSlot=2,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
-        "forestry.speciesDiligent",
-        "forestry.speciesIndustrious",
+        "forestry.speciesCultivated",
+        "forestry.speciesUnweary",
+        "extrabees.species.granite",
         "extrabees.species.mineral",
         "extrabees.species.copper"
       }
@@ -1804,7 +1789,7 @@ return {
       moduleProfile="desert",
       moduleSlot=1,
       species={
-        "forestry.speciesForest",
+        "forestry.speciesMeadows",
         "forestry.speciesCommon",
         "extrabees.species.barren",
         "extrabees.species.decomposing"
@@ -1840,9 +1825,9 @@ return {
       moduleSlot=4,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
-        "forestry.speciesDiligent",
-        "forestry.speciesIndustrious",
+        "forestry.speciesCultivated",
+        "forestry.speciesUnweary",
+        "extrabees.species.granite",
         "extrabees.species.mineral",
         "extrabees.species.lapis"
       }
@@ -1855,9 +1840,9 @@ return {
       moduleSlot=1,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
-        "forestry.speciesDiligent",
-        "forestry.speciesIndustrious",
+        "forestry.speciesCultivated",
+        "forestry.speciesUnweary",
+        "extrabees.species.granite",
         "extrabees.species.mineral",
         "extrabees.species.lead"
       }
@@ -1881,9 +1866,9 @@ return {
       moduleSlot=3,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
-        "forestry.speciesDiligent",
-        "forestry.speciesIndustrious",
+        "forestry.speciesCultivated",
+        "forestry.speciesUnweary",
+        "extrabees.species.granite",
         "extrabees.species.mineral",
         "extrabees.species.tin"
       }
@@ -1896,7 +1881,6 @@ return {
       moduleSlot=4,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
         "extrabees.species.titanium"
       }
@@ -1908,7 +1892,7 @@ return {
       moduleProfile="plains",
       moduleSlot=1,
       species={
-        "forestry.speciesForest",
+        "forestry.speciesMeadows",
         "forestry.speciesCommon",
         "extrabees.species.tungstate"
       }
@@ -1921,7 +1905,6 @@ return {
       moduleSlot=1,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
         "forestry.speciesSinister",
         "forestry.speciesFrugal",
@@ -1938,9 +1921,9 @@ return {
       moduleSlot=2,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
-        "forestry.speciesDiligent",
-        "forestry.speciesIndustrious",
+        "forestry.speciesCultivated",
+        "forestry.speciesUnweary",
+        "extrabees.species.granite",
         "extrabees.species.mineral",
         "extrabees.species.zinc"
       }
@@ -1953,7 +1936,6 @@ return {
       moduleSlot=3,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
         "forestry.speciesSinister",
         "forestry.speciesDemonic",
@@ -1967,7 +1949,7 @@ return {
       moduleProfile="plains",
       moduleSlot=4,
       species={
-        "forestry.speciesForest",
+        "forestry.speciesMeadows",
         "forestry.speciesCommon",
         "forestry.speciesDiligent",
         "gendustry.bee.white",
@@ -1982,7 +1964,6 @@ return {
       moduleSlot=1,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
         "forestry.speciesSinister",
         "extrabees.species.shadow",
@@ -1997,9 +1978,8 @@ return {
       moduleSlot=1,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
-        "forestry.speciesDiligent",
-        "forestry.speciesRural",
+        "forestry.speciesCultivated",
+        "forestry.speciesUnweary",
         "forestry.speciesFarmerly",
         "extrabees.species.alcohol"
       }
@@ -2012,9 +1992,8 @@ return {
       moduleSlot=2,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
-        "forestry.speciesDiligent",
-        "forestry.speciesRural",
+        "forestry.speciesCultivated",
+        "forestry.speciesUnweary",
         "forestry.speciesFarmerly",
         "extrabees.species.coffee"
       }
@@ -2027,9 +2006,8 @@ return {
       moduleSlot=3,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
-        "forestry.speciesDiligent",
-        "forestry.speciesRural",
+        "forestry.speciesCultivated",
+        "forestry.speciesUnweary",
         "forestry.speciesFarmerly",
         "extrabees.species.farm"
       }
@@ -2054,7 +2032,7 @@ return {
       moduleProfile="plains",
       moduleSlot=1,
       species={
-        "forestry.speciesForest",
+        "forestry.speciesMeadows",
         "forestry.speciesCommon",
         "forestry.speciesNoble",
         "forestry.speciesMiry",
@@ -2069,7 +2047,6 @@ return {
       moduleSlot=1,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
         "extrabees.species.excited",
         "extrabees.species.glowstone"
@@ -2083,9 +2060,8 @@ return {
       moduleSlot=2,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
-        "forestry.speciesDiligent",
-        "forestry.speciesRural",
+        "forestry.speciesCultivated",
+        "forestry.speciesUnweary",
         "forestry.speciesFarmerly",
         "extrabees.species.milk"
       }
@@ -2098,7 +2074,6 @@ return {
       moduleSlot=1,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
         "forestry.speciesSinister",
         "extrabees.species.malicious",
@@ -2113,10 +2088,9 @@ return {
       moduleSlot=1,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
-        "forestry.speciesSinister",
-        "forestry.speciesDemonic",
+        "forestry.speciesFiendish",
+        "extrabees.species.tempered",
         "extrabees.species.volcanic"
       }
     },
@@ -2128,9 +2102,9 @@ return {
       moduleSlot=3,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
-        "forestry.speciesDiligent",
-        "forestry.speciesIndustrious",
+        "forestry.speciesCultivated",
+        "forestry.speciesUnweary",
+        "forestry.speciesFarmerly",
         "forestry.speciesAgrarian"
       }
     },
@@ -2142,7 +2116,6 @@ return {
       moduleSlot=4,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
         "forestry.speciesSinister",
         "forestry.speciesFrugal",
@@ -2169,7 +2142,7 @@ return {
       moduleProfile="plains",
       moduleSlot=2,
       species={
-        "forestry.speciesForest",
+        "forestry.speciesMeadows",
         "forestry.speciesCommon",
         "forestry.speciesDiligent",
         "gendustry.bee.white",
@@ -2220,7 +2193,6 @@ return {
       moduleSlot=1,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
         "extrabees.species.excited",
         "extrabees.species.ecstatic"
@@ -2233,7 +2205,7 @@ return {
       moduleProfile="winter",
       moduleSlot=1,
       species={
-        "forestry.speciesForest",
+        "forestry.speciesMeadows",
         "forestry.speciesCommon",
         "forestry.speciesDiligent",
         "extrabees.species.artic",
@@ -2248,7 +2220,6 @@ return {
       moduleSlot=1,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
         "forestry.speciesSinister",
         "forestry.speciesFrugal",
@@ -2262,7 +2233,7 @@ return {
       moduleProfile="plains",
       moduleSlot=2,
       species={
-        "forestry.speciesForest",
+        "forestry.speciesMeadows",
         "forestry.speciesCommon",
         "forestry.speciesNoble",
         "forestry.speciesMiry",
@@ -2276,7 +2247,7 @@ return {
       moduleProfile="plains",
       moduleSlot=3,
       species={
-        "forestry.speciesForest",
+        "forestry.speciesMeadows",
         "forestry.speciesCommon",
         "forestry.speciesDiligent",
         "gendustry.bee.black"
@@ -2313,7 +2284,7 @@ return {
       moduleProfile="plains",
       moduleSlot=2,
       species={
-        "forestry.speciesForest",
+        "forestry.speciesMeadows",
         "forestry.speciesCommon",
         "gendustry.bee.red",
         "gendustry.bee.orange"
@@ -2326,7 +2297,7 @@ return {
       moduleProfile="plains",
       moduleSlot=3,
       species={
-        "forestry.speciesForest",
+        "forestry.speciesMeadows",
         "forestry.speciesCommon",
         "gendustry.bee.red",
         "gendustry.bee.pink"
@@ -2351,7 +2322,7 @@ return {
       moduleProfile="plains",
       moduleSlot=1,
       species={
-        "forestry.speciesForest",
+        "forestry.speciesMeadows",
         "forestry.speciesCommon",
         "forestry.speciesDiligent",
         "extrabees.species.ancient"
@@ -2364,7 +2335,7 @@ return {
       moduleProfile="plains",
       moduleSlot=2,
       species={
-        "forestry.speciesForest",
+        "forestry.speciesMeadows",
         "forestry.speciesCommon",
         "forestry.speciesDiligent",
         "extrabees.species.river"
@@ -2378,9 +2349,7 @@ return {
       moduleSlot=1,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
-        "forestry.speciesSinister",
         "forestry.speciesFiendish"
       }
     },
@@ -2392,7 +2361,6 @@ return {
       moduleSlot=1,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
         "forestry.speciesSinister",
         "forestry.speciesFrugal"
@@ -2406,7 +2374,6 @@ return {
       moduleSlot=3,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
         "forestry.speciesMajestic"
       }
@@ -2419,7 +2386,6 @@ return {
       moduleSlot=4,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
         "forestry.speciesUnweary"
       }
@@ -2442,7 +2408,7 @@ return {
       moduleProfile="plains",
       moduleSlot=2,
       species={
-        "forestry.speciesForest",
+        "forestry.speciesMeadows",
         "forestry.speciesCommon",
         "forestry.speciesDiligent",
         "gendustry.bee.brown"
@@ -2455,7 +2421,7 @@ return {
       moduleProfile="plains",
       moduleSlot=3,
       species={
-        "forestry.speciesForest",
+        "forestry.speciesMeadows",
         "forestry.speciesCommon",
         "gendustry.bee.red"
       }
@@ -2467,7 +2433,7 @@ return {
       moduleProfile="plains",
       moduleSlot=4,
       species={
-        "forestry.speciesForest",
+        "forestry.speciesMeadows",
         "forestry.speciesCommon",
         "forestry.speciesDiligent",
         "gendustry.bee.white"
@@ -2480,7 +2446,7 @@ return {
       moduleProfile="plains",
       moduleSlot=1,
       species={
-        "forestry.speciesForest",
+        "forestry.speciesMeadows",
         "forestry.speciesCommon",
         "forestry.speciesDiligent",
         "gendustry.bee.yellow"
@@ -2690,7 +2656,7 @@ return {
       moduleProfile="plains",
       moduleSlot=3,
       species={
-        "forestry.speciesForest",
+        "forestry.speciesMeadows",
         "forestry.speciesLeporine"
       }
     },
@@ -2732,9 +2698,9 @@ return {
       moduleSlot=2,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
-        "forestry.speciesDiligent",
-        "forestry.speciesIndustrious",
+        "forestry.speciesCultivated",
+        "forestry.speciesUnweary",
+        "extrabees.species.granite",
         "extrabees.species.mineral",
         "extrabees.species.copper",
         "extrabees.species.nuclear"
@@ -2743,26 +2709,11 @@ return {
     {
       id=101,
       role="drone_source",
-      target="extrabees.species.caustic",
-      moduleProfile="jungle",
-      moduleSlot=1,
-      species={
-        "forestry.speciesForest",
-        "forestry.speciesCommon",
-        "forestry.speciesCultivated",
-        "forestry.speciesSinister",
-        "forestry.speciesFiendish",
-        "extrabees.species.caustic"
-      }
-    },
-    {
-      id=102,
-      role="drone_source",
       target="extrabees.species.distilled",
       moduleProfile="plains",
       moduleSlot=3,
       species={
-        "forestry.speciesForest",
+        "forestry.speciesMeadows",
         "forestry.speciesCommon",
         "forestry.speciesDiligent",
         "forestry.speciesIndustrious",
@@ -2770,18 +2721,32 @@ return {
       }
     },
     {
-      id=103,
+      id=102,
       role="drone_source",
       target="extrabees.species.unstable",
       moduleProfile="plains",
       moduleSlot=4,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
-        "forestry.speciesDiligent",
-        "forestry.speciesIndustrious",
+        "forestry.speciesCultivated",
+        "forestry.speciesUnweary",
+        "extrabees.species.granite",
         "extrabees.species.mineral",
         "extrabees.species.unstable"
+      }
+    },
+    {
+      id=103,
+      role="drone_source",
+      target="extrabees.species.corrosive",
+      moduleProfile="jungle",
+      moduleSlot=1,
+      species={
+        "forestry.speciesForest",
+        "forestry.speciesCultivated",
+        "forestry.speciesSinister",
+        "extrabees.species.malicious",
+        "extrabees.species.corrosive"
       }
     },
     {
@@ -2792,7 +2757,6 @@ return {
       moduleSlot=1,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
         "forestry.speciesSinister",
         "forestry.speciesFrugal",
@@ -2808,7 +2772,7 @@ return {
       moduleProfile="plains",
       moduleSlot=1,
       species={
-        "forestry.speciesForest",
+        "forestry.speciesMeadows",
         "forestry.speciesCommon",
         "forestry.speciesDiligent",
         "extrabees.species.ancient",
@@ -2822,7 +2786,7 @@ return {
       moduleProfile="plains",
       moduleSlot=2,
       species={
-        "forestry.speciesForest",
+        "forestry.speciesMeadows",
         "forestry.speciesCommon",
         "forestry.speciesDiligent",
         "extrabees.species.ancient",
@@ -2837,7 +2801,6 @@ return {
       moduleSlot=3,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
         "forestry.speciesSinister",
         "forestry.speciesDemonic",
@@ -2852,7 +2815,6 @@ return {
       moduleSlot=1,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
         "forestry.speciesSinister",
         "extrabees.species.shadow",
@@ -2862,26 +2824,11 @@ return {
     {
       id=109,
       role="drone_source",
-      target="extrabees.species.granite",
+      target="extrabees.species.infectious",
       moduleProfile="plains",
       moduleSlot=4,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
-        "forestry.speciesDiligent",
-        "extrabees.species.stone",
-        "extrabees.species.granite"
-      }
-    },
-    {
-      id=110,
-      role="drone_source",
-      target="extrabees.species.infectious",
-      moduleProfile="plains",
-      moduleSlot=1,
-      species={
-        "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
         "forestry.speciesSinister",
         "extrabees.species.malicious",
@@ -2889,78 +2836,81 @@ return {
       }
     },
     {
-      id=111,
+      id=110,
       role="drone_source",
-      target="extrabees.species.tempered",
-      moduleProfile="hell",
+      target="extrabees.species.energetic",
+      moduleProfile="plains",
       moduleSlot=1,
       species={
         "forestry.speciesForest",
-        "forestry.speciesCommon",
         "forestry.speciesCultivated",
-        "forestry.speciesSinister",
-        "forestry.speciesFiendish",
-        "extrabees.species.tempered"
+        "extrabees.species.excited",
+        "extrabees.species.energetic"
+      }
+    },
+    {
+      id=111,
+      role="drone_source",
+      target="extrabees.species.stone",
+      moduleProfile="plains",
+      moduleSlot=2,
+      species={
+        "forestry.speciesMeadows",
+        "forestry.speciesCommon",
+        "forestry.speciesDiligent",
+        "extrabees.species.stone"
       }
     },
     {
       id=112,
       role="drone_source",
-      target="extrabees.species.energetic",
+      target="extrabees.species.sweet",
       moduleProfile="plains",
-      moduleSlot=2,
+      moduleSlot=3,
       species={
-        "forestry.speciesForest",
+        "forestry.speciesMeadows",
         "forestry.speciesCommon",
         "forestry.speciesDiligent",
-        "extrabees.species.energetic"
+        "extrabees.species.sweet"
       }
     },
     {
       id=113,
       role="drone_source",
-      target="extrabees.species.sweet",
+      target="forestry.speciesRural",
       moduleProfile="plains",
-      moduleSlot=3,
+      moduleSlot=4,
       species={
-        "forestry.speciesForest",
+        "forestry.speciesMeadows",
         "forestry.speciesCommon",
         "forestry.speciesDiligent",
-        "extrabees.species.sweet"
+        "forestry.speciesRural"
       }
     }
   },
   manualTasks={
     {
-      id="mutation:1:4",
+      id="mutation:1:3",
       type="advanced_mutation",
       line=1,
-      step=4,
+      step=3,
       result="forestry.speciesFrugal",
       status="waiting_player"
     },
     {
-      id="mutation:2:4",
+      id="mutation:2:3",
       type="advanced_mutation",
       line=2,
-      step=4,
+      step=3,
       result="forestry.speciesFrugal",
       status="waiting_player"
     },
     {
-      id="mutation:4:4",
+      id="mutation:4:3",
       type="advanced_mutation",
       line=4,
-      step=4,
+      step=3,
       result="forestry.speciesFrugal",
-      status="waiting_player"
-    },
-    {
-      id="mutation:5:4",
-      type="advanced_mutation",
-      line=5,
-      step=4,
-      result="extrabees.species.malicious",
       status="waiting_player"
     },
     {
@@ -2969,6 +2919,14 @@ return {
       line=6,
       step=1,
       result="extrabees.species.growing",
+      status="waiting_player"
+    },
+    {
+      id="mutation:7:1",
+      type="advanced_mutation",
+      line=7,
+      step=1,
+      result="forestry.speciesCommon",
       status="waiting_player"
     },
     {
@@ -2988,6 +2946,14 @@ return {
       status="waiting_player"
     },
     {
+      id="mutation:8:1",
+      type="advanced_mutation",
+      line=8,
+      step=1,
+      result="forestry.speciesCommon",
+      status="waiting_player"
+    },
+    {
       id="mutation:8:2",
       type="advanced_mutation",
       line=8,
@@ -2996,18 +2962,18 @@ return {
       status="waiting_player"
     },
     {
-      id="mutation:10:4",
+      id="mutation:10:3",
       type="advanced_mutation",
       line=10,
-      step=4,
+      step=3,
       result="forestry.speciesFrugal",
       status="waiting_player"
     },
     {
-      id="mutation:11:4",
+      id="mutation:11:3",
       type="advanced_mutation",
       line=11,
-      step=4,
+      step=3,
       result="forestry.speciesFrugal",
       status="waiting_player"
     },
@@ -3020,19 +2986,11 @@ return {
       status="waiting_player"
     },
     {
-      id="mutation:19:2",
+      id="mutation:22:1",
       type="advanced_mutation",
-      line=19,
-      step=2,
-      result="forestry.speciesDiligent",
-      status="waiting_player"
-    },
-    {
-      id="mutation:20:2",
-      type="advanced_mutation",
-      line=20,
-      step=2,
-      result="forestry.speciesDiligent",
+      line=22,
+      step=1,
+      result="forestry.speciesCommon",
       status="waiting_player"
     },
     {
@@ -3044,25 +3002,25 @@ return {
       status="waiting_player"
     },
     {
-      id="mutation:24:4",
+      id="mutation:24:3",
       type="advanced_mutation",
       line=24,
-      step=4,
+      step=3,
       result="forestry.speciesFrugal",
+      status="waiting_player"
+    },
+    {
+      id="mutation:25:1",
+      type="advanced_mutation",
+      line=25,
+      step=1,
+      result="forestry.speciesCommon",
       status="waiting_player"
     },
     {
       id="mutation:25:2",
       type="advanced_mutation",
       line=25,
-      step=2,
-      result="forestry.speciesDiligent",
-      status="waiting_player"
-    },
-    {
-      id="mutation:27:2",
-      type="advanced_mutation",
-      line=27,
       step=2,
       result="forestry.speciesDiligent",
       status="waiting_player"
@@ -3076,27 +3034,19 @@ return {
       status="waiting_player"
     },
     {
+      id="mutation:28:1",
+      type="advanced_mutation",
+      line=28,
+      step=1,
+      result="forestry.speciesCommon",
+      status="waiting_player"
+    },
+    {
       id="mutation:30:1",
       type="advanced_mutation",
       line=30,
       step=1,
       result="extrabees.species.iron",
-      status="waiting_player"
-    },
-    {
-      id="mutation:31:2",
-      type="advanced_mutation",
-      line=31,
-      step=2,
-      result="forestry.speciesDiligent",
-      status="waiting_player"
-    },
-    {
-      id="mutation:32:2",
-      type="advanced_mutation",
-      line=32,
-      step=2,
-      result="forestry.speciesDiligent",
       status="waiting_player"
     },
     {
@@ -3116,14 +3066,6 @@ return {
       status="waiting_player"
     },
     {
-      id="mutation:34:2",
-      type="advanced_mutation",
-      line=34,
-      step=2,
-      result="forestry.speciesDiligent",
-      status="waiting_player"
-    },
-    {
       id="mutation:34:5",
       type="advanced_mutation",
       line=34,
@@ -3132,19 +3074,19 @@ return {
       status="waiting_player"
     },
     {
-      id="mutation:37:4",
+      id="mutation:36:1",
       type="advanced_mutation",
-      line=37,
-      step=4,
-      result="forestry.speciesFrugal",
+      line=36,
+      step=1,
+      result="forestry.speciesCommon",
       status="waiting_player"
     },
     {
-      id="mutation:38:2",
+      id="mutation:37:3",
       type="advanced_mutation",
-      line=38,
-      step=2,
-      result="forestry.speciesDiligent",
+      line=37,
+      step=3,
+      result="forestry.speciesFrugal",
       status="waiting_player"
     },
     {
@@ -3153,6 +3095,14 @@ return {
       line=38,
       step=5,
       result="extrabees.species.zinc",
+      status="waiting_player"
+    },
+    {
+      id="mutation:40:1",
+      type="advanced_mutation",
+      line=40,
+      step=1,
+      result="forestry.speciesCommon",
       status="waiting_player"
     },
     {
@@ -3172,42 +3122,18 @@ return {
       status="waiting_player"
     },
     {
-      id="mutation:42:2",
+      id="mutation:42:4",
       type="advanced_mutation",
       line=42,
-      step=2,
-      result="forestry.speciesDiligent",
-      status="waiting_player"
-    },
-    {
-      id="mutation:42:5",
-      type="advanced_mutation",
-      line=42,
-      step=5,
+      step=4,
       result="extrabees.species.alcohol",
       status="waiting_player"
     },
     {
-      id="mutation:43:2",
-      type="advanced_mutation",
-      line=43,
-      step=2,
-      result="forestry.speciesDiligent",
-      status="waiting_player"
-    },
-    {
-      id="mutation:44:2",
+      id="mutation:44:4",
       type="advanced_mutation",
       line=44,
-      step=2,
-      result="forestry.speciesDiligent",
-      status="waiting_player"
-    },
-    {
-      id="mutation:44:5",
-      type="advanced_mutation",
-      line=44,
-      step=5,
+      step=4,
       result="extrabees.species.farm",
       status="waiting_player"
     },
@@ -3220,6 +3146,14 @@ return {
       status="waiting_player"
     },
     {
+      id="mutation:46:1",
+      type="advanced_mutation",
+      line=46,
+      step=1,
+      result="forestry.speciesCommon",
+      status="waiting_player"
+    },
+    {
       id="mutation:46:2",
       type="advanced_mutation",
       line=46,
@@ -3228,34 +3162,18 @@ return {
       status="waiting_player"
     },
     {
-      id="mutation:48:2",
-      type="advanced_mutation",
-      line=48,
-      step=2,
-      result="forestry.speciesDiligent",
-      status="waiting_player"
-    },
-    {
-      id="mutation:49:4",
+      id="mutation:49:3",
       type="advanced_mutation",
       line=49,
-      step=4,
+      step=3,
       result="extrabees.species.malicious",
       status="waiting_player"
     },
     {
-      id="mutation:51:2",
-      type="advanced_mutation",
-      line=51,
-      step=2,
-      result="forestry.speciesDiligent",
-      status="waiting_player"
-    },
-    {
-      id="mutation:52:4",
+      id="mutation:52:3",
       type="advanced_mutation",
       line=52,
-      step=4,
+      step=3,
       result="forestry.speciesFrugal",
       status="waiting_player"
     },
@@ -3265,6 +3183,14 @@ return {
       line=53,
       step=1,
       result="gendustry.bee.blue",
+      status="waiting_player"
+    },
+    {
+      id="mutation:54:1",
+      type="advanced_mutation",
+      line=54,
+      step=1,
+      result="forestry.speciesCommon",
       status="waiting_player"
     },
     {
@@ -3300,6 +3226,14 @@ return {
       status="waiting_player"
     },
     {
+      id="mutation:59:1",
+      type="advanced_mutation",
+      line=59,
+      step=1,
+      result="forestry.speciesCommon",
+      status="waiting_player"
+    },
+    {
       id="mutation:59:2",
       type="advanced_mutation",
       line=59,
@@ -3316,11 +3250,19 @@ return {
       status="waiting_player"
     },
     {
-      id="mutation:60:4",
+      id="mutation:60:3",
       type="advanced_mutation",
       line=60,
-      step=4,
+      step=3,
       result="forestry.speciesFrugal",
+      status="waiting_player"
+    },
+    {
+      id="mutation:61:1",
+      type="advanced_mutation",
+      line=61,
+      step=1,
+      result="forestry.speciesCommon",
       status="waiting_player"
     },
     {
@@ -3329,6 +3271,14 @@ return {
       line=61,
       step=2,
       result="forestry.speciesNoble",
+      status="waiting_player"
+    },
+    {
+      id="mutation:62:1",
+      type="advanced_mutation",
+      line=62,
+      step=1,
+      result="forestry.speciesCommon",
       status="waiting_player"
     },
     {
@@ -3356,6 +3306,22 @@ return {
       status="waiting_player"
     },
     {
+      id="mutation:65:1",
+      type="advanced_mutation",
+      line=65,
+      step=1,
+      result="forestry.speciesCommon",
+      status="waiting_player"
+    },
+    {
+      id="mutation:66:1",
+      type="advanced_mutation",
+      line=66,
+      step=1,
+      result="forestry.speciesCommon",
+      status="waiting_player"
+    },
+    {
       id="mutation:67:1",
       type="advanced_mutation",
       line=67,
@@ -3364,11 +3330,27 @@ return {
       status="waiting_player"
     },
     {
+      id="mutation:68:1",
+      type="advanced_mutation",
+      line=68,
+      step=1,
+      result="forestry.speciesCommon",
+      status="waiting_player"
+    },
+    {
       id="mutation:68:2",
       type="advanced_mutation",
       line=68,
       step=2,
       result="forestry.speciesDiligent",
+      status="waiting_player"
+    },
+    {
+      id="mutation:69:1",
+      type="advanced_mutation",
+      line=69,
+      step=1,
+      result="forestry.speciesCommon",
       status="waiting_player"
     },
     {
@@ -3388,10 +3370,10 @@ return {
       status="waiting_player"
     },
     {
-      id="mutation:71:4",
+      id="mutation:71:3",
       type="advanced_mutation",
       line=71,
-      step=4,
+      step=3,
       result="forestry.speciesFrugal",
       status="waiting_player"
     },
@@ -3404,11 +3386,35 @@ return {
       status="waiting_player"
     },
     {
+      id="mutation:75:1",
+      type="advanced_mutation",
+      line=75,
+      step=1,
+      result="forestry.speciesCommon",
+      status="waiting_player"
+    },
+    {
       id="mutation:75:2",
       type="advanced_mutation",
       line=75,
       step=2,
       result="forestry.speciesDiligent",
+      status="waiting_player"
+    },
+    {
+      id="mutation:76:1",
+      type="advanced_mutation",
+      line=76,
+      step=1,
+      result="forestry.speciesCommon",
+      status="waiting_player"
+    },
+    {
+      id="mutation:77:1",
+      type="advanced_mutation",
+      line=77,
+      step=1,
+      result="forestry.speciesCommon",
       status="waiting_player"
     },
     {
@@ -3428,6 +3434,14 @@ return {
       status="waiting_player"
     },
     {
+      id="mutation:78:1",
+      type="advanced_mutation",
+      line=78,
+      step=1,
+      result="forestry.speciesCommon",
+      status="waiting_player"
+    },
+    {
       id="mutation:78:2",
       type="advanced_mutation",
       line=78,
@@ -3444,14 +3458,6 @@ return {
       status="waiting_player"
     },
     {
-      id="mutation:100:2",
-      type="advanced_mutation",
-      line=100,
-      step=2,
-      result="forestry.speciesDiligent",
-      status="waiting_player"
-    },
-    {
       id="mutation:100:5",
       type="advanced_mutation",
       line=100,
@@ -3460,27 +3466,43 @@ return {
       status="waiting_player"
     },
     {
-      id="mutation:102:2",
+      id="mutation:101:1",
       type="advanced_mutation",
-      line=102,
+      line=101,
+      step=1,
+      result="forestry.speciesCommon",
+      status="waiting_player"
+    },
+    {
+      id="mutation:101:2",
+      type="advanced_mutation",
+      line=101,
       step=2,
       result="forestry.speciesDiligent",
       status="waiting_player"
     },
     {
-      id="mutation:103:2",
+      id="mutation:103:3",
       type="advanced_mutation",
       line=103,
-      step=2,
-      result="forestry.speciesDiligent",
+      step=3,
+      result="extrabees.species.malicious",
       status="waiting_player"
     },
     {
-      id="mutation:104:4",
+      id="mutation:104:3",
       type="advanced_mutation",
       line=104,
-      step=4,
+      step=3,
       result="forestry.speciesFrugal",
+      status="waiting_player"
+    },
+    {
+      id="mutation:105:1",
+      type="advanced_mutation",
+      line=105,
+      step=1,
+      result="forestry.speciesCommon",
       status="waiting_player"
     },
     {
@@ -3492,6 +3514,14 @@ return {
       status="waiting_player"
     },
     {
+      id="mutation:106:1",
+      type="advanced_mutation",
+      line=106,
+      step=1,
+      result="forestry.speciesCommon",
+      status="waiting_player"
+    },
+    {
       id="mutation:106:2",
       type="advanced_mutation",
       line=106,
@@ -3500,19 +3530,35 @@ return {
       status="waiting_player"
     },
     {
-      id="mutation:109:2",
+      id="mutation:109:3",
       type="advanced_mutation",
       line=109,
+      step=3,
+      result="extrabees.species.malicious",
+      status="waiting_player"
+    },
+    {
+      id="mutation:111:1",
+      type="advanced_mutation",
+      line=111,
+      step=1,
+      result="forestry.speciesCommon",
+      status="waiting_player"
+    },
+    {
+      id="mutation:111:2",
+      type="advanced_mutation",
+      line=111,
       step=2,
       result="forestry.speciesDiligent",
       status="waiting_player"
     },
     {
-      id="mutation:110:4",
+      id="mutation:112:1",
       type="advanced_mutation",
-      line=110,
-      step=4,
-      result="extrabees.species.malicious",
+      line=112,
+      step=1,
+      result="forestry.speciesCommon",
       status="waiting_player"
     },
     {
@@ -3521,6 +3567,14 @@ return {
       line=112,
       step=2,
       result="forestry.speciesDiligent",
+      status="waiting_player"
+    },
+    {
+      id="mutation:113:1",
+      type="advanced_mutation",
+      line=113,
+      step=1,
+      result="forestry.speciesCommon",
       status="waiting_player"
     },
     {
@@ -3654,7 +3708,7 @@ return {
       id="drones:forestry.speciesFiendish",
       type="provide_drones",
       species="forestry.speciesFiendish",
-      count=3,
+      count=2,
       status="waiting_player"
     },
     {
@@ -3682,7 +3736,7 @@ return {
       id="drones:forestry.speciesUnweary",
       type="provide_drones",
       species="forestry.speciesUnweary",
-      count=17,
+      count=2,
       status="waiting_player"
     },
     {
