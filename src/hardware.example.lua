@@ -2,6 +2,12 @@
 -- Copy to /home/.opencombkeeper/hardware.lua only after binding real devices.
 local M={}
 
+function M.configure(topology)
+  -- Called after the saved topology passes read-only startup validation.
+  -- Keep the topology reference and resolve role endpoints from topology.roles.
+  M.topology=assert(topology)
+end
+
 function M.load()
   -- Return the previously persisted executor state, or nil for a new run.
   return nil
