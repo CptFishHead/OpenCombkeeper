@@ -46,6 +46,39 @@ class ExecutorTest(unittest.TestCase):
         self.assertIsNone(engine.nextAction(engine))
         self.assertEqual("done", engine.summary(engine)["status"])
 
+    def test_intermediate_queen_is_incubated_before_next_mutation(self):
+        plan = table(self.lua, {"schema": 1,
+            "mutations": [
+                {"result": "middle", "parents": ["root", "drone-a"]},
+                {"result": "final", "parents": ["middle", "drone-b"]}],
+            "lines": [{"id": 1, "role": "producer", "target": "final",
+                       "species": ["root", "middle", "final"]}], "manualTasks": []})
+        engine = self.module.new(plan, table(self.lua, {}), None)
+        first = engine.nextAction(engine)
+        self.assertEqual("drone-a", first["drone"])
+        engine.complete(engine, first, table(self.lua, {"kind": "queen", "species": "middle"}))
+        incubation = engine.nextAction(engine)
+        self.assertEqual("incubate", incubation["type"])
+        self.assertEqual("middle", incubation["species"])
+        engine.complete(engine, incubation, table(self.lua, {"accepted": True}))
+        second = engine.nextAction(engine)
+        self.assertEqual("mutation", second["type"])
+        self.assertEqual("middle", second["carrier"])
+        self.assertEqual("drone-b", second["drone"])
+
+    def test_final_drone_source_is_incubated(self):
+        plan = table(self.lua, {"schema": 1,
+            "mutations": [{"result": "source", "parents": ["root", "root"]}],
+            "lines": [{"id": 1, "role": "drone_source", "target": "source",
+                       "species": ["root", "source"]}], "manualTasks": []})
+        engine = self.module.new(plan, table(self.lua, {}), None)
+        mutation = engine.nextAction(engine)
+        engine.complete(engine, mutation, table(self.lua, {"kind": "queen", "species": "source"}))
+        incubation = engine.nextAction(engine)
+        self.assertEqual("incubate", incubation["type"])
+        engine.complete(engine, incubation, table(self.lua, {"accepted": True}))
+        self.assertEqual("store_drone_source", engine.nextAction(engine)["type"])
+
     def test_wrong_species_blocks_without_advancing(self):
         engine = self.module.new(self.plan(), table(self.lua, {}), None)
         action = engine.nextAction(engine)

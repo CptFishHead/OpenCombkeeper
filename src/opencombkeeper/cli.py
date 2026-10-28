@@ -43,6 +43,7 @@ def runtime_plan(plan):
     task_keys = ("id", "type", "line", "step", "result", "species", "count", "status")
     return {
         "schema": plan["schema"],
+        "startingPrincesses": plan["startingPrincesses"],
         "mutations": [{key: row[key] for key in mutation_keys if key in row} for row in plan["mutations"]],
         "lines": [{key: row[key] for key in line_keys if key in row} for row in plan["lines"]],
         "manualTasks": [{key: row[key] for key in task_keys if key in row} for row in plan["manualTasks"]],

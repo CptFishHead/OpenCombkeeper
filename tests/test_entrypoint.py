@@ -21,7 +21,11 @@ function runEntrypoint(source,command)
   function engine:checkAllTasks() calls.manualCheck=(calls.manualCheck or 0)+1; return 1,2 end
   function engine:nextAction() return nil end
   local executor={new=function() calls.executorLoaded=true; return engine end}
-  local hardware={configure=function(value) calls.configured=value.schema end,load=function() return nil end}
+  local hardware={configure=function(value) calls.configured=value.schema end,load=function() return nil end,
+    check=function(plan) calls.hardwareCheck=plan.schema; return true end,
+    resetEmpty=function() calls.hardwareReset=true; return true end,
+    loadPendingState=function() calls.pendingLoaded=true; return nil end,
+    recoverCompleted=function(pendingEngine) calls.hardwareRecovered=pendingEngine==engine; return true end}
   local fakeComponent={list=function() return function() end end,proxy=function() return {} end,methods=function() return {} end}
   local fakeFilesystem={exists=function() return true end,remove=function() return true end,
     rename=function() return true end,makeDirectory=function() return true end}
@@ -79,6 +83,18 @@ class EntrypointTest(unittest.TestCase):
         self.assertTrue(result)
         self.assertTrue(calls["ensure"])
         self.assertEqual("OCTOPOLOGY2", calls["configured"])
+
+    def test_hardware_check_is_read_only_and_uses_runtime_plan(self):
+        result, calls = self.run_entrypoint("hardware-check")
+        self.assertTrue(result)
+        self.assertEqual(1, calls["hardwareCheck"])
+        self.assertIsNone(calls["executorLoaded"])
+
+    def test_completed_hardware_operation_can_be_recovered(self):
+        result, calls = self.run_entrypoint("hardware-recover")
+        self.assertTrue(result)
+        self.assertTrue(calls["pendingLoaded"])
+        self.assertTrue(calls["hardwareRecovered"])
 
 
 if __name__ == "__main__":

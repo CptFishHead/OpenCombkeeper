@@ -36,8 +36,11 @@ function M.new(plan,hardware,persisted)
     for _,line in ipairs(plan.lines or {}) do
       self.state.lines[#self.state.lines+1]={id=line.id,role=line.role,target=line.target,
         profile=line.moduleProfile or 'plains',moduleSlot=line.moduleSlot or 1,
-        route=copy(line.species),position=1,status='waiting_input'}
+        route=copy(line.species),position=1,form='princess',status='waiting_input'}
     end
+  end
+  for _,line in ipairs(self.state.lines or {}) do
+    line.form=line.form or 'princess'
   end
   self.tasks=taskIndex(self.state.tasks)
   return setmetatable(self,{__index=M})
@@ -94,7 +97,7 @@ function M:checkTask(id)
       for _,candidate in ipairs(self.state.lines) do if candidate.id==task.line then line=candidate end end
       assert(line and line.position==task.step,'Stale advanced mutation task')
       assert(line.route[line.position+1]==task.result,'Advanced mutation result does not match line')
-      line.position=line.position+1; line.status='waiting_input'
+      line.position=line.position+1; line.form='queen'; line.status='waiting_input'
     end
     task.status='done'; self:record('task_done',{id=id})
   end
@@ -127,6 +130,10 @@ function M:nextAction()
   local waiting
   for _,line in ipairs(self.state.lines) do
     if line.status=='lost' then self.state.status='blocked'; return nil end
+    if line.form=='queen' and (line.position<#line.route or line.role=='drone_source') then
+      return {type='incubate',line=line.id,profile=line.profile,moduleSlot=line.moduleSlot,
+        species=line.route[line.position]}
+    end
     if line.position<#line.route then
       local result=line.route[line.position+1]
       local mutation=assert(self.mutations[result],'Missing mutation for '..result)
@@ -140,8 +147,13 @@ function M:nextAction()
         waiting=waiting or {type='manual_task',task=task.id,line=line.id,result=result,
           parents=copy(mutation.parents),calendarConditions=copy(mutation.calendarConditions or {})}
       else
+        local drone
+        for _,parent in ipairs(mutation.parents or {}) do
+          if parent~=line.route[line.position] then drone=parent; break end
+        end
+        drone=drone or line.route[line.position]
         return {type='mutation',line=line.id,step=line.position,profile=line.profile,moduleSlot=line.moduleSlot,
-          carrier=line.route[line.position],result=result,parents=copy(mutation.parents),
+          carrier=line.route[line.position],drone=drone,result=result,parents=copy(mutation.parents),
           calendarConditions=copy(mutation.calendarConditions or {})}
       end
     elseif line.status~='delivered' then
@@ -174,10 +186,18 @@ function M:complete(action,result)
       line.status='blocked'; self.state.status='blocked'
       self:record('wrong_species',{line=line.id,expected=action.result,actual=result.species}); return false
     end
-    line.position=line.position+1; line.status='waiting_input'
+    line.position=line.position+1; line.form='queen'; line.status='waiting_input'
     self:record('mutation_done',{line=line.id,species=result.species}); return true
+  elseif action.type=='incubate' then
+    assert(line and line.route[line.position]==action.species and line.form=='queen',
+      'Stale incubation action')
+    assert(result.accepted==true,'Apiary did not return the princess line')
+    line.form='princess'; line.status='waiting_input'
+    self:record('incubation_done',{line=line.id,species=action.species}); return true
   elseif action.type=='deliver_producer' or action.type=='store_drone_source' then
     assert(line and line.target==action.species,'Stale delivery action')
+    if action.type=='deliver_producer' then assert(line.form=='queen','Producer output must be a queen')
+    else assert(line.form=='princess','Drone source must finish an apiary cycle') end
     assert(result.accepted==true,'Destination did not accept line')
     line.status='delivered'; self:record('line_delivered',{line=line.id,species=line.target}); return true
   end

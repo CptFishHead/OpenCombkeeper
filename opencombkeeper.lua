@@ -1,4 +1,4 @@
--- OpenCombkeeper 0.3.3 OpenOS entry point.
+-- OpenCombkeeper 0.4.0 OpenOS entry point.
 local function loadFile(path)
   local chunk,reason=loadfile(path)
   assert(chunk,reason)
@@ -67,6 +67,13 @@ assert(file,'Missing '..adapterPath..'; run the hardware binding installer')
 file:close()
 local hardware=loadFile(adapterPath)
 if hardware.configure then hardware.configure(topology) end
+if command=='hardware-check' then return hardware.check(plan) end
+if command=='hardware-reset' then return hardware.resetEmpty() end
+if command=='hardware-recover' then
+  local pendingState=hardware.loadPendingState()
+  local pendingEngine=executor.new(plan,hardware,pendingState)
+  return hardware.recoverCompleted(pendingEngine)
+end
 local state=hardware.load and hardware.load() or nil
 local engine=executor.new(plan,hardware,state)
 
@@ -92,7 +99,7 @@ elseif command=='run' then
   end
   local summary=engine:summary(); print('Status: '..summary.status)
 else
-  error('Usage: opencombkeeper scan|bind|rebind|bind-reset|topology|topology-check|check|status|run')
+  error('Usage: opencombkeeper scan|bind|rebind|bind-reset|topology|topology-check|hardware-check|hardware-reset|hardware-recover|check|status|run')
 end
 return true
 end

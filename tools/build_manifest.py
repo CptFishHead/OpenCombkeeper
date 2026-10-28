@@ -5,7 +5,7 @@ import subprocess
 import zlib
 
 FILES = ("opencombkeeper.lua", "install.lua", "src/topology.lua", "src/executor.lua",
-         "src/plan.lua", "src/hardware.example.lua", "VERSION")
+         "src/plan.lua", "src/hardware.lua", "src/hardware.example.lua", "VERSION")
 ROOT = Path(__file__).resolve().parents[1]
 
 

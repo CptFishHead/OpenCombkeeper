@@ -1,5 +1,5 @@
--- Contract for the machine-specific OpenOS adapter.
--- Copy to /home/.opencombkeeper/hardware.lua only after binding real devices.
+-- Historical contract example for custom adapters.
+-- OpenCombkeeper now installs src/hardware.lua; do not copy this stub over it.
 local M={}
 
 function M.configure(topology)

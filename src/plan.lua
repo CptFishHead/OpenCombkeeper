@@ -1,5 +1,20 @@
 return {
   schema=1,
+  startingPrincesses={
+    ["extrabees.species.basalt"]=28,
+    ["extrabees.species.rock"]=6,
+    ["extrabees.species.water"]=11,
+    ["forestry.speciesEnded"]=3,
+    ["forestry.speciesForest"]=20,
+    ["forestry.speciesMarshy"]=6,
+    ["forestry.speciesMeadows"]=6,
+    ["forestry.speciesModest"]=9,
+    ["forestry.speciesMonastic"]=3,
+    ["forestry.speciesSteadfast"]=1,
+    ["forestry.speciesTropical"]=9,
+    ["forestry.speciesValiant"]=6,
+    ["forestry.speciesWintry"]=6
+  },
   mutations={
     {
       result="extrabees.species.black",

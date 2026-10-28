@@ -11,7 +11,7 @@ local work='/home/.opencombkeeper-install'
 local backups='/home/opencombkeeper-backup'
 local data='/home/.opencombkeeper-data'
 local keys={'opencombkeeper.lua','install.lua','src/topology.lua','src/executor.lua',
-  'src/plan.lua','src/hardware.example.lua','VERSION'}
+  'src/plan.lua','src/hardware.lua','src/hardware.example.lua','VERSION'}
 local allowed={}
 for _,key in ipairs(keys) do allowed[key]=true end
 
@@ -19,6 +19,7 @@ local function target(key)
   assert(allowed[key],'Unknown managed file')
   if key=='opencombkeeper.lua' then return '/usr/bin/opencombkeeper.lua' end
   if key=='install.lua' then return root..'/setup.lua' end
+  if key=='src/hardware.lua' then return root..'/hardware.lua' end
   return root..'/'..key:match('([^/]+)$')
 end
 local function read(path)
@@ -131,9 +132,7 @@ local function install()
   print('Installed OpenCombkeeper '..manifest.version)
   print('Backup: '..backup); print('Data preserved: '..data)
   print('Run: opencombkeeper scan | opencombkeeper bind | opencombkeeper topology-check')
-  if not fs.exists(root..'/hardware.lua') then
-    print('SAFE STOP: hardware.lua is absent; scan/bind work, bee movement remains disabled.')
-  end
+  print('Run opencombkeeper hardware-check before the first physical operation.')
   return true
 end
 
