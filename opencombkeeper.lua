@@ -1,4 +1,4 @@
--- OpenCombkeeper 0.4.7 OpenOS entry point.
+-- OpenCombkeeper 0.4.8 OpenOS entry point.
 local function loadFile(path)
   local chunk,reason=loadfile(path)
   assert(chunk,reason)
@@ -187,6 +187,7 @@ elseif command=='run' then
       break
     end
     assert(hardware.perform,'Hardware adapter has no perform(action)')
+    print('ACTION '..action.type..' '..tostring(action.species or action.result or action.carrier or ''))
     local result=hardware.perform(action)
     assert(result,'Hardware adapter returned no result')
     engine:complete(action,result)

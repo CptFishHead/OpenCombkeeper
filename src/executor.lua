@@ -129,6 +129,7 @@ function M:nextAction()
   end
   local waiting
   local missingDrones={}
+  local availableDrones=self.hardware.availableDrones and self.hardware.availableDrones() or nil
   for _,line in ipairs(self.state.lines) do
     if line.status=='lost' then self.state.status='blocked'; return nil end
     if line.form=='queen' and (line.position<#line.route or line.role=='drone_source') then
@@ -153,7 +154,8 @@ function M:nextAction()
           if parent~=line.route[line.position] then drone=parent; break end
         end
         drone=drone or line.route[line.position]
-        local available=not self.hardware.countDrones or self.hardware.countDrones(drone)>0
+        local available=availableDrones and (availableDrones[drone] or 0)>0
+          or not availableDrones and (not self.hardware.countDrones or self.hardware.countDrones(drone)>0)
         if available then
           return {type='mutation',line=line.id,step=line.position,profile=line.profile,moduleSlot=line.moduleSlot,
             carrier=line.route[line.position],drone=drone,result=result,parents=copy(mutation.parents),

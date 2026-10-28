@@ -447,6 +447,16 @@ local function new(environment)
 
   function M.countQueens(species) return countBee(species,'queen') end
   function M.countDrones(species) return countBee(species,'drone') end
+  function M.availableDrones()
+    local result={}
+    for _,value in pairs(readME()) do
+      local uid,kind=bee(value)
+      if uid and kind=='drone' then
+        result[uid]=(result[uid] or 0)+(tonumber(value.size) or 0)
+      end
+    end
+    return result
+  end
   function M.manualCapacity() return 4 end
 
   function M.perform(action)

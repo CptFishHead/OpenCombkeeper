@@ -82,6 +82,19 @@ class ExecutorTest(unittest.TestCase):
         self.assertEqual(2, action["line"])
         self.assertEqual("base", action["drone"])
 
+    def test_drone_availability_uses_one_network_snapshot(self):
+        calls = {"value": 0}
+        hardware = self.lua.table()
+
+        def available():
+            calls["value"] += 1
+            return table(self.lua, {"root": 1})
+
+        hardware["availableDrones"] = available
+        engine = self.module.new(self.plan(), hardware, None)
+        self.assertEqual("mutation", engine.nextAction(engine)["type"])
+        self.assertEqual(1, calls["value"])
+
     def test_final_drone_source_is_incubated(self):
         plan = table(self.lua, {"schema": 1,
             "mutations": [{"result": "source", "parents": ["root", "root"]}],
