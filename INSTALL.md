@@ -1,4 +1,4 @@
-# Установка OpenCombkeeper 0.5.7
+# Установка OpenCombkeeper 0.5.8
 
 ## 1. Установить на OpenOS
 

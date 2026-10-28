@@ -43,6 +43,13 @@ function M.new(plan,hardware,persisted)
     line.form=line.form or 'princess'
   end
   self.tasks=taskIndex(self.state.tasks)
+  -- Releases before managed advanced mutatrons marked tasks as prepared without
+  -- physically loading parents. Re-queue those persisted tasks once.
+  for _,task in ipairs(self.state.tasks) do
+    if task.type=='advanced_mutation' and task.prepared and task.station==nil then
+      task.prepared=nil; task.preparing=nil
+    end
+  end
   return setmetatable(self,{__index=M})
 end
 
@@ -125,7 +132,7 @@ function M:nextAction()
   if self.hardware.manualCapacity then capacity=math.max(0,tonumber(self.hardware.manualCapacity()) or 0) end
   local prepared=0
   for _,task in ipairs(self.state.tasks) do
-    if task.type=='advanced_mutation' and task.status~='done' and task.prepared then prepared=prepared+1 end
+    if task.type=='advanced_mutation' and task.status~='done' and (task.prepared or task.preparing) then prepared=prepared+1 end
   end
   local waiting
   local missingDrones={}
@@ -152,10 +159,15 @@ function M:nextAction()
       local mutation=assert(self.mutations[result],'Missing mutation for '..result)
       local task=manualTaskFor(self.state,line.id,line.position)
       if task and task.status~='done' then
-        if not task.prepared and prepared<capacity then
+        if not task.prepared and not task.preparing and prepared<capacity then
           if task.baseline==nil then self:activateTask(task.id) end
-          task.prepared=true; prepared=prepared+1
-          self:record('manual_task_queued',{task=task.id,line=line.id,result=task.result})
+          local drone
+          for _,parent in ipairs(mutation.parents or {}) do
+            if parent~=line.route[line.position] then drone=parent; break end
+          end
+          return {type='prepare_manual',task=task.id,line=line.id,profile=line.profile,
+            moduleSlot=line.moduleSlot,carrier=line.route[line.position],drone=drone or line.route[line.position],
+            result=result,parents=copy(mutation.parents)}
         end
         waiting=waiting or {type='manual_task',task=task.id,line=line.id,result=result,
           parents=copy(mutation.parents),calendarConditions=copy(mutation.calendarConditions or {})}
@@ -203,6 +215,7 @@ function M:reserve(action)
   for _,candidate in ipairs(self.state.lines) do if candidate.id==action.line then line=candidate end end
   assert(line and line.status~='running' and line.status~='delivered','Line is not reservable')
   line.status='running'; self:record('action_started',{line=line.id,type=action.type})
+  if action.type=='prepare_manual' then self.tasks[action.task].preparing=true end
   return true
 end
 
@@ -212,6 +225,7 @@ function M:retry(action)
   for _,candidate in ipairs(self.state.lines) do if candidate.id==action.line then line=candidate end end
   assert(line and (line.status=='running' or line.status=='waiting_input'),'Line is not retryable')
   line.status='waiting_input'; self:record('action_retry',{line=line.id,type=action.type})
+  if action.type=='prepare_manual' and self.tasks[action.task] then self.tasks[action.task].preparing=nil end
   return true
 end
 
@@ -219,7 +233,19 @@ function M:complete(action,result)
   assert(type(action)=='table' and type(result)=='table','Action and result required')
   local line
   for _,candidate in ipairs(self.state.lines) do if candidate.id==action.line then line=candidate end end
-  if action.type=='mutation' then
+  if action.type=='prepare_manual' then
+    local task=assert(self.tasks[action.task],'Unknown manual task')
+    assert(line and line.position==task.step,'Stale manual preparation')
+    if result.kind=='genetic_waste' then
+      task.preparing=nil; line.status='lost'
+      self:record('line_lost',{line=line.id,expected=action.result}); return false
+    end
+    assert(result.accepted==true,'Advanced mutatron did not accept parents')
+    task.preparing=nil; task.prepared=true; task.station=result.station
+    line.status='waiting_input'
+    self:record('manual_task_queued',{task=task.id,line=line.id,result=task.result,station=result.station})
+    return true
+  elseif action.type=='mutation' then
     assert(line and line.position==action.step,'Stale mutation action')
     if result.kind=='genetic_waste' then
       line.status='lost'

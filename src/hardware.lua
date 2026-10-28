@@ -148,6 +148,7 @@ local function new(environment)
   end
 
   local function operationKey(action)
+    if action.type=='prepare_manual' then return 'manual-'..tostring(action.task):gsub('[^%w%-]','_') end
     if action.profile and action.moduleSlot then return action.profile..'-'..tostring(action.moduleSlot) end
     return 'output'
   end
@@ -533,9 +534,35 @@ local function new(environment)
     return {accepted=true}
   end
 
+  local function prepareManual(operation,action)
+    local station,index
+    for candidateIndex,candidate in ipairs(M.advanced or {}) do
+      if not alive(inventory(candidate.t,candidate.mutatron.side,1))
+          and not alive(inventory(candidate.t,candidate.mutatron.side,2)) then
+        station,index=candidate,candidateIndex; break
+      end
+    end
+    assert(station,'All advanced mutatrons are occupied')
+    local source=assert(M.production[action.profile] and M.production[action.profile][action.moduleSlot],
+      'Missing source module for manual mutation')
+    for _,parent in ipairs({{action.carrier,'princess'},{action.drone,'drone'}}) do
+      local slot=localBee(source,parent[1],parent[2])
+      if slot then
+        local value=copy(inventory(source.t,source.chest.side,slot))
+        assert(emptyBuffer(source),'Source interface buffer is occupied')
+        assert(call(source.t.transferItem,source.chest.side,source.source,1,slot)==1,
+          'Cannot export manual parent '..parent[1]..' / '..parent[2])
+        waitBufferEmpty(source); adjustSnapshot(value,1)
+      end
+    end
+    requestBee(operation,station,action.carrier,'princess',station.mutatron,1)
+    requestBee(operation,station,action.drone,'drone',station.mutatron,2)
+    return {accepted=true,station=index}
+  end
+
   function M.configure(topology)
     assert(type(topology)=='table' and topology.schema=='OCTOPOLOGY2','Bound topology required')
-    M.topology=topology; M.production={}
+    M.topology=topology; M.production={}; M.advanced={}
     local byAddress={}
     for _,row in ipairs(topology.modules) do byAddress[row.transposer]=resolveModule(row) end
     for _,row in ipairs(topology.productionModules) do
@@ -550,6 +577,10 @@ local function new(environment)
       if row.transposer==topology.producerOutput.transposer then outputRow=row; break end
     end
     M.output=assert(byAddress[assert(outputRow).transposer]); M.output.chest=topology.producerOutput
+    for _,row in ipairs(topology.advancedMutatrons or {}) do
+      local module=resolveModule(row); module.mutatron=row.mutatron
+      M.advanced[#M.advanced+1]=module
+    end
     M.network=assert(M.production.plains and M.production.plains[1]).interface
     assert(M.network.getItemsInNetwork~=nil,'Bound ME interface cannot list network items')
     M.databases=findDatabase()
@@ -604,13 +635,14 @@ local function new(environment)
     end
     return result
   end
-  function M.manualCapacity() return 4 end
+  function M.manualCapacity() return #M.advanced end
 
   function M.perform(action)
     assert(type(action)=='table' and type(action.type)=='string','Hardware action required')
     local operation=begin(action)
     local ok,result=pcall(function()
-      if action.type=='mutation' then return mutate(operation,action)
+      if action.type=='prepare_manual' then return prepareManual(operation,action)
+      elseif action.type=='mutation' then return mutate(operation,action)
       elseif action.type=='incubate' then return incubate(operation,action)
       elseif action.type=='deliver_producer' then return deliverProducer(operation,action)
       elseif action.type=='store_drone_source' then return storeDroneSource(action) end
@@ -643,7 +675,8 @@ local function new(environment)
     for _,row in ipairs(pending) do
       assert(row.phase=='completed' and type(row.action)=='table' and type(row.result)=='table',
         'Operation '..operationKey(row.action)..' is not completed; inspect its module')
-      local expectedKind=row.action.type=='mutation'
+      local expectedKind=row.action.type=='prepare_manual' and 'manual_task_queued'
+        or row.action.type=='mutation'
           and (row.result.kind=='genetic_waste' and 'line_lost'
             or row.result.species==row.action.result and 'mutation_done' or 'wrong_species')
         or row.action.type=='incubate' and 'incubation_done'

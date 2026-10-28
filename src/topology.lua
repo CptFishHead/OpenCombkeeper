@@ -437,7 +437,7 @@ function M:bind(recover)
   end
   assert(not self.env.exists(self.pendingPath),'Unfinished binding. Run opencombkeeper bind-reset first')
   local found=self:discover()
-  local modules,probes={},{}
+  local modules,advanced,probes={},{},{}
   for _,candidate in ipairs(found.modules) do
     local others,useful={},false
     for _,inventory in ipairs(candidate.inventories) do
@@ -453,12 +453,16 @@ function M:bind(recover)
       candidate.side=candidate.interfaceSides[1]; candidate.others=others
       candidate.managed=useful; probes[#probes+1]=candidate
       if useful then modules[#modules+1]=candidate end
+      for _,inventory in ipairs(others) do if inventory.name=='gendustry:mutatron_advanced' then
+        candidate.advanced=inventory; advanced[#advanced+1]=candidate
+      end end
     end
   end
   assert(#modules>0,'No module with an adjacent ME interface found')
   assert(#modules==9,'Need exactly 9 managed modules (8 production + final output); found '..#modules
     ..'. Run opencombkeeper scan and check OC connections to every transposer')
-  assert(#found.interfaces>=#modules,'Need one configurable interface per module: modules='..#modules..', interfaces='..#found.interfaces)
+  assert(#advanced>0,'No advanced mutatron assembly with an adjacent ME interface found')
+  assert(#found.interfaces>=#modules+#advanced,'Need one configurable interface per module and advanced mutatron')
   assert(#found.databases>0,'One OC database is required')
   local interfaces={}
   for _,entry in ipairs(found.interfaces) do
@@ -466,7 +470,7 @@ function M:bind(recover)
     for slot=1,9 do if self:call(entry.proxy.getInterfaceConfiguration,slot)~=nil then empty=false end end
     if empty then interfaces[#interfaces+1]=entry else self:print('SKIP existing requests: '..entry.address) end
   end
-  assert(#interfaces>=#modules,'Not enough interfaces without existing requests')
+  assert(#interfaces>=#modules+#advanced,'Not enough interfaces without existing requests')
   -- Manual advanced mutatron assemblies are not topology modules, but their
   -- interface buffers must still be watched while correlating component UUIDs.
   -- Otherwise a marker delivered there looks like a failed ME request and costs
@@ -490,7 +494,7 @@ function M:bind(recover)
   local directory=self.pendingPath:match('^(.*)/[^/]+$')
   if directory and not self.env.exists(directory) then assert(self.env.mkdir(directory),'Cannot create '..directory) end
   self:print('Binding '..#modules..' modules using '..#interfaces..' empty-configuration candidates')
-  local mapped,used,bound={},{},{}
+  local mapped,used,bound,advancedBound={},{},{},{}
   local ok,reason=pcall(function()
     for index,interface in ipairs(interfaces) do
       self.env.writeText(self.pendingPath,PENDING_SCHEMA..'\n'..interface.address..' '..database.address..' '..databaseSlot..'\n')
@@ -527,21 +531,25 @@ function M:bind(recover)
           assert(not used[match.entry.address],'Several interfaces map to one module')
           used[match.entry.address]=true; match.interface=interface.address; bound[#bound+1]=match
           self:print('BOUND '..#bound..'/'..#modules..': '..match.entry.address..' -> '..interface.address)
+        elseif match.advanced then
+          match.interface=interface.address; advancedBound[#advancedBound+1]=match
+          self:print('BOUND ADVANCED '..#advancedBound..'/'..#advanced..': '..match.entry.address..' -> '..interface.address)
         else
           self:print('SKIP manual/unmanaged transposer '..match.entry.address..' -> '..interface.address)
         end
       else self:print('SKIP no marker delivered within '..BIND_TIMEOUT..' seconds: '..interface.address) end
-      if #bound==#modules then break end
+      if #bound==#modules and #advancedBound==#advanced then break end
     end
     self:cleanupBinding()
     assert(#bound==#modules,'Incomplete binding: bound='..#bound..', modules='..#modules..'; previous topology preserved')
+    assert(#advancedBound==#advanced,'Incomplete advanced binding: bound='..#advancedBound..', found='..#advanced)
   end)
   if not ok then
     local cleaned,cleanupReason=pcall(self.cleanupBinding,self)
     if not cleaned then self:print('Cleanup pending: '..tostring(cleanupReason)) end
     error(tostring(reason))
   end
-  local topology={schema=SCHEMA,modules={},productionModules={}}
+  local topology={schema=SCHEMA,modules={},productionModules={},advancedMutatrons={}}
   local outputCandidates={}
   table.sort(bound,function(a,b) return a.entry.address<b.entry.address end)
   for _,module in ipairs(bound) do
@@ -569,11 +577,17 @@ function M:bind(recover)
       for _,endpoint in ipairs(roles.containers) do outputCandidates[#outputCandidates+1]=endpoint end
     end
   end
+  table.sort(advancedBound,function(a,b) return a.entry.address<b.entry.address end)
+  for _,module in ipairs(advancedBound) do
+    topology.advancedMutatrons[#topology.advancedMutatrons+1]={transposer=module.entry.address,
+      interfaceSide=module.side,interface=module.interface,
+      mutatron={transposer=module.entry.address,side=module.advanced.side,name=module.advanced.name}}
+  end
   assert(#topology.productionModules==8,'Need exactly 8 complete production modules; found '..#topology.productionModules)
   assert(#outputCandidates>0,'No standalone final-producer chest found')
   topology.producerOutput=self:chooseContainer('producerOutput','Final producer output',outputCandidates,{})
   self:save(topology)
-  self:print('Saved '..#bound..' bindings: 8 production modules and 1 output chest.')
+  self:print('Saved '..#bound..' managed bindings and '..#advancedBound..' advanced mutatrons.')
   self:print('No bees moved; only apiary upgrade slots were read.')
   self:display(topology)
   return topology

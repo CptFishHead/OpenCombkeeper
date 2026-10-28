@@ -1,4 +1,4 @@
--- OpenCombkeeper 0.5.7 OpenOS entry point.
+-- OpenCombkeeper 0.5.8 OpenOS entry point.
 local function loadFile(path)
   local chunk,reason=loadfile(path)
   assert(chunk,reason)
@@ -264,6 +264,7 @@ elseif command=='run' then
   local workers={}
   local failure
   local deferred
+  local waitingKey
   local stopRequested=false
   local function interrupted()
     stopRequested=true
@@ -309,20 +310,30 @@ elseif command=='run' then
         launch(action)
       end
     end
-    if workerCount()==0 then break end
-    os.sleep(0.1)
+    if workerCount()==0 then
+      if failure or stopRequested or not deferred then break end
+      local key=deferred.type..':'..tostring(deferred.task or table.concat(deferred.missingDrones or {},','))
+      if key~=waitingKey then
+        waitingKey=key
+        if deferred.type=='manual_task' then
+          print('WAIT '..deferred.task..' -> '..tostring(deferred.result))
+          if deferred.parents then print('PARENTS '..table.concat(deferred.parents,' + ')) end
+          if dashboard then dashboard.notice='Waiting for player: choose the queued advanced mutation' end
+        else
+          print('WAIT missing drones: '..table.concat(deferred.missingDrones or {},', '))
+          if dashboard then dashboard.notice='Waiting for missing drones in ME' end
+        end
+      end
+      engine:checkAllTasks()
+      os.sleep(1)
+    else
+      waitingKey=nil
+      os.sleep(0.1)
+    end
   end
   if hasEvent then event.ignore('interrupted',interrupted) end
   if failure then error(failure) end
   if stopRequested then print('STOPPED: no module operation was interrupted'); return true end
-  if deferred and deferred.type=='manual_task' then
-    print('WAIT '..deferred.task..' -> '..tostring(deferred.result))
-    if deferred.parents then print('PARENTS '..table.concat(deferred.parents,' + ')) end
-    print('Return the result to ME, then run: opencombkeeper check')
-  elseif deferred and deferred.type=='blocked_resources' then
-    print('WAIT missing drones: '..table.concat(deferred.missingDrones or {},', '))
-    print('No executable predecessor line can currently produce them.')
-  end
   local summary=engine:summary(); print('Status: '..summary.status)
 else
   error('Usage: opencombkeeper scan|bind|rebind|bind-reset|topology|topology-check|effects|hardware-check|hardware-reset|hardware-recover|retry-blocked|state-reset|check|status|log|run')

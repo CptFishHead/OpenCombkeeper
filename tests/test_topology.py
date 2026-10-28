@@ -91,7 +91,7 @@ class TopologyTest(unittest.TestCase):
         topology = self.engine.bind(self.engine, False)
         self.assertEqual("OCTOPOLOGY2", topology["schema"])
         self.assertEqual(9, len(topology["modules"])); self.assertEqual(8, len(topology["productionModules"]))
-        self.assertIsNone(topology["advancedMutatrons"])
+        self.assertEqual(4, len(topology["advancedMutatrons"]))
         climates = [topology["productionModules"][i]["climate"] for i in range(1, 9)]
         self.assertEqual(["plains"] * 4 + ["jungle", "desert", "winter", "hell"], climates)
         self.assertEqual("t13", topology["producerOutput"]["transposer"])

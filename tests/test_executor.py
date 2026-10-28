@@ -152,6 +152,10 @@ class ExecutorTest(unittest.TestCase):
         hardware = self.lua.table()
         hardware["countQueens"] = lambda uid=None: counts["value"]
         engine = self.module.new(self.plan(manual=True), hardware, None)
+        preparation = engine.nextAction(engine)
+        self.assertEqual("prepare_manual", preparation["type"])
+        engine.reserve(engine, preparation)
+        engine.complete(engine, preparation, table(self.lua, {"accepted": True, "station": 1}))
         wait = engine.nextAction(engine)
         self.assertEqual("manual_task", wait["type"])
         self.assertFalse(engine.checkTask(engine, wait["task"]))
@@ -164,7 +168,7 @@ class ExecutorTest(unittest.TestCase):
         hardware["countQueens"] = lambda uid=None: 1
         engine = self.module.new(self.plan(manual=True), hardware, None)
         action = engine.nextAction(engine)
-        self.assertEqual("manual_task", action["type"])
+        self.assertEqual("prepare_manual", action["type"])
         task = engine.tasks[action["task"]]
         self.assertEqual(1, task["baseline"])
 
@@ -174,8 +178,8 @@ class ExecutorTest(unittest.TestCase):
                 {"result": "a", "parents": ["root", "root"], "conditions": []},
                 {"result": "b", "parents": ["root", "root"], "conditions": []}],
             "lines": [
-                {"id": 1, "role": "producer", "target": "a", "species": ["root", "a"]},
-                {"id": 2, "role": "producer", "target": "b", "species": ["root", "b"]}],
+                {"id": 1, "role": "producer", "target": "a", "species": ["root", "a"], "moduleSlot": 1},
+                {"id": 2, "role": "producer", "target": "b", "species": ["root", "b"], "moduleSlot": 2}],
             "manualTasks": [
                 {"id": "mutation:1:1", "type": "advanced_mutation", "line": 1, "step": 1,
                  "result": "a", "parents": ["root", "root"], "status": "waiting_player"},
@@ -185,6 +189,10 @@ class ExecutorTest(unittest.TestCase):
         hardware["countQueens"] = lambda uid=None: 0
         hardware["manualCapacity"] = lambda: 2
         engine = self.module.new(plan, hardware, None)
+        first = engine.nextAction(engine); engine.reserve(engine, first)
+        second = engine.nextAction(engine); engine.reserve(engine, second)
+        engine.complete(engine, first, table(self.lua, {"accepted": True, "station": 1}))
+        engine.complete(engine, second, table(self.lua, {"accepted": True, "station": 2}))
         action = engine.nextAction(engine)
         self.assertEqual("manual_task", action["type"])
         self.assertTrue(engine.tasks["mutation:1:1"]["prepared"])
@@ -194,8 +202,8 @@ class ExecutorTest(unittest.TestCase):
         plan = table(self.lua, {"schema": 1,
             "mutations": [{"result": "a", "parents": ["root", "root"], "conditions": []}],
             "lines": [
-                {"id": 1, "role": "producer", "target": "a", "species": ["root", "a"]},
-                {"id": 2, "role": "producer", "target": "a", "species": ["root", "a"]}],
+                {"id": 1, "role": "producer", "target": "a", "species": ["root", "a"], "moduleSlot": 1},
+                {"id": 2, "role": "producer", "target": "a", "species": ["root", "a"], "moduleSlot": 2}],
             "manualTasks": [
                 {"id": "mutation:1:1", "type": "advanced_mutation", "line": 1, "step": 1,
                  "result": "a", "parents": ["root", "root"], "status": "waiting_player"},
@@ -205,7 +213,8 @@ class ExecutorTest(unittest.TestCase):
         hardware["countQueens"] = lambda uid=None: 3
         hardware["manualCapacity"] = lambda: 2
         engine = self.module.new(plan, hardware, None)
-        self.assertEqual("manual_task", engine.nextAction(engine)["type"])
+        first = engine.nextAction(engine); engine.reserve(engine, first)
+        second = engine.nextAction(engine); engine.reserve(engine, second)
         self.assertEqual(3, engine.tasks["mutation:1:1"]["baseline"])
         self.assertEqual(4, engine.tasks["mutation:2:1"]["baseline"])
 
@@ -223,6 +232,7 @@ class ExecutorTest(unittest.TestCase):
         hardware = self.lua.table(); hardware["countQueens"] = lambda uid=None: 0
         hardware["manualCapacity"] = lambda: 1
         engine = self.module.new(plan, hardware, None)
+        first = engine.nextAction(engine); engine.reserve(engine, first)
         self.assertEqual("manual_task", engine.nextAction(engine)["type"])
         self.assertIsNone(engine.tasks["mutation:2:1"]["baseline"])
 
