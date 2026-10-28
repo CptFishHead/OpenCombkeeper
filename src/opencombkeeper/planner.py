@@ -265,8 +265,6 @@ class Planner:
         starting_drones: Counter[str] = Counter()
         for path in paths:
             route = path["species"]
-            if path["role"] == "producer" and len(route) == 1:
-                starting_drones[route[0]] += 1
             for carrier_uid, result_uid in zip(route, route[1:]):
                 other_parents = list(recipe[result_uid].parents)
                 other_parents.remove(carrier_uid)

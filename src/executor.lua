@@ -147,17 +147,6 @@ function M:nextAction()
       return {type='incubate',line=line.id,profile=line.profile,moduleSlot=line.moduleSlot,
         species=line.route[line.position]}
     end
-    if line.status~='lost' and line.status~='running' and not busy[moduleKey]
-        and line.role=='producer' and line.position==#line.route and line.form=='princess' then
-      local species=line.route[line.position]
-      local available=availableDrones and (availableDrones[species] or 0)>0
-        or not availableDrones and (not self.hardware.countDrones or self.hardware.countDrones(species)>0)
-      if available then
-        return {type='mate_producer',line=line.id,profile=line.profile,moduleSlot=line.moduleSlot,
-          carrier=species,drone=species,result=species}
-      end
-      missingDrones[species]=true
-    end
     if line.status~='lost' and line.status~='running' and not busy[moduleKey] and line.position<#line.route then
       local result=line.route[line.position+1]
       local mutation=assert(self.mutations[result],'Missing mutation for '..result)
@@ -186,9 +175,9 @@ function M:nextAction()
         missingDrones[drone]=true
       end
     elseif line.status~='lost' and line.status~='running' and not busy[moduleKey] and line.status~='delivered'
-        and (line.role~='producer' or line.form=='queen' and not outputBusy) then
+        and (line.role~='producer' or not outputBusy) then
       return {type=line.role=='producer' and 'deliver_producer' or 'store_drone_source',
-        line=line.id,profile=line.profile,moduleSlot=line.moduleSlot,species=line.target}
+        line=line.id,profile=line.profile,moduleSlot=line.moduleSlot,species=line.target,kind=line.form}
     end
   end
   if waiting then return waiting end
@@ -230,22 +219,7 @@ function M:complete(action,result)
   assert(type(action)=='table' and type(result)=='table','Action and result required')
   local line
   for _,candidate in ipairs(self.state.lines) do if candidate.id==action.line then line=candidate end end
-  if action.type=='mutation' or action.type=='mate_producer' then
-    if action.type=='mate_producer' then
-      assert(line and line.position==#line.route and line.form=='princess',
-        'Stale producer mating action')
-      if result.kind=='genetic_waste' then
-        line.status='lost'
-        self:record('line_lost',{line=line.id,expected=action.result}); return false
-      end
-      assert(result.kind=='queen' and result.species,'Producer mating result must be a queen')
-      if result.species~=action.result then
-        line.status='blocked'; self.state.status='blocked'
-        self:record('wrong_species',{line=line.id,expected=action.result,actual=result.species}); return false
-      end
-      line.form='queen'; line.status='waiting_input'
-      self:record('producer_mated',{line=line.id,species=result.species}); return true
-    end
+  if action.type=='mutation' then
     assert(line and line.position==action.step,'Stale mutation action')
     if result.kind=='genetic_waste' then
       line.status='lost'
@@ -266,7 +240,9 @@ function M:complete(action,result)
     self:record('incubation_done',{line=line.id,species=action.species}); return true
   elseif action.type=='deliver_producer' or action.type=='store_drone_source' then
     assert(line and line.target==action.species,'Stale delivery action')
-    if action.type=='deliver_producer' then assert(line.form=='queen','Producer output must be a queen')
+    if action.type=='deliver_producer' then
+      assert(action.kind==line.form and (line.form=='queen' or line.form=='princess'),
+        'Producer output form changed')
     else assert(line.form=='princess','Drone source must finish an apiary cycle') end
     assert(result.accepted==true,'Destination did not accept line')
     line.status='delivered'; self:record('line_delivered',{line=line.id,species=line.target}); return true

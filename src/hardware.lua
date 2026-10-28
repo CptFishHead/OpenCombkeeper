@@ -331,21 +331,21 @@ local function new(environment)
     end
   end
 
-  local function ownedFinalQueen(module,species)
-    local exact=localBee(module,species,'queen')
+  local function ownedFinalBee(module,species,wantedKind)
+    local exact=localBee(module,species,wantedKind)
     if exact then return exact end
     local candidates={}
     for slot=1,call(module.t.getInventorySize,module.chest.side) do
       local uid,kind=bee(inventory(module.t,module.chest.side,slot))
-      if kind=='queen' then candidates[#candidates+1]={slot=slot,uid=uid} end
+      if kind==wantedKind then candidates[#candidates+1]={slot=slot,uid=uid} end
     end
     if #candidates==1 then
-      output('WARN queen UID unavailable/mismatched in owned module chest; using its only queen for '..species)
+      output('WARN '..wantedKind..' UID unavailable/mismatched in owned module chest; using its only candidate for '..species)
       return candidates[1].slot
     end
     if #candidates>1 then
       local found={}; for _,row in ipairs(candidates) do found[#found+1]=tostring(row.uid or '?')..'@'..row.slot end
-      error('Several queens in owned module chest; cannot choose '..species..': '..table.concat(found,', '))
+      error('Several '..wantedKind..' bees in owned module chest; cannot choose '..species..': '..table.concat(found,', '))
     end
   end
 
@@ -489,10 +489,12 @@ local function new(environment)
   end
 
   local function deliverProducer(operation,action)
+    local wantedKind=action.kind or 'queen'
+    assert(wantedKind=='queen' or wantedKind=='princess','Unsupported producer form: '..tostring(wantedKind))
     local assigned=assert(M.production[action.profile] and M.production[action.profile][action.moduleSlot],
       'Missing producer source module')
-    local source,sourceSlot=assigned,ownedFinalQueen(assigned,action.species)
-    if not sourceSlot then source,sourceSlot=localBeeAnywhere(action.species,'queen') end
+    local source,sourceSlot=assigned,ownedFinalBee(assigned,action.species,wantedKind)
+    if not sourceSlot then source,sourceSlot=localBeeAnywhere(action.species,wantedKind) end
     if sourceSlot then
       local sourceQueen=copy(inventory(source.t,source.chest.side,sourceSlot))
       assert(emptyBuffer(source),'Source ME interface buffer is occupied')
@@ -501,16 +503,16 @@ local function new(environment)
       waitBufferEmpty(source)
       adjustSnapshot(sourceQueen,1)
     else
-      assert(findBee(action.species,'queen'),
-        'Final queen is absent from all module chests and ME: '..action.species)
+      assert(findBee(action.species,wantedKind),
+        'Final '..wantedKind..' is absent from all module chests and ME: '..action.species)
     end
     local module=M.output
     assert(emptyBuffer(module),'Final-output ME interface buffer is occupied')
-    requestBee(operation,module,action.species,'queen',module.chest,nil)
+    requestBee(operation,module,action.species,wantedKind,module.chest,nil)
     local found=false
     for slot=1,call(module.t.getInventorySize,module.chest.side) do
       local uid,kind=bee(inventory(module.t,module.chest.side,slot))
-      if uid==action.species and kind=='queen' then found=true; break end
+      if uid==action.species and kind==wantedKind then found=true; break end
     end
     assert(found,'Final queen was not found in producer output chest')
     return {accepted=true}
@@ -608,7 +610,7 @@ local function new(environment)
     assert(type(action)=='table' and type(action.type)=='string','Hardware action required')
     local operation=begin(action)
     local ok,result=pcall(function()
-      if action.type=='mutation' or action.type=='mate_producer' then return mutate(operation,action)
+      if action.type=='mutation' then return mutate(operation,action)
       elseif action.type=='incubate' then return incubate(operation,action)
       elseif action.type=='deliver_producer' then return deliverProducer(operation,action)
       elseif action.type=='store_drone_source' then return storeDroneSource(action) end
@@ -641,11 +643,9 @@ local function new(environment)
     for _,row in ipairs(pending) do
       assert(row.phase=='completed' and type(row.action)=='table' and type(row.result)=='table',
         'Operation '..operationKey(row.action)..' is not completed; inspect its module')
-      local expectedKind=(row.action.type=='mutation' or row.action.type=='mate_producer')
+      local expectedKind=row.action.type=='mutation'
           and (row.result.kind=='genetic_waste' and 'line_lost'
-            or row.result.species==row.action.result
-              and (row.action.type=='mate_producer' and 'producer_mated' or 'mutation_done')
-              or 'wrong_species')
+            or row.result.species==row.action.result and 'mutation_done' or 'wrong_species')
         or row.action.type=='incubate' and 'incubation_done'
         or (row.action.type=='deliver_producer' or row.action.type=='store_drone_source') and 'line_delivered'
       local recorded=false
@@ -666,9 +666,23 @@ local function new(environment)
       local path=JOURNAL..'-'..profile..'-'..slot
       local row=parse(path)
       if row then
-        assert(row.phase=='blocked' and row.action and row.action.type=='deliver_producer'
-          and tostring(row.failure):find('Final queen is absent',1,true),
+        local missingFinal=row.action and row.action.type=='deliver_producer'
+          and tostring(row.failure):find('Final ',1,true)
+        local obsoleteMating=row.action and row.action.type=='mate_producer'
+          and tostring(row.failure):find('Cannot load local ',1,true)
+        assert(row.phase=='blocked' and (missingFinal or obsoleteMating),
           'Blocked operation is not safe for automatic retry: '..profile..'/'..slot)
+        if obsoleteMating then
+          local module=M.production[profile][slot]
+          for _,machine in ipairs({module.mutatron,module.imprinter}) do
+            local first=machine==module.mutatron and 1 or 3
+            local last=machine==module.mutatron and 3 or 4
+            for machineSlot=first,last do
+              assert(not alive(inventory(module.t,machine.side,machineSlot)),
+                'Cannot retire obsolete mating while '..machine.name..' slot '..machineSlot..' is occupied')
+            end
+          end
+        end
         engine:retry(row.action)
         assert(fs.remove(path),'Cannot clear retry journal '..path)
         retried=retried+1

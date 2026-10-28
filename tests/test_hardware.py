@@ -188,15 +188,12 @@ class HardwareTest(unittest.TestCase):
         self.assertIsNotNone(self.control["files"]["/home/.opencombkeeper-data/executor-state"])
         self.assertIsNone(self.control["files"]["/home/.opencombkeeper-data/hardware-operation"])
 
-    def test_starting_species_princess_is_mated_into_final_queen(self):
-        self.control["mutationResult"] = "root"
-        self.control.add("root", "drone", 1)
+    def test_starting_species_princess_is_delivered_as_producer(self):
         result = self.module.perform(self.action(
-            "{type='mate_producer',line=1,profile='plains',moduleSlot=1,"
-            "carrier='root',drone='root',result='root'}"))
-        self.assertEqual("queen", result["kind"])
-        self.assertEqual("root", result["species"])
-        self.assertEqual("root", self.stacks["prod"][4][1]["individual"]["ident"])
+            "{type='deliver_producer',line=1,profile='plains',moduleSlot=1,"
+            "species='root',kind='princess'}"))
+        self.assertTrue(result["accepted"])
+        self.assertEqual("root", self.stacks["out"][1][1]["individual"]["ident"])
 
     def test_princess_imprinter_waste_stops_before_mutatron(self):
         self.control["imprinterWasteKind"] = "princess"
