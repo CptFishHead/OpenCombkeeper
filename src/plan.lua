@@ -13,8 +13,8 @@ return {
   },
   startingDrones={
     ["extrabees.species.basalt"]=21,
-    ["extrabees.species.rock"]=4,
-    ["extrabees.species.water"]=8,
+    ["extrabees.species.rock"]=5,
+    ["extrabees.species.water"]=9,
     ["forestry.speciesEnded"]=3,
     ["forestry.speciesForest"]=27,
     ["forestry.speciesMarshy"]=6,
@@ -23,7 +23,7 @@ return {
     ["forestry.speciesMonastic"]=6,
     ["forestry.speciesTropical"]=9,
     ["forestry.speciesValiant"]=19,
-    ["forestry.speciesWintry"]=6
+    ["forestry.speciesWintry"]=7
   },
   mutations={
     {

@@ -107,6 +107,11 @@ class PlannerUnitTest(unittest.TestCase):
                                  "carrierPriority": ["forest"]}).build()
         self.assertEqual({"drone": 1}, plan["startingDrones"])
 
+    def test_starting_species_producer_reserves_mating_drone(self):
+        catalog = {"species": [species("root", [comb("c", 1)])], "mutations": []}
+        plan = Planner(catalog, {"mode": "best", "startingSpecies": {"root": 1}}).build()
+        self.assertEqual({"root": 1}, plan["startingDrones"])
+
     def test_line_is_assigned_to_climate_profile(self):
         hot = species("hot", [comb("c", 1)])
         hot["requirements"] = {"temperature": "HOT", "humidity": "ARID"}
