@@ -130,13 +130,23 @@ function M:nextAction()
   local waiting
   local missingDrones={}
   local availableDrones=self.hardware.availableDrones and self.hardware.availableDrones() or nil
+  local busy={}
+  local outputBusy=false
   for _,line in ipairs(self.state.lines) do
+    if line.status=='running' then
+      busy[line.profile..':'..line.moduleSlot]=true
+      if line.role=='producer' and line.position==#line.route then outputBusy=true end
+    end
+  end
+  for _,line in ipairs(self.state.lines) do
+    local moduleKey=line.profile..':'..line.moduleSlot
     if line.status=='lost' then self.state.status='blocked'; return nil end
-    if line.form=='queen' and (line.position<#line.route or line.role=='drone_source') then
+    if line.status~='running' and not busy[moduleKey]
+        and line.form=='queen' and (line.position<#line.route or line.role=='drone_source') then
       return {type='incubate',line=line.id,profile=line.profile,moduleSlot=line.moduleSlot,
         species=line.route[line.position]}
     end
-    if line.position<#line.route then
+    if line.status~='running' and not busy[moduleKey] and line.position<#line.route then
       local result=line.route[line.position+1]
       local mutation=assert(self.mutations[result],'Missing mutation for '..result)
       local task=manualTaskFor(self.state,line.id,line.position)
@@ -163,7 +173,8 @@ function M:nextAction()
         end
         missingDrones[drone]=true
       end
-    elseif line.status~='delivered' then
+    elseif line.status~='running' and not busy[moduleKey] and line.status~='delivered'
+        and (line.role~='producer' or not outputBusy) then
       return {type=line.role=='producer' and 'deliver_producer' or 'store_drone_source',
         line=line.id,profile=line.profile,moduleSlot=line.moduleSlot,species=line.target}
     end
@@ -180,6 +191,15 @@ function M:nextAction()
     end
   end
   self.state.status='done'; self:record('plan_done',{}); return nil
+end
+
+function M:reserve(action)
+  assert(type(action)=='table' and action.line,'Reservable line action required')
+  local line
+  for _,candidate in ipairs(self.state.lines) do if candidate.id==action.line then line=candidate end end
+  assert(line and line.status~='running' and line.status~='delivered','Line is not reservable')
+  line.status='running'; self:record('action_started',{line=line.id,type=action.type})
+  return true
 end
 
 function M:complete(action,result)

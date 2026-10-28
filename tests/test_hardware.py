@@ -183,7 +183,7 @@ class HardwareTest(unittest.TestCase):
         result = self.module.perform(action)
         self.assertEqual("queen", result["kind"])
         self.assertEqual("result", result["species"])
-        self.assertEqual(1, self.module.countQueens("result"))
+        self.assertEqual("result", self.stacks["prod"][4][1]["individual"]["ident"])
         self.module.save(self.state())
         self.assertIsNotNone(self.control["files"]["/home/.opencombkeeper-data/executor-state"])
         self.assertIsNone(self.control["files"]["/home/.opencombkeeper-data/hardware-operation"])
@@ -198,24 +198,29 @@ class HardwareTest(unittest.TestCase):
         self.assertIsNone(self.stacks["prod"][2][2])
         self.module.save(self.state())
 
-    def test_incubation_returns_princess_and_drones_to_me(self):
+    def test_incubation_keeps_princess_local_and_publishes_drones(self):
         self.control.add("result", "queen", 1)
         result = self.module.perform(self.action(
             "{type='incubate',profile='plains',moduleSlot=1,species='result'}"))
         self.assertTrue(result["accepted"])
+        self.assertIn("princess", self.stacks["prod"][4][1]["name"])
         self.assertEqual(2, self.module.countDrones("result"))
         self.module.save(self.state())
 
     def test_final_queen_is_moved_to_output_chest(self):
-        self.control.add("result", "queen", 1)
-        result = self.module.perform(self.action("{type='deliver_producer',species='result'}"))
+        self.stacks["prod"][4][1] = self.lua.eval(
+            "{name='forestry:bee_queen_ge',size=1,individual={ident='result'}}")
+        result = self.module.perform(self.action(
+            "{type='deliver_producer',profile='plains',moduleSlot=1,species='result'}"))
         self.assertTrue(result["accepted"])
         self.assertEqual("result", self.stacks["out"][1][1]["individual"]["ident"])
         self.module.save(self.state())
 
     def test_uncommitted_completed_operation_blocks_restart(self):
-        self.control.add("result", "queen", 1)
-        self.module.perform(self.action("{type='deliver_producer',species='result'}"))
+        self.stacks["prod"][4][1] = self.lua.eval(
+            "{name='forestry:bee_queen_ge',size=1,individual={ident='result'}}")
+        self.module.perform(self.action(
+            "{type='deliver_producer',profile='plains',moduleSlot=1,species='result'}"))
         restarted = self.module._newForTest(self.env)
         restarted.configure(self.topology)
         with self.assertRaises(Exception):
@@ -224,8 +229,10 @@ class HardwareTest(unittest.TestCase):
             restarted.resetEmpty()
 
     def test_completed_operation_can_be_committed_after_restart(self):
-        self.control.add("result", "queen", 1)
-        self.module.perform(self.action("{type='deliver_producer',species='result'}"))
+        self.stacks["prod"][4][1] = self.lua.eval(
+            "{name='forestry:bee_queen_ge',size=1,individual={ident='result'}}")
+        self.module.perform(self.action(
+            "{type='deliver_producer',profile='plains',moduleSlot=1,species='result'}"))
         restarted = self.module._newForTest(self.env)
         restarted.configure(self.topology)
         engine = self.lua.eval(
@@ -233,7 +240,7 @@ class HardwareTest(unittest.TestCase):
             "h.save({schema=1,status='ready',lines={},tasks={},history={}}); return true end} end"
         )(restarted)
         self.assertTrue(restarted.recoverCompleted(engine))
-        self.assertIsNone(self.control["files"]["/home/.opencombkeeper-data/hardware-operation"])
+        self.assertIsNone(self.control["files"]["/home/.opencombkeeper-data/hardware-operation-plains-1"])
 
     def test_hardware_check_validates_starting_princesses(self):
         self.assertTrue(self.module.check(self.action(

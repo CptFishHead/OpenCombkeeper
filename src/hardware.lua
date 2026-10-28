@@ -21,6 +21,14 @@ local function new(environment)
       and value.name~='minecraft:air' and value.name~='air'
   end
 
+  local function copy(value,seen)
+    if type(value)~='table' then return value end
+    seen=seen or {}; if seen[value] then return seen[value] end
+    local result={}; seen[value]=result
+    for key,row in pairs(value) do result[copy(key,seen)]=copy(row,seen) end
+    return result
+  end
+
   local function bee(value)
     if not alive(value) then return nil end
     local name=tostring(value.name or '')
@@ -125,31 +133,44 @@ local function new(environment)
   end
 
   local function freeDatabaseSlot()
+    M.databaseReserved=M.databaseReserved or {}
     for _,database in ipairs(M.databases) do
       for slot=1,81 do
         local ok,value=pcall(database.proxy.get,slot)
         if not ok then break end
-        if value==nil then return database,slot end
+        local key=database.address..':'..slot
+        if value==nil and not M.databaseReserved[key] then
+          M.databaseReserved[key]=true; return database,slot
+        end
       end
     end
     error('No free OC database entry')
   end
 
-  local function saveJournal()
-    assert(M.operation,'No hardware operation to journal')
-    atomic(JOURNAL,M.operation)
+  local function operationKey(action)
+    if action.profile and action.moduleSlot then return action.profile..'-'..tostring(action.moduleSlot) end
+    return 'output'
   end
 
-  local function phase(name,details)
-    M.operation.phase=name
-    if details then for key,value in pairs(details) do M.operation[key]=value end end
-    saveJournal()
+  local function journalPath(action) return JOURNAL..'-'..operationKey(action) end
+
+  local function saveJournal(operation)
+    assert(operation and operation.path,'No hardware operation to journal')
+    atomic(operation.path,operation)
+  end
+
+  local function phase(operation,name,details)
+    operation.phase=name
+    if details then for key,value in pairs(details) do operation[key]=value end end
+    saveJournal(operation)
   end
 
   local function begin(action)
-    assert(not fs.exists(JOURNAL),'Unfinished hardware operation. Inspect machines, empty owned slots, then run opencombkeeper hardware-reset')
-    M.operation={schema=1,action=action,phase='starting',started=computer.uptime()}
-    saveJournal()
+    local path=journalPath(action)
+    assert(not fs.exists(path),'Unfinished hardware operation for '..operationKey(action))
+    local operation={schema=2,action=action,phase='starting',started=computer.uptime(),path=path}
+    saveJournal(operation)
+    return operation
   end
 
   local function clearRequest(module,database,slot)
@@ -164,13 +185,30 @@ local function new(environment)
         call(database.proxy.clear,slot)
         assert(call(database.proxy.get,slot)==nil,'Temporary database descriptor remains')
       end
+      if M.databaseReserved then M.databaseReserved[database.address..':'..slot]=nil end
     end
   end
 
   local function readME()
+    local now=computer.uptime()
+    if M.meSnapshot and M.meSnapshotAt and now-M.meSnapshotAt<20 then return M.meSnapshot end
     local items,reason=call(M.network.getItemsInNetwork)
     assert(type(items)=='table',reason or 'Cannot read ME network')
-    return items
+    M.meSnapshot=copy(items); M.meSnapshotAt=computer.uptime(); return M.meSnapshot
+  end
+
+  local function adjustSnapshot(value,delta)
+    if not M.meSnapshot or not alive(value) then return end
+    local uid,kind=bee(value); local found
+    for _,row in pairs(M.meSnapshot) do
+      local rowUid,rowKind=bee(row)
+      if rowUid==uid and rowKind==kind and row.name==value.name then
+        row.size=math.max(0,(tonumber(row.size) or 0)+delta); found=true; break
+      end
+    end
+    if not found and delta>0 then
+      local row=copy(value); row.size=delta; M.meSnapshot[#M.meSnapshot+1]=row
+    end
   end
 
   local function findBee(species,kind)
@@ -197,7 +235,7 @@ local function new(environment)
     assert(not alive(inventory(module.t,endpoint.side,slot)),label..' slot '..slot..' is occupied')
   end
 
-  local function requestBee(module,species,kind,endpoint,destinationSlot)
+  local function requestBee(operation,module,species,kind,endpoint,destinationSlot)
     assert(emptyBuffer(module),'ME interface buffer is occupied at '..module.address)
     assert(call(module.interface.getInterfaceConfiguration,REQUEST_SLOT)==nil,
       'ME request slot '..REQUEST_SLOT..' is already configured at '..module.interfaceAddress)
@@ -205,7 +243,7 @@ local function new(environment)
     local chosen=findBee(species,kind)
     assert(chosen,'ME needs '..species..' / '..kind)
     local database,slot=freeDatabaseSlot()
-    phase('requesting',{species=species,kind=kind,interface=module.interfaceAddress,
+    phase(operation,'requesting',{species=species,kind=kind,interface=module.interfaceAddress,
       database=database.address,databaseSlot=slot,destination=endpoint.name,destinationSlot=destinationSlot})
     local filter={name=chosen.name,label=chosen.label,size=chosen.size}
     assert(call(module.interface.store,filter,database.address,slot,1),'Cannot store ME bee descriptor')
@@ -231,7 +269,7 @@ local function new(environment)
       clearRequest(module,database,slot)
       error('ME did not deliver '..species..' / '..kind..' within '..DELIVERY_TIMEOUT..' seconds')
     end
-    phase('transferring',{sourceSlot=sourceSlot})
+    phase(operation,'transferring',{sourceSlot=sourceSlot})
     local moved
     if destinationSlot then
       moved=call(module.t.transferItem,module.source,endpoint.side,1,sourceSlot,destinationSlot)
@@ -241,19 +279,48 @@ local function new(environment)
     assert(moved==1,'Bee transfer was rejected by '..endpoint.name)
     clearRequest(module,database,slot)
     waitBufferEmpty(module)
-    phase('loaded')
+    adjustSnapshot(chosen,-1)
+    phase(operation,'loaded')
     return true
   end
 
   local function returnSlot(module,endpoint,slot,count)
     local value=inventory(module.t,endpoint.side,slot)
     if not alive(value) then return 0 end
+    local snapshotValue=copy(value)
     assert(emptyBuffer(module),'Cannot return output while ME interface buffer is occupied')
     local wanted=math.min(tonumber(value.size) or 1,count or tonumber(value.size) or 1)
     local moved=call(module.t.transferItem,endpoint.side,module.source,wanted,slot)
     assert(type(moved)=='number' and moved>0,'ME interface rejected output from '..endpoint.name..' slot '..slot)
     waitBufferEmpty(module)
+    adjustSnapshot(snapshotValue,moved)
     return moved,value
+  end
+
+  local function localBee(module,species,kind)
+    for slot=1,call(module.t.getInventorySize,module.chest.side) do
+      local uid,physicalKind=bee(inventory(module.t,module.chest.side,slot))
+      if uid==species and physicalKind==kind then return slot end
+    end
+  end
+
+  local function storeSlot(module,endpoint,slot,count)
+    local value=inventory(module.t,endpoint.side,slot)
+    if not alive(value) then return 0 end
+    local wanted=math.min(tonumber(value.size) or 1,count or tonumber(value.size) or 1)
+    local moved=call(module.t.transferItem,endpoint.side,module.chest.side,wanted,slot)
+    assert(type(moved)=='number' and moved>0,'Local chest rejected output from '..endpoint.name)
+    return moved,value
+  end
+
+  local function loadBee(operation,module,species,kind,endpoint,destinationSlot)
+    local slot=localBee(module,species,kind)
+    if slot then
+      local moved=call(module.t.transferItem,module.chest.side,endpoint.side,1,slot,destinationSlot)
+      assert(moved==1,'Cannot load local '..species..' / '..kind)
+      return true
+    end
+    return requestBee(operation,module,species,kind,endpoint,destinationSlot)
   end
 
   local function ensureTemplate(module)
@@ -273,18 +340,18 @@ local function new(environment)
     error('Put the standard Gene Template in the imprinter or local chest of module '..module.address)
   end
 
-  local function imprintBee(module,species,kind)
+  local function imprintBee(operation,module,species,kind)
     assertMachineSlotEmpty(module,module.imprinter,3,'Imprinter input')
     assertMachineSlotEmpty(module,module.imprinter,4,'Imprinter output')
     ensureTemplate(module)
-    requestBee(module,species,kind,module.imprinter,3)
-    phase('processing',{processor='imprinter',module=module.address,species=species,kind=kind})
+    loadBee(operation,module,species,kind,module.imprinter,3)
+    phase(operation,'processing',{processor='imprinter',module=module.address,species=species,kind=kind})
     for elapsed=0,PROCESS_TIMEOUT do
       local result=inventory(module.t,module.imprinter.side,4)
       if alive(result) then
         local waste=result.name=='gendustry:waste'
         local uid,physicalKind=bee(result)
-        returnSlot(module,module.imprinter,4,1)
+        if waste then returnSlot(module,module.imprinter,4,1) else storeSlot(module,module.imprinter,4,1) end
         if waste then return false end
         assert(uid==species and physicalKind==kind,
           'Imprinter template changed bee identity: expected '..species..'/'..kind
@@ -308,7 +375,7 @@ local function new(environment)
         end
         local uid,kind=bee(result)
         assert(kind=='queen' and type(uid)=='string','Mutatron output is not an identifiable queen')
-        returnSlot(module,endpoint,3,1)
+        storeSlot(module,endpoint,3,1)
         return {kind='queen',species=uid,expected=expected}
       end
       if elapsed==PROCESS_TIMEOUT then error('Mutatron did not finish within '..PROCESS_TIMEOUT..' seconds') end
@@ -317,34 +384,36 @@ local function new(environment)
     end
   end
 
-  local function mutate(action)
+  local function mutate(operation,action)
     local module=M.production[action.profile] and M.production[action.profile][action.moduleSlot]
     assert(module,'No production module '..tostring(action.profile)..'/'..tostring(action.moduleSlot))
     for _,slot in ipairs({1,2,3}) do assertMachineSlotEmpty(module,module.mutatron,slot,'Mutatron') end
-    assert(findBee(assert(action.carrier),'princess'),'ME needs '..action.carrier..' / princess')
-    assert(findBee(assert(action.drone),'drone'),'ME needs '..action.drone..' / drone')
+    assert(localBee(module,assert(action.carrier),'princess') or findBee(action.carrier,'princess'),
+      'Module/ME needs '..action.carrier..' / princess')
+    assert(localBee(module,assert(action.drone),'drone') or findBee(action.drone,'drone'),
+      'Module/ME needs '..action.drone..' / drone')
     local droneReady=false
     for attempt=1,16 do
-      if imprintBee(module,action.drone,'drone') then droneReady=true; break end
+      if imprintBee(operation,module,action.drone,'drone') then droneReady=true; break end
       output('IMPRINTER WASTE drone '..action.drone..' attempt '..attempt..'/16')
     end
     assert(droneReady,'Imprinter discarded 16 '..action.drone..' drones; mutation was not started')
-    if not imprintBee(module,action.carrier,'princess') then
+    if not imprintBee(operation,module,action.carrier,'princess') then
       return {kind='genetic_waste'}
     end
-    requestBee(module,action.drone,'drone',module.mutatron,2)
-    requestBee(module,action.carrier,'princess',module.mutatron,1)
-    phase('processing',{processor='mutatron',module=module.address})
+    loadBee(operation,module,action.drone,'drone',module.mutatron,2)
+    loadBee(operation,module,action.carrier,'princess',module.mutatron,1)
+    phase(operation,'processing',{processor='mutatron',module=module.address})
     return waitMutatron(module,action.result)
   end
 
-  local function incubate(action)
+  local function incubate(operation,action)
     local module=M.production[action.profile] and M.production[action.profile][action.moduleSlot]
     assert(module,'No production module '..tostring(action.profile)..'/'..tostring(action.moduleSlot))
     for _,slot in ipairs({1,2}) do assertMachineSlotEmpty(module,module.apiary,slot,'Industrial apiary') end
     for slot=7,15 do assertMachineSlotEmpty(module,module.apiary,slot,'Industrial apiary output') end
-    requestBee(module,action.species,'queen',module.apiary,1)
-    phase('processing',{processor='apiary',module=module.address})
+    loadBee(operation,module,action.species,'queen',module.apiary,1)
+    phase(operation,'processing',{processor='apiary',module=module.address})
     local princess=false
     for elapsed=0,PROCESS_TIMEOUT do
       for slot=7,15 do
@@ -354,8 +423,11 @@ local function new(environment)
           if kind=='princess' then
             assert(uid==action.species,'Apiary returned a different princess: '..tostring(uid))
             princess=true
+            storeSlot(module,module.apiary,slot)
+          else
+            -- Drones are shared dependencies for other lines and modules.
+            returnSlot(module,module.apiary,slot)
           end
-          returnSlot(module,module.apiary,slot)
         end
       end
       local queen=inventory(module.t,module.apiary.side,1)
@@ -371,10 +443,19 @@ local function new(environment)
     end
   end
 
-  local function deliverProducer(action)
+  local function deliverProducer(operation,action)
+    local source=assert(M.production[action.profile] and M.production[action.profile][action.moduleSlot],
+      'Missing producer source module')
+    local sourceSlot=assert(localBee(source,action.species,'queen'),'Final queen is absent from its local chest')
+    local sourceQueen=copy(inventory(source.t,source.chest.side,sourceSlot))
+    assert(emptyBuffer(source),'Source ME interface buffer is occupied')
+    local moved=call(source.t.transferItem,source.chest.side,source.source,1,sourceSlot)
+    assert(moved==1,'Cannot export final queen from local chest')
+    waitBufferEmpty(source)
+    adjustSnapshot(sourceQueen,1)
     local module=M.output
     assert(emptyBuffer(module),'Final-output ME interface buffer is occupied')
-    requestBee(module,action.species,'queen',module.chest,nil)
+    requestBee(operation,module,action.species,'queen',module.chest,nil)
     local found=false
     for slot=1,call(module.t.getInventorySize,module.chest.side) do
       local uid,kind=bee(inventory(module.t,module.chest.side,slot))
@@ -385,8 +466,17 @@ local function new(environment)
   end
 
   local function storeDroneSource(action)
-    assert(countBee(action.species,'drone')>0,'No '..action.species..' drones returned to ME')
-    assert(countBee(action.species,'princess')>0,'No '..action.species..' princess returned to ME')
+    local module=assert(M.production[action.profile] and M.production[action.profile][action.moduleSlot])
+    local moved=0
+    for slot=call(module.t.getInventorySize,module.chest.side),1,-1 do
+      local uid,kind=bee(inventory(module.t,module.chest.side,slot))
+      if uid==action.species and (kind=='drone' or kind=='princess') then
+        local value=copy(inventory(module.t,module.chest.side,slot))
+        local count=call(module.t.transferItem,module.chest.side,module.source,64,slot)
+        moved=moved+(tonumber(count) or 0); waitBufferEmpty(module); adjustSnapshot(value,tonumber(count) or 0)
+      end
+    end
+    assert(moved>0,'No '..action.species..' bees in local chest')
     return {accepted=true}
   end
 
@@ -422,14 +512,23 @@ local function new(environment)
       error('Unfinished hardware operation ('..tostring(pending.phase)
         ..'). Inspect machines, empty owned slots, then run opencombkeeper hardware-reset')
     end
+    for profile,list in pairs(M.production) do
+      for slot=1,#list do
+        local row=parse(JOURNAL..'-'..profile..'-'..slot)
+        if row then
+          error('Unfinished hardware operation '..profile..'/'..slot..' ('..tostring(row.phase)
+            ..'). Run opencombkeeper hardware-recover when completed, otherwise inspect the module.')
+        end
+      end
+    end
+    local outputPending=parse(JOURNAL..'-output')
+    if outputPending then error('Unfinished output operation ('..tostring(outputPending.phase)..')') end
     local state=parse(STATE)
     if state then assert(state.schema==1,'Unsupported executor state') end
     return state
   end
 
   function M.loadPendingState()
-    local pending=parse(JOURNAL)
-    assert(pending and pending.phase=='completed','No completed hardware operation to recover')
     local state=parse(STATE)
     if state then assert(state.schema==1,'Unsupported executor state') end
     return state
@@ -438,11 +537,6 @@ local function new(environment)
   function M.save(state)
     assert(type(state)=='table' and state.schema==1,'Invalid executor state')
     atomic(STATE,state)
-    if M.operation then
-      assert(M.operation.phase=='completed','Refusing to clear an incomplete hardware journal')
-      assert(fs.remove(JOURNAL),'Cannot clear completed hardware journal')
-      M.operation=nil
-    end
   end
 
   function M.countQueens(species) return countBee(species,'queen') end
@@ -461,42 +555,55 @@ local function new(environment)
 
   function M.perform(action)
     assert(type(action)=='table' and type(action.type)=='string','Hardware action required')
-    begin(action)
+    local operation=begin(action)
     local ok,result=pcall(function()
-      if action.type=='mutation' then return mutate(action)
-      elseif action.type=='incubate' then return incubate(action)
-      elseif action.type=='deliver_producer' then return deliverProducer(action)
+      if action.type=='mutation' then return mutate(operation,action)
+      elseif action.type=='incubate' then return incubate(operation,action)
+      elseif action.type=='deliver_producer' then return deliverProducer(operation,action)
       elseif action.type=='store_drone_source' then return storeDroneSource(action) end
       error('Unsupported hardware action: '..action.type)
     end)
     if not ok then
-      phase('blocked',{failure=tostring(result)})
+      phase(operation,'blocked',{failure=tostring(result)})
       error(tostring(result))
     end
-    phase('completed',{result=result})
+    phase(operation,'completed',{result=result})
     return result
   end
 
+  function M.ack(action)
+    local path=journalPath(action)
+    local pending=parse(path)
+    assert(pending and pending.phase=='completed','Operation is not complete: '..operationKey(action))
+    assert(fs.remove(path),'Cannot clear completed operation journal: '..path)
+    return true
+  end
+
   function M.recoverCompleted(engine)
-    local pending=parse(JOURNAL)
-    assert(pending and pending.phase=='completed' and type(pending.action)=='table'
-      and type(pending.result)=='table','No completed hardware operation to recover')
-    local action=pending.action
-    local expectedKind=action.type=='mutation' and (pending.result.kind=='genetic_waste' and 'line_lost'
-        or pending.result.species==action.result and 'mutation_done' or 'wrong_species')
-      or action.type=='incubate' and 'incubation_done'
-      or (action.type=='deliver_producer' or action.type=='store_drone_source') and 'line_delivered'
-    local recorded=false
-    for _,row in ipairs(engine.state.history or {}) do
-      if row.kind==expectedKind and type(row.data)=='table' and row.data.line==action.line then
-        recorded=true; break
+    local pending={}
+    local legacy=parse(JOURNAL); if legacy then pending[#pending+1]=legacy end
+    for profile,list in pairs(M.production) do for slot=1,#list do
+      local row=parse(JOURNAL..'-'..profile..'-'..slot); if row then pending[#pending+1]=row end
+    end end
+    local outputRow=parse(JOURNAL..'-output'); if outputRow then pending[#pending+1]=outputRow end
+    assert(#pending>0,'No hardware operations to recover')
+    for _,row in ipairs(pending) do
+      assert(row.phase=='completed' and type(row.action)=='table' and type(row.result)=='table',
+        'Operation '..operationKey(row.action)..' is not completed; inspect its module')
+      local expectedKind=row.action.type=='mutation'
+          and (row.result.kind=='genetic_waste' and 'line_lost'
+            or row.result.species==row.action.result and 'mutation_done' or 'wrong_species')
+        or row.action.type=='incubate' and 'incubation_done'
+        or (row.action.type=='deliver_producer' or row.action.type=='store_drone_source') and 'line_delivered'
+      local recorded=false
+      for _,history in ipairs(engine.state.history or {}) do
+        if history.kind==expectedKind and history.data and history.data.line==row.action.line then recorded=true; break end
       end
+      if not recorded then engine:complete(row.action,row.result) end
+      local path=row.path or JOURNAL
+      assert(fs.remove(path),'Cannot clear recovered journal '..path)
+      output('Recovered completed '..tostring(row.action.type)..' on '..operationKey(row.action))
     end
-    M.operation=pending
-    if recorded then M.save(engine.state)
-    else engine:complete(action,pending.result) end
-    output((recorded and 'Cleared already committed ' or 'Recovered completed ')
-      ..tostring(action.type)..' operation into executor state.')
     return true
   end
 
@@ -605,7 +712,28 @@ local function new(environment)
       if call(proxy.get,pending.databaseSlot)~=nil then call(proxy.clear,pending.databaseSlot) end
     end
     if fs.exists(JOURNAL) then assert(fs.remove(JOURNAL),'Cannot clear hardware journal') end
-    M.operation=nil; output('Hardware journal cleared after verifying empty owned slots.')
+    for profile,list in pairs(M.production) do for slot=1,#list do
+      local path=JOURNAL..'-'..profile..'-'..slot
+      local row=parse(path)
+      assert(not row or row.phase~='completed','Completed operation must be recovered: '..profile..'/'..slot)
+      if fs.exists(path) then assert(fs.remove(path),'Cannot clear '..path) end
+    end end
+    local outputPath=JOURNAL..'-output'; local outputRow=parse(outputPath)
+    assert(not outputRow or outputRow.phase~='completed','Completed output operation must be recovered')
+    if fs.exists(outputPath) then assert(fs.remove(outputPath),'Cannot clear '..outputPath) end
+    output('Hardware journals cleared after verifying empty owned slots.')
+    return true
+  end
+
+  function M.resetState()
+    assert(not fs.exists(JOURNAL),'Legacy hardware operation exists; recover or reset hardware first')
+    for profile,list in pairs(M.production) do for slot=1,#list do
+      assert(not fs.exists(JOURNAL..'-'..profile..'-'..slot),
+        'Hardware operation exists on '..profile..'/'..slot..'; recover or reset hardware first')
+    end end
+    assert(not fs.exists(JOURNAL..'-output'),'Output operation exists; recover or reset hardware first')
+    if fs.exists(STATE) then assert(fs.remove(STATE),'Cannot remove executor state') end
+    output('Executor plan state cleared. Physical bees and module chests were not changed.')
     return true
   end
 

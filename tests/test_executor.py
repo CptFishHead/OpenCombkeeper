@@ -95,6 +95,21 @@ class ExecutorTest(unittest.TestCase):
         self.assertEqual("mutation", engine.nextAction(engine)["type"])
         self.assertEqual(1, calls["value"])
 
+    def test_reserved_action_frees_scheduler_for_another_module(self):
+        plan = table(self.lua, {"schema": 1,
+            "mutations": [{"result": "a", "parents": ["root", "root"]},
+                          {"result": "b", "parents": ["root", "root"]}],
+            "lines": [{"id": 1, "role": "producer", "target": "a", "species": ["root", "a"],
+                       "moduleProfile": "plains", "moduleSlot": 1},
+                      {"id": 2, "role": "producer", "target": "b", "species": ["root", "b"],
+                       "moduleProfile": "plains", "moduleSlot": 2}], "manualTasks": []})
+        engine = self.module.new(plan, table(self.lua, {}), None)
+        first = engine.nextAction(engine)
+        engine.reserve(engine, first)
+        second = engine.nextAction(engine)
+        self.assertEqual(2, second["line"])
+        self.assertEqual(2, second["moduleSlot"])
+
     def test_final_drone_source_is_incubated(self):
         plan = table(self.lua, {"schema": 1,
             "mutations": [{"result": "source", "parents": ["root", "root"]}],

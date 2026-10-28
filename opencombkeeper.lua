@@ -1,4 +1,4 @@
--- OpenCombkeeper 0.4.10 OpenOS entry point.
+-- OpenCombkeeper 0.5.0 OpenOS entry point.
 local function loadFile(path)
   local chunk,reason=loadfile(path)
   assert(chunk,reason)
@@ -10,6 +10,48 @@ local dataRoot='/home/.opencombkeeper-data'
 local component=require('component')
 local filesystem=require('filesystem')
 local serialization=require('serialization')
+local consolePrint=print
+local print=consolePrint
+local dashboard
+
+local function newDashboard()
+  if not component.isAvailable or not component.isAvailable('gpu') then return nil end
+  local gpu,term,unicode=component.gpu,require('term'),require('unicode')
+  if not term.isAvailable() then return nil end
+  local w,h=gpu.getResolution(); if w<60 or h<18 then return nil end
+  local oldFG,oldBG=gpu.getForeground(),gpu.getBackground(); local logs={}; local modules={}
+  local ui={notice='Starting...',stopRequested=false}
+  local function short(value,width) return unicode.sub(tostring(value or ''),1,width) end
+  local function line(y,text,fg,bg)
+    gpu.setBackground(bg or 0x18160F); gpu.setForeground(fg or 0xF4E9B6)
+    gpu.fill(1,y,w,1,' '); gpu.set(1,y,short(text,w))
+  end
+  function ui.log(...)
+    local parts={}; for i=1,select('#',...) do parts[i]=tostring(select(i,...)) end
+    logs[#logs+1]=table.concat(parts,' '); if #logs>200 then table.remove(logs,1) end
+    ui.render()
+  end
+  function ui.setModules(value) modules=value or {}; ui.render() end
+  function ui.render()
+    line(1,' OpenCombkeeper | parallel comb production',0x1B160A,0xE0A52B)
+    line(2,' Active modules: '..tostring((function() local n=0 for _ in pairs(modules) do n=n+1 end return n end)())
+      ..' | Ctrl+C: graceful stop')
+    line(3,ui.stopRequested and ' [ Stopping... ]' or ' [ Running ]',0xFFE28A,0x5C4516)
+    line(4,ui.notice,0xD1BA74)
+    line(5,' MODULES',0xFFE28A)
+    local y=6; local keys={}; for key in pairs(modules) do keys[#keys+1]=key end; table.sort(keys)
+    for _,key in ipairs(keys) do local row=modules[key]; line(y,key..' | '..row.action.type..' | '..tostring(row.action.result or row.action.species or '')); y=y+1 end
+    while y<=math.min(h-8,14) do line(y,''); y=y+1 end
+    line(h-7,' LOG',0xFFE28A)
+    local first=math.max(1,#logs-5)
+    for row=h-6,h-1 do line(row,logs[first+row-(h-6)] or '',0xE4D9AA) end
+    line(h,' Intermediate bees stay in module chests; ME supplies external parents only.',0xD1BA74)
+  end
+  function ui.close()
+    gpu.setBackground(oldBG); gpu.setForeground(oldFG); term.clear(); term.setCursor(1,1)
+  end
+  ui.render(); return ui
+end
 
 local function readText(path)
   local file=io.open(path,'r'); if not file then return nil end
@@ -43,6 +85,7 @@ local topologyEngine=loadFile(root..'/topology.lua').new({
 
 local command=(...) or 'run'
 local argument=select(2,...)
+if command=='run' then dashboard=newDashboard(); if dashboard then print=dashboard.log end end
 
 local effectRules={
   {key='radiation',label='Радиация (разрушает блоки)',default=false,
@@ -158,6 +201,7 @@ local hardware=loadFile(adapterPath)
 if hardware.configure then hardware.configure(topology) end
 if command=='hardware-check' then return hardware.check(plan) end
 if command=='hardware-reset' then return hardware.resetEmpty() end
+if command=='state-reset' then return hardware.resetState() end
 if command=='hardware-recover' then
   local pendingState=hardware.loadPendingState()
   local pendingEngine=executor.new(plan,hardware,pendingState)
@@ -172,33 +216,80 @@ if command=='status' then
 elseif command=='check' then
   local done,total=engine:checkAllTasks(); print('Manual tasks: '..done..'/'..total)
 elseif command=='run' then
+  local hasThreads,thread=pcall(require,'thread')
+  if not hasThreads then thread={create=function(callback) callback(); return {} end} end
+  local hasEvent,event=pcall(require,'event')
+  local workers={}
+  local failure
+  local deferred
+  local stopRequested=false
+  local function interrupted()
+    stopRequested=true
+    if dashboard then dashboard.stopRequested=true; dashboard.notice='Waiting for active module operations to finish safely...' end
+    print('STOP requested; waiting for active module checkpoints...'); return true
+  end
+  if hasEvent then event.listen('interrupted',interrupted) end
+  local function workerCount() local count=0; for _ in pairs(workers) do count=count+1 end; return count end
+  local function launch(action)
+    engine:reserve(action)
+    local key=action.profile..':'..tostring(action.moduleSlot or 'output')
+    local worker={action=action}; workers[key]=worker
+    print('ACTION '..action.type..' '..tostring(action.species or action.result or action.carrier or '')
+      ..' @ '..key)
+    worker.thread=thread.create(function()
+      worker.ok,worker.result=pcall(hardware.perform,action)
+      worker.done=true
+    end)
+  end
   while true do
-    local action=engine:nextAction()
-    if not action then break end
-    if action.type=='manual_task' then
-      print('WAIT '..action.task..' -> '..tostring(action.result))
-      if action.parents then print('PARENTS '..table.concat(action.parents,' + ')) end
-      print('Return the result to ME, then run: opencombkeeper check')
-      break
+    for key,worker in pairs(workers) do
+      if worker.done then
+        workers[key]=nil
+        if worker.ok then
+          engine:complete(worker.action,worker.result)
+          hardware.ack(worker.action)
+          print('DONE '..worker.action.type..' @ '..key)
+        else
+          failure=failure or tostring(worker.result)
+        end
+      end
     end
-    if action.type=='blocked_resources' then
-      print('WAIT missing drones: '..table.concat(action.missingDrones or {},', '))
-      print('No executable predecessor line can currently produce them.')
-      break
+    if dashboard then dashboard.setModules(workers) end
+    deferred=nil
+    if not failure and not stopRequested then
+      while true do
+        local action=engine:nextAction()
+        if not action or action.type=='manual_task' or action.type=='blocked_resources' then
+          deferred=action; break
+        end
+        assert(hardware.perform,'Hardware adapter has no perform(action)')
+        launch(action)
+      end
     end
-    assert(hardware.perform,'Hardware adapter has no perform(action)')
-    print('ACTION '..action.type..' '..tostring(action.species or action.result or action.carrier or ''))
-    local result=hardware.perform(action)
-    assert(result,'Hardware adapter returned no result')
-    engine:complete(action,result)
+    if workerCount()==0 then break end
+    os.sleep(0.1)
+  end
+  if hasEvent then event.ignore('interrupted',interrupted) end
+  if failure then error(failure) end
+  if stopRequested then print('STOPPED: no module operation was interrupted'); return true end
+  if deferred and deferred.type=='manual_task' then
+    print('WAIT '..deferred.task..' -> '..tostring(deferred.result))
+    if deferred.parents then print('PARENTS '..table.concat(deferred.parents,' + ')) end
+    print('Return the result to ME, then run: opencombkeeper check')
+  elseif deferred and deferred.type=='blocked_resources' then
+    print('WAIT missing drones: '..table.concat(deferred.missingDrones or {},', '))
+    print('No executable predecessor line can currently produce them.')
   end
   local summary=engine:summary(); print('Status: '..summary.status)
 else
-  error('Usage: opencombkeeper scan|bind|rebind|bind-reset|topology|topology-check|effects|hardware-check|hardware-reset|hardware-recover|check|status|run')
+  error('Usage: opencombkeeper scan|bind|rebind|bind-reset|topology|topology-check|effects|hardware-check|hardware-reset|hardware-recover|state-reset|check|status|run')
 end
 return true
 end
 
 local ok,result=pcall(execute)
+if dashboard then
+  local ui=dashboard; dashboard=nil; print=consolePrint; pcall(ui.close)
+end
 if not ok then print('OpenCombkeeper stopped: '..tostring(result)); return false end
 return result
