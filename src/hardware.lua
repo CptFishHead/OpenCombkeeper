@@ -258,11 +258,22 @@ local function new(environment)
     local database,slot=freeDatabaseSlot()
     phase(operation,'requesting',{species=species,kind=kind,interface=module.interfaceAddress,
       database=database.address,databaseSlot=slot,destination=endpoint.name,destinationSlot=destinationSlot})
-    local filter={name=chosen.name,label=chosen.label,size=chosen.size}
-    assert(call(module.interface.store,filter,database.address,slot,1),'Cannot store ME bee descriptor')
-    local descriptor=call(database.proxy.get,slot)
-    local descriptorSpecies,descriptorKind=bee(descriptor)
-    assert(descriptorSpecies==species and descriptorKind==kind,'ME selected a different bee variant')
+    local descriptor,descriptorSpecies,descriptorKind
+    local counts,seen={},{ }
+    for _,count in ipairs({tonumber(chosen.size),countBee(species,kind),1}) do
+      if count and count>0 and not seen[count] then counts[#counts+1]=count; seen[count]=true end
+    end
+    for _,count in ipairs(counts) do
+      if call(database.proxy.get,slot)~=nil then call(database.proxy.clear,slot) end
+      call(module.interface.store,{name=chosen.name,label=chosen.label,size=count},database.address,slot,1)
+      descriptor=call(database.proxy.get,slot)
+      descriptorSpecies,descriptorKind=bee(descriptor)
+      if descriptorSpecies==species and descriptorKind==kind then break end
+    end
+    if descriptorSpecies~=species or descriptorKind~=kind then
+      clearRequest(module,database,slot)
+      error('ME cannot materialize exact bee variant '..species..' / '..kind)
+    end
     call(module.interface.setInterfaceConfiguration,REQUEST_SLOT,database.address,slot,1)
     local sourceSlot
     for attempt=0,DELIVERY_TIMEOUT do
@@ -609,6 +620,10 @@ local function new(environment)
     if outputPending then error('Unfinished output operation ('..tostring(outputPending.phase)..')') end
     local state=parse(STATE)
     if state then assert(state.schema==1,'Unsupported executor state') end
+    for _,task in ipairs(state and state.tasks or {}) do
+      local row=parse(JOURNAL..'-manual-'..tostring(task.id):gsub('[^%w%-]','_'))
+      if row then error('Unfinished manual preparation '..task.id..' ('..tostring(row.phase)..'). Run opencombkeeper retry-blocked') end
+    end
     return state
   end
 
@@ -721,6 +736,21 @@ local function new(environment)
         retried=retried+1
       end
     end end
+    for _,task in ipairs(engine.state.tasks or {}) do
+      local path=JOURNAL..'-manual-'..tostring(task.id):gsub('[^%w%-]','_')
+      local row=parse(path)
+      if row then
+        assert(row.phase=='blocked' and row.action and row.action.type=='prepare_manual'
+          and (tostring(row.failure):find('different bee variant',1,true)
+            or tostring(row.failure):find('cannot materialize exact bee variant',1,true)),
+          'Manual preparation is not safe for automatic retry: '..task.id)
+        if row.database and row.databaseSlot then
+          local proxy=call(component.proxy,row.database)
+          if call(proxy.get,row.databaseSlot)~=nil then call(proxy.clear,row.databaseSlot) end
+        end
+        engine:retry(row.action); assert(fs.remove(path),'Cannot clear '..path); retried=retried+1
+      end
+    end
     assert(retried>0,'No safely retryable final-delivery operation found')
     output('Re-queued '..retried..' final delivery operation(s); local module bees were preserved.')
     return true
@@ -810,6 +840,7 @@ local function new(environment)
       'Completed operation must be committed with opencombkeeper hardware-recover, not reset')
     local modules={M.output}
     for _,list in pairs(M.production) do for _,module in ipairs(list) do modules[#modules+1]=module end end
+    for _,module in ipairs(M.advanced or {}) do modules[#modules+1]=module end
     for _,module in ipairs(modules) do
       if call(module.interface.getInterfaceConfiguration,REQUEST_SLOT)~=nil then
         call(module.interface.setInterfaceConfiguration,REQUEST_SLOT)
@@ -840,6 +871,13 @@ local function new(environment)
     local outputPath=JOURNAL..'-output'; local outputRow=parse(outputPath)
     assert(not outputRow or outputRow.phase~='completed','Completed output operation must be recovered')
     if fs.exists(outputPath) then assert(fs.remove(outputPath),'Cannot clear '..outputPath) end
+    local state=parse(STATE)
+    for _,task in ipairs(state and state.tasks or {}) do
+      local path=JOURNAL..'-manual-'..tostring(task.id):gsub('[^%w%-]','_')
+      local row=parse(path)
+      assert(not row or row.phase~='completed','Completed manual preparation must be recovered: '..task.id)
+      if fs.exists(path) then assert(fs.remove(path),'Cannot clear '..path) end
+    end
     output('Hardware journals cleared after verifying empty owned slots.')
     return true
   end
