@@ -1,4 +1,4 @@
--- OpenCombkeeper 0.5.1 OpenOS entry point.
+-- OpenCombkeeper 0.5.2 OpenOS entry point.
 local function loadFile(path)
   local chunk,reason=loadfile(path)
   assert(chunk,reason)
@@ -207,6 +207,11 @@ if command=='hardware-recover' then
   local pendingEngine=executor.new(plan,hardware,pendingState)
   return hardware.recoverCompleted(pendingEngine)
 end
+if command=='retry-blocked' then
+  local pendingState=hardware.loadPendingState()
+  local pendingEngine=executor.new(plan,hardware,pendingState)
+  return hardware.retrySafeBlocked(pendingEngine)
+end
 local state=hardware.load and hardware.load() or nil
 local engine=executor.new(plan,hardware,state)
 
@@ -282,7 +287,7 @@ elseif command=='run' then
   end
   local summary=engine:summary(); print('Status: '..summary.status)
 else
-  error('Usage: opencombkeeper scan|bind|rebind|bind-reset|topology|topology-check|effects|hardware-check|hardware-reset|hardware-recover|state-reset|check|status|run')
+  error('Usage: opencombkeeper scan|bind|rebind|bind-reset|topology|topology-check|effects|hardware-check|hardware-reset|hardware-recover|retry-blocked|state-reset|check|status|run')
 end
 return true
 end

@@ -612,6 +612,25 @@ local function new(environment)
     return true
   end
 
+  function M.retrySafeBlocked(engine)
+    local retried=0
+    for profile,list in pairs(M.production) do for slot=1,#list do
+      local path=JOURNAL..'-'..profile..'-'..slot
+      local row=parse(path)
+      if row then
+        assert(row.phase=='blocked' and row.action and row.action.type=='deliver_producer'
+          and tostring(row.failure):find('Final queen is absent',1,true),
+          'Blocked operation is not safe for automatic retry: '..profile..'/'..slot)
+        engine:retry(row.action)
+        assert(fs.remove(path),'Cannot clear retry journal '..path)
+        retried=retried+1
+      end
+    end end
+    assert(retried>0,'No safely retryable final-delivery operation found')
+    output('Re-queued '..retried..' final delivery operation(s); local module bees were preserved.')
+    return true
+  end
+
   function M.check(plan)
     assert(M.topology,'hardware.configure must run first')
     local free=false

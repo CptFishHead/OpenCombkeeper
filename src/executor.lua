@@ -206,6 +206,15 @@ function M:reserve(action)
   return true
 end
 
+function M:retry(action)
+  assert(type(action)=='table' and action.line,'Retryable line action required')
+  local line
+  for _,candidate in ipairs(self.state.lines) do if candidate.id==action.line then line=candidate end end
+  assert(line and (line.status=='running' or line.status=='waiting_input'),'Line is not retryable')
+  line.status='waiting_input'; self:record('action_retry',{line=line.id,type=action.type})
+  return true
+end
+
 function M:complete(action,result)
   assert(type(action)=='table' and type(result)=='table','Action and result required')
   local line
