@@ -74,21 +74,76 @@ class ExecutorTest(unittest.TestCase):
         self.assertTrue(engine.checkTask(engine, wait["task"]))
         self.assertEqual("deliver_producer", engine.nextAction(engine)["type"])
 
-    def test_manual_mutation_refuses_nonempty_return_container(self):
+    def test_existing_queen_becomes_me_baseline(self):
         hardware = self.lua.table()
         hardware["countQueens"] = lambda uid=None: 1
         engine = self.module.new(self.plan(manual=True), hardware, None)
         action = engine.nextAction(engine)
-        self.assertEqual("manual_task", action["type"])
+        self.assertEqual("prepare_manual_mutation", action["type"])
         task = engine.tasks[action["task"]]
-        self.assertEqual("clear_return_container", task["status"])
+        self.assertEqual(1, task["baseline"])
 
-    def test_wrong_species_in_return_container_also_blocks_start(self):
+    def test_manual_queue_prepares_up_to_hardware_capacity(self):
+        plan = table(self.lua, {"schema": 1,
+            "mutations": [
+                {"result": "a", "parents": ["root", "root"], "conditions": []},
+                {"result": "b", "parents": ["root", "root"], "conditions": []}],
+            "lines": [
+                {"id": 1, "role": "producer", "target": "a", "species": ["root", "a"]},
+                {"id": 2, "role": "producer", "target": "b", "species": ["root", "b"]}],
+            "manualTasks": [
+                {"id": "mutation:1:1", "type": "advanced_mutation", "line": 1, "step": 1,
+                 "result": "a", "parents": ["root", "root"], "status": "waiting_player"},
+                {"id": "mutation:2:1", "type": "advanced_mutation", "line": 2, "step": 1,
+                 "result": "b", "parents": ["root", "root"], "status": "waiting_player"}]})
         hardware = self.lua.table()
-        hardware["countQueens"] = lambda uid=None: 1 if uid is None else 0
-        engine = self.module.new(self.plan(manual=True), hardware, None)
+        hardware["countQueens"] = lambda uid=None: 0
+        hardware["manualCapacity"] = lambda: 2
+        engine = self.module.new(plan, hardware, None)
+        first = engine.nextAction(engine)
+        engine.complete(engine, first, table(self.lua, {"accepted": True}))
+        second = engine.nextAction(engine)
+        self.assertEqual("prepare_manual_mutation", second["type"])
+        self.assertNotEqual(first["task"], second["task"])
+
+    def test_same_result_tasks_get_distinct_thresholds(self):
+        plan = table(self.lua, {"schema": 1,
+            "mutations": [{"result": "a", "parents": ["root", "root"], "conditions": []}],
+            "lines": [
+                {"id": 1, "role": "producer", "target": "a", "species": ["root", "a"]},
+                {"id": 2, "role": "producer", "target": "a", "species": ["root", "a"]}],
+            "manualTasks": [
+                {"id": "mutation:1:1", "type": "advanced_mutation", "line": 1, "step": 1,
+                 "result": "a", "parents": ["root", "root"], "status": "waiting_player"},
+                {"id": "mutation:2:1", "type": "advanced_mutation", "line": 2, "step": 1,
+                 "result": "a", "parents": ["root", "root"], "status": "waiting_player"}]})
+        hardware = self.lua.table()
+        hardware["countQueens"] = lambda uid=None: 3
+        hardware["manualCapacity"] = lambda: 2
+        engine = self.module.new(plan, hardware, None)
+        first = engine.nextAction(engine)
+        engine.complete(engine, first, table(self.lua, {"accepted": True}))
+        second = engine.nextAction(engine)
+        self.assertEqual(3, engine.tasks[first["task"]]["baseline"])
+        self.assertEqual(4, engine.tasks[second["task"]]["baseline"])
+
+    def test_queued_manual_task_does_not_capture_early_baseline(self):
+        plan = table(self.lua, {"schema": 1,
+            "mutations": [{"result": "a", "parents": ["root", "root"]},
+                          {"result": "b", "parents": ["root", "root"]}],
+            "lines": [{"id": 1, "role": "producer", "target": "a", "species": ["root", "a"]},
+                      {"id": 2, "role": "producer", "target": "b", "species": ["root", "b"]}],
+            "manualTasks": [
+                {"id": "mutation:1:1", "type": "advanced_mutation", "line": 1, "step": 1,
+                 "result": "a", "status": "waiting_player"},
+                {"id": "mutation:2:1", "type": "advanced_mutation", "line": 2, "step": 1,
+                 "result": "b", "status": "waiting_player"}]})
+        hardware = self.lua.table(); hardware["countQueens"] = lambda uid=None: 0
+        hardware["manualCapacity"] = lambda: 1
+        engine = self.module.new(plan, hardware, None)
+        first = engine.nextAction(engine); engine.complete(engine, first, table(self.lua, {"accepted": True}))
         self.assertEqual("manual_task", engine.nextAction(engine)["type"])
-        self.assertEqual("clear_return_container", engine.tasks["mutation:1:1"]["status"])
+        self.assertIsNone(engine.tasks["mutation:2:1"]["baseline"])
 
     def test_check_all_does_not_activate_future_manual_tasks(self):
         hardware = self.lua.table()

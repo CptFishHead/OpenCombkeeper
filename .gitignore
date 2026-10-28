@@ -6,3 +6,4 @@ dist/
 *.egg-info/
 plan.json
 plan.lua
+!src/plan.lua

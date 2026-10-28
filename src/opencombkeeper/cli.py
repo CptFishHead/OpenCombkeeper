@@ -36,11 +36,24 @@ def lua_value(value, level=0):
     raise TypeError(type(value))
 
 
+def runtime_plan(plan):
+    """Keep only fields consumed by the OpenOS executor."""
+    mutation_keys = ("result", "parents", "calendarConditions")
+    line_keys = ("id", "role", "target", "moduleProfile", "moduleSlot", "species")
+    task_keys = ("id", "type", "line", "step", "result", "species", "count", "status")
+    return {
+        "schema": plan["schema"],
+        "mutations": [{key: row[key] for key in mutation_keys if key in row} for row in plan["mutations"]],
+        "lines": [{key: row[key] for key in line_keys if key in row} for row in plan["lines"]],
+        "manualTasks": [{key: row[key] for key in task_keys if key in row} for row in plan["manualTasks"]],
+    }
+
+
 def plan_command(options):
     plan = Planner(read_json(options.catalog), read_json(options.config)).build()
     options.output.write_text(json.dumps(plan, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     if options.lua_output:
-        options.lua_output.write_text("return " + lua_value(plan) + "\n", encoding="utf-8")
+        options.lua_output.write_text("return " + lua_value(runtime_plan(plan)) + "\n", encoding="utf-8")
     counts = plan["counts"]
     print(f"Соты: {counts['reachableCombs']}/{counts['catalogCombs']}")
     print(f"Производители: {counts['selectedProducers']}")

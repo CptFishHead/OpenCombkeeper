@@ -35,6 +35,7 @@ function M.new(plan,hardware,persisted)
     self.state={schema=1,status='ready',lines={},tasks=copy(plan.manualTasks or {}),history={}}
     for _,line in ipairs(plan.lines or {}) do
       self.state.lines[#self.state.lines+1]={id=line.id,role=line.role,target=line.target,
+        profile=line.moduleProfile or 'plains',moduleSlot=line.moduleSlot or 1,
         route=copy(line.species),position=1,status='waiting_input'}
     end
   end
@@ -55,12 +56,16 @@ function M:activateTask(id)
   local task=assert(self.tasks[id],'Unknown task')
   if task.status=='done' then return false end
   if task.type=='advanced_mutation' then
-    local total=(self.hardware.countQueens and self.hardware.countQueens()) or 0
-    task.baseline=0
-    if total~=0 then
-      task.status='clear_return_container'
-      self:record('task_blocked_container',{id=id,count=total})
-      return false
+    local current=(self.hardware.countQueens and self.hardware.countQueens(task.result)) or 0
+    task.baseline=current
+    -- Several advanced mutatrons may target the same species concurrently.
+    -- Give every task its own strictly increasing ME-count threshold so one
+    -- returned queen cannot complete more than one task.
+    for _,other in ipairs(self.state.tasks) do
+      if other~=task and other.type=='advanced_mutation' and other.result==task.result
+          and other.status~='done' and other.baseline~=nil then
+        task.baseline=math.max(task.baseline,other.baseline+1)
+      end
     end
   elseif task.type=='provide_drones' then
     task.baseline=0
@@ -74,14 +79,6 @@ end
 function M:checkTask(id)
   local task=assert(self.tasks[id],'Unknown task')
   if task.status=='done' then return true end
-  if task.type=='advanced_mutation' and task.status=='clear_return_container' then
-    local count=(self.hardware.countQueens and self.hardware.countQueens()) or 0
-    if count==0 then
-      task.baseline=0; task.status='waiting_player'
-      self:record('return_container_cleared',{id=id})
-    end
-    return false
-  end
   if task.baseline==nil then return false end
   local ready=false
   if task.type=='advanced_mutation' then
@@ -121,6 +118,13 @@ end
 
 function M:nextAction()
   if self.state.status=='blocked' or self.state.status=='done' then return nil end
+  local capacity=4
+  if self.hardware.manualCapacity then capacity=math.max(0,tonumber(self.hardware.manualCapacity()) or 0) end
+  local prepared=0
+  for _,task in ipairs(self.state.tasks) do
+    if task.type=='advanced_mutation' and task.status~='done' and task.prepared then prepared=prepared+1 end
+  end
+  local waiting
   for _,line in ipairs(self.state.lines) do
     if line.status=='lost' then self.state.status='blocked'; return nil end
     if line.position<#line.route then
@@ -128,21 +132,25 @@ function M:nextAction()
       local mutation=assert(self.mutations[result],'Missing mutation for '..result)
       local task=manualTaskFor(self.state,line.id,line.position)
       if task and task.status~='done' then
-        if task.baseline==nil then self:activateTask(task.id) end
-        if task.status=='waiting_player' and not task.prepared then
+        if not task.prepared and prepared<capacity then
+          if task.baseline==nil then self:activateTask(task.id) end
           return {type='prepare_manual_mutation',task=task.id,line=line.id,step=line.position,
-            carrier=line.route[line.position],result=result,parents=copy(mutation.parents),
-            conditions=copy(mutation.conditions or {})}
+            profile=line.profile,moduleSlot=line.moduleSlot,carrier=line.route[line.position],result=result,
+            parents=copy(mutation.parents),
+            calendarConditions=copy(mutation.calendarConditions or {})}
         end
-        return {type='manual_task',task=task.id,line=line.id,result=result}
+        waiting=waiting or {type='manual_task',task=task.id,line=line.id,result=result}
+      else
+        return {type='mutation',line=line.id,step=line.position,profile=line.profile,moduleSlot=line.moduleSlot,
+          carrier=line.route[line.position],result=result,parents=copy(mutation.parents),
+          calendarConditions=copy(mutation.calendarConditions or {})}
       end
-      return {type='mutation',line=line.id,step=line.position,carrier=line.route[line.position],
-        result=result,parents=copy(mutation.parents),conditions=copy(mutation.conditions or {})}
     elseif line.status~='delivered' then
       return {type=line.role=='producer' and 'deliver_producer' or 'store_drone_source',
-        line=line.id,species=line.target}
+        line=line.id,profile=line.profile,moduleSlot=line.moduleSlot,species=line.target}
     end
   end
+  if waiting then return waiting end
   for _,task in ipairs(self.state.tasks) do
     if task.status~='done' then
       if task.baseline==nil then self:activateTask(task.id) end

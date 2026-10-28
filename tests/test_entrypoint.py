@@ -12,10 +12,10 @@ function runEntrypoint(source,command)
   local calls={}
   local topology={}
   function topology:scan() calls.scan=(calls.scan or 0)+1 end
-  function topology:bind(recover) calls.bind=recover and 'reset' or 'bind'; return {schema='OCTOPOLOGY1'} end
-  function topology:load() return {schema='OCTOPOLOGY1'} end
+  function topology:bind(recover) calls.bind=recover and 'reset' or 'bind'; return {schema='OCTOPOLOGY2'} end
+  function topology:load() return {schema='OCTOPOLOGY2'} end
   function topology:display() calls.display=(calls.display or 0)+1 end
-  function topology:ensure(interactive) calls.ensure=interactive; return {schema='OCTOPOLOGY1'} end
+  function topology:ensure(interactive) calls.ensure=interactive; return {schema='OCTOPOLOGY2'} end
   local engine={}
   function engine:summary() return {status='ready'} end
   function engine:checkAllTasks() calls.manualCheck=(calls.manualCheck or 0)+1; return 1,2 end
@@ -78,7 +78,7 @@ class EntrypointTest(unittest.TestCase):
         result, calls = self.run_entrypoint("run")
         self.assertTrue(result)
         self.assertTrue(calls["ensure"])
-        self.assertEqual("OCTOPOLOGY1", calls["configured"])
+        self.assertEqual("OCTOPOLOGY2", calls["configured"])
 
 
 if __name__ == "__main__":

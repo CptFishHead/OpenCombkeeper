@@ -8,6 +8,14 @@ function M.configure(topology)
   M.topology=assert(topology)
 end
 
+local function productionModule(profile,slot)
+  local matches={}
+  for _,module in ipairs(assert(M.topology).productionModules) do
+    if module.climate==profile then matches[#matches+1]=module end
+  end
+  return assert(matches[slot],string.format('No production module %s/%s',tostring(profile),tostring(slot)))
+end
+
 function M.load()
   -- Return the previously persisted executor state, or nil for a new run.
   return nil
@@ -20,9 +28,14 @@ function M.save(state)
 end
 
 function M.countQueens(species)
-  -- Count matching queens in the dedicated manual-result container. If species
-  -- is nil, count all queens so the executor can require an empty container.
+  -- Count matching queens in the shared ME network. Manual results are returned
+  -- to ME; the executor records a per-species baseline before loading parents.
   return 0
+end
+
+function M.manualCapacity()
+  -- One prepared player task per discovered advanced mutatron.
+  return M.topology and #M.topology.advancedMutatrons or 0
 end
 
 function M.countDrones(species)
@@ -31,6 +44,8 @@ function M.countDrones(species)
 end
 
 function M.perform(action)
+  -- For production actions use productionModule(action.profile,
+  -- action.moduleSlot). The planner pins every line to this exact module.
   -- Supported actions:
   -- prepare_manual_mutation: load both parents into the advanced mutatron and
   --                          return {accepted=true} after slot verification.

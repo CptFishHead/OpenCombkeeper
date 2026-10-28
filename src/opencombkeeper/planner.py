@@ -174,17 +174,39 @@ class Planner:
                 continue
             preferred = targets if self.mode == "collect" else frozenset()
             path = self._carrier_path(target, depth, recipe, preferred)
-            paths.append({"role": "producer", "target": target, "species": path})
+            paths.append({"role": "producer", "target": target, "species": path,
+                          "moduleProfile": self._module_profile(target),
+                          "targetRequirements": self.species[target].get("requirements", {})})
             covered.update(path)
         for dependency in sorted(required - covered, key=lambda uid: (-depth[uid], uid)):
             if dependency in covered:
                 continue
             path = self._carrier_path(dependency, depth, recipe)
-            paths.append({"role": "drone_source", "target": dependency, "species": path})
+            paths.append({"role": "drone_source", "target": dependency, "species": path,
+                          "moduleProfile": self._module_profile(dependency),
+                          "targetRequirements": self.species[dependency].get("requirements", {})})
             covered.update(path)
+        profile_counts: Counter[str] = Counter()
+        profile_capacity = {"plains": 4, "jungle": 1, "desert": 1, "winter": 1, "hell": 1}
         for number, path in enumerate(paths, 1):
             path["id"] = number
+            profile = path["moduleProfile"]
+            path["moduleSlot"] = profile_counts[profile] % profile_capacity[profile] + 1
+            profile_counts[profile] += 1
         return paths
+
+    def _module_profile(self, uid: str) -> str:
+        """Choose one of the physically installed apiary climate profiles."""
+        temperature = str(self.species[uid].get("requirements", {}).get("temperature", "NORMAL"))
+        if temperature == "HELLISH":
+            return "hell"
+        if temperature == "HOT":
+            return "desert"
+        if temperature == "WARM":
+            return "jungle"
+        if temperature in {"ICY", "COLD"}:
+            return "winter"
+        return "plains"
 
     def build(self) -> dict[str, Any]:
         depth, recipe = self._reachability()
@@ -203,8 +225,12 @@ class Planner:
             if not mutation:
                 continue
             ambiguous = len(self.by_pair[mutation.pair]) > 1
+            calendar = [condition for condition in mutation.conditions if condition.startswith("restrictDateRange(")]
             row = {"result": uid, "parents": list(mutation.parents), "chance": mutation.chance,
-                   "conditions": list(mutation.conditions), "depth": depth[uid], "manual": ambiguous}
+                   "conditions": list(mutation.conditions), "calendarConditions": calendar,
+                   "ignoredMutatronConditions": [condition for condition in mutation.conditions
+                                                  if condition not in calendar],
+                   "depth": depth[uid], "manual": ambiguous}
             selected_mutations.append(row)
         manual_tasks = []
         final_drone_uses: Counter[str] = Counter()

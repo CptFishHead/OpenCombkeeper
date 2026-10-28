@@ -66,6 +66,24 @@ class PlannerUnitTest(unittest.TestCase):
         plan = Planner(catalog, {"mode": "best", "startingSpecies": {"root": 1}})
         self.assertEqual({"root": 1}, plan.build()["startingShortages"])
 
+    def test_line_is_assigned_to_climate_profile(self):
+        hot = species("hot", [comb("c", 1)])
+        hot["requirements"] = {"temperature": "HOT", "humidity": "ARID"}
+        catalog = {"species": [species("root"), hot],
+                   "mutations": [{"result": "hot", "parents": ["root", "root"], "chance": 10}]}
+        plan = Planner(catalog, {"mode": "best", "startingSpecies": {"root": 1}}).build()
+        self.assertEqual("desert", plan["lines"][0]["moduleProfile"])
+        self.assertEqual(1, plan["lines"][0]["moduleSlot"])
+
+    def test_only_calendar_condition_reaches_mutatron_scheduler(self):
+        catalog = {"species": [species("root"), species("a", [comb("c", 1)])],
+                   "mutations": [{"result": "a", "parents": ["root", "root"], "chance": 10,
+                                  "conditions": ["restrictBiomeType(PLAINS)",
+                                                 "restrictDateRange(12, 21, 12, 27)"]}]}
+        mutation = Planner(catalog, {"mode": "best", "startingSpecies": {"root": 1}}).build()["mutations"][0]
+        self.assertEqual(["restrictDateRange(12, 21, 12, 27)"], mutation["calendarConditions"])
+        self.assertEqual(["restrictBiomeType(PLAINS)"], mutation["ignoredMutatronConditions"])
+
 
 class RealCatalogTest(unittest.TestCase):
     @classmethod
@@ -98,6 +116,7 @@ class RealCatalogTest(unittest.TestCase):
             self.assertEqual(0, code)
             self.assertEqual(1, json.loads(output.read_text())["schema"])
             self.assertTrue(lua.read_text().startswith("return {"))
+            self.assertNotIn("sourceCatalog", lua.read_text())
 
 
 if __name__ == "__main__":
