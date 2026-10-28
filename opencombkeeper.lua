@@ -1,4 +1,4 @@
--- OpenCombkeeper 0.4.6 OpenOS entry point.
+-- OpenCombkeeper 0.4.7 OpenOS entry point.
 local function loadFile(path)
   local chunk,reason=loadfile(path)
   assert(chunk,reason)
@@ -179,6 +179,11 @@ elseif command=='run' then
       print('WAIT '..action.task..' -> '..tostring(action.result))
       if action.parents then print('PARENTS '..table.concat(action.parents,' + ')) end
       print('Return the result to ME, then run: opencombkeeper check')
+      break
+    end
+    if action.type=='blocked_resources' then
+      print('WAIT missing drones: '..table.concat(action.missingDrones or {},', '))
+      print('No executable predecessor line can currently produce them.')
       break
     end
     assert(hardware.perform,'Hardware adapter has no perform(action)')

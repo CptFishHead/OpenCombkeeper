@@ -128,6 +128,7 @@ function M:nextAction()
     if task.type=='advanced_mutation' and task.status~='done' and task.prepared then prepared=prepared+1 end
   end
   local waiting
+  local missingDrones={}
   for _,line in ipairs(self.state.lines) do
     if line.status=='lost' then self.state.status='blocked'; return nil end
     if line.form=='queen' and (line.position<#line.route or line.role=='drone_source') then
@@ -152,9 +153,13 @@ function M:nextAction()
           if parent~=line.route[line.position] then drone=parent; break end
         end
         drone=drone or line.route[line.position]
-        return {type='mutation',line=line.id,step=line.position,profile=line.profile,moduleSlot=line.moduleSlot,
-          carrier=line.route[line.position],drone=drone,result=result,parents=copy(mutation.parents),
-          calendarConditions=copy(mutation.calendarConditions or {})}
+        local available=not self.hardware.countDrones or self.hardware.countDrones(drone)>0
+        if available then
+          return {type='mutation',line=line.id,step=line.position,profile=line.profile,moduleSlot=line.moduleSlot,
+            carrier=line.route[line.position],drone=drone,result=result,parents=copy(mutation.parents),
+            calendarConditions=copy(mutation.calendarConditions or {})}
+        end
+        missingDrones[drone]=true
       end
     elseif line.status~='delivered' then
       return {type=line.role=='producer' and 'deliver_producer' or 'store_drone_source',
@@ -162,6 +167,10 @@ function M:nextAction()
     end
   end
   if waiting then return waiting end
+  if next(missingDrones) then
+    local species={}; for uid in pairs(missingDrones) do species[#species+1]=uid end; table.sort(species)
+    return {type='blocked_resources',missingDrones=species}
+  end
   for _,task in ipairs(self.state.tasks) do
     if task.status~='done' then
       if task.baseline==nil then self:activateTask(task.id) end

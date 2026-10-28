@@ -66,6 +66,22 @@ class ExecutorTest(unittest.TestCase):
         self.assertEqual("middle", second["carrier"])
         self.assertEqual("drone-b", second["drone"])
 
+    def test_missing_intermediate_drone_schedules_its_producer_first(self):
+        plan = table(self.lua, {"schema": 1,
+            "mutations": [
+                {"result": "final", "parents": ["root", "middle"]},
+                {"result": "middle", "parents": ["root", "base"]}],
+            "lines": [
+                {"id": 1, "role": "producer", "target": "final", "species": ["root", "final"]},
+                {"id": 2, "role": "drone_source", "target": "middle", "species": ["root", "middle"]}],
+            "manualTasks": []})
+        hardware = self.lua.eval("{countDrones=function(uid) return uid=='base' and 1 or 0 end}")
+        engine = self.module.new(plan, hardware, None)
+        action = engine.nextAction(engine)
+        self.assertEqual("mutation", action["type"])
+        self.assertEqual(2, action["line"])
+        self.assertEqual("base", action["drone"])
+
     def test_final_drone_source_is_incubated(self):
         plan = table(self.lua, {"schema": 1,
             "mutations": [{"result": "source", "parents": ["root", "root"]}],
