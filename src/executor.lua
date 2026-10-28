@@ -140,13 +140,14 @@ function M:nextAction()
   end
   for _,line in ipairs(self.state.lines) do
     local moduleKey=line.profile..':'..line.moduleSlot
-    if line.status=='lost' then self.state.status='blocked'; return nil end
-    if line.status~='running' and not busy[moduleKey]
+    -- Genetic waste consumes only this precomputed attempt. Other independent
+    -- lines must keep all remaining modules busy.
+    if line.status~='lost' and line.status~='running' and not busy[moduleKey]
         and line.form=='queen' and (line.position<#line.route or line.role=='drone_source') then
       return {type='incubate',line=line.id,profile=line.profile,moduleSlot=line.moduleSlot,
         species=line.route[line.position]}
     end
-    if line.status~='running' and not busy[moduleKey] and line.position<#line.route then
+    if line.status~='lost' and line.status~='running' and not busy[moduleKey] and line.position<#line.route then
       local result=line.route[line.position+1]
       local mutation=assert(self.mutations[result],'Missing mutation for '..result)
       local task=manualTaskFor(self.state,line.id,line.position)
@@ -173,7 +174,7 @@ function M:nextAction()
         end
         missingDrones[drone]=true
       end
-    elseif line.status~='running' and not busy[moduleKey] and line.status~='delivered'
+    elseif line.status~='lost' and line.status~='running' and not busy[moduleKey] and line.status~='delivered'
         and (line.role~='producer' or not outputBusy) then
       return {type=line.role=='producer' and 'deliver_producer' or 'store_drone_source',
         line=line.id,profile=line.profile,moduleSlot=line.moduleSlot,species=line.target}
@@ -189,6 +190,9 @@ function M:nextAction()
       if task.baseline==nil then self:activateTask(task.id) end
       return {type='manual_task',task=task.id}
     end
+  end
+  for _,line in ipairs(self.state.lines) do
+    if line.status=='lost' then self.state.status='blocked'; self:record('plan_incomplete',{}); return nil end
   end
   self.state.status='done'; self:record('plan_done',{}); return nil
 end
@@ -209,7 +213,7 @@ function M:complete(action,result)
   if action.type=='mutation' then
     assert(line and line.position==action.step,'Stale mutation action')
     if result.kind=='genetic_waste' then
-      line.status='lost'; self.state.status='blocked'
+      line.status='lost'
       self:record('line_lost',{line=line.id,expected=action.result}); return false
     end
     assert(result.kind=='queen' and result.species,'Mutation result must be a queen')

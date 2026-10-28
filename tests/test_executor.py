@@ -132,6 +132,8 @@ class ExecutorTest(unittest.TestCase):
     def test_genetic_waste_loses_line_and_blocks(self):
         engine = self.module.new(self.plan(), table(self.lua, {}), None)
         self.assertFalse(engine.complete(engine, engine.nextAction(engine), table(self.lua, {"kind": "genetic_waste"})))
+        self.assertEqual("ready", engine.summary(engine)["status"])
+        self.assertIsNone(engine.nextAction(engine))
         summary = engine.summary(engine)
         self.assertEqual(1, summary["lost"])
         self.assertEqual("blocked", summary["status"])

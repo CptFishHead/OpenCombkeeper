@@ -446,13 +446,18 @@ local function new(environment)
   local function deliverProducer(operation,action)
     local source=assert(M.production[action.profile] and M.production[action.profile][action.moduleSlot],
       'Missing producer source module')
-    local sourceSlot=assert(localBee(source,action.species,'queen'),'Final queen is absent from its local chest')
-    local sourceQueen=copy(inventory(source.t,source.chest.side,sourceSlot))
-    assert(emptyBuffer(source),'Source ME interface buffer is occupied')
-    local moved=call(source.t.transferItem,source.chest.side,source.source,1,sourceSlot)
-    assert(moved==1,'Cannot export final queen from local chest')
-    waitBufferEmpty(source)
-    adjustSnapshot(sourceQueen,1)
+    local sourceSlot=localBee(source,action.species,'queen')
+    if sourceSlot then
+      local sourceQueen=copy(inventory(source.t,source.chest.side,sourceSlot))
+      assert(emptyBuffer(source),'Source ME interface buffer is occupied')
+      local moved=call(source.t.transferItem,source.chest.side,source.source,1,sourceSlot)
+      assert(moved==1,'Cannot export final queen from local chest')
+      waitBufferEmpty(source)
+      adjustSnapshot(sourceQueen,1)
+    else
+      assert(findBee(action.species,'queen'),
+        'Final queen is absent from both its local chest and ME: '..action.species)
+    end
     local module=M.output
     assert(emptyBuffer(module),'Final-output ME interface buffer is occupied')
     requestBee(operation,module,action.species,'queen',module.chest,nil)
