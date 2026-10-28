@@ -1,11 +1,11 @@
 OpenCombkeeper-package-1
-revision e96f0a18f30e9ff6704323f4417781eb242373cb
-version 0.5.3
-file opencombkeeper.lua 14703 21109d48
+revision a8553785a87573c8f0df52367a45715c7086bf41
+version 0.5.4
+file opencombkeeper.lua 14703 5a699d49
 file install.lua 7561 db780b7c
 file src/topology.lua 28204 a7addbe8
-file src/executor.lua 11752 716dee1b
+file src/executor.lua 13230 cd91e51e
 file src/plan.lua 81245 e655af14
-file src/hardware.lua 36313 8735a30c
+file src/hardware.lua 36858 2772483c
 file src/hardware.example.lua 2109 85afdd38
-file VERSION 6 03da00ff
+file VERSION 6 03dc0100
