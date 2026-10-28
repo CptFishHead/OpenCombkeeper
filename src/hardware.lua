@@ -525,17 +525,6 @@ local function new(environment)
       if free then break end
     end
     assert(free,'No free OC database entry')
-    local automatic={}
-    local manual={}
-    for _,task in ipairs(plan and plan.manualTasks or {}) do
-      if task.type=='advanced_mutation' then manual[tostring(task.line)..':'..tostring(task.step)]=true end
-    end
-    for _,line in ipairs(plan and plan.lines or {}) do
-      local key=tostring(line.moduleProfile or 'plains')..':'..tostring(line.moduleSlot or 1)
-      for step=1,#(line.species or {})-1 do
-        if not manual[tostring(line.id)..':'..step] then automatic[key]=(automatic[key] or 0)+1 end
-      end
-    end
     for profile,list in pairs(M.production) do
       for slot,module in ipairs(list) do
         assert(emptyBuffer(module),'ME interface buffer is occupied at '..module.address)
@@ -556,21 +545,12 @@ local function new(environment)
         local label=profile..'/'..slot..' ('..module.address..')'
         assert(fluidPresent(module,module.mutatron),'Mutatron needs mutagen at module '..label)
         local template=inventory(module.t,module.imprinter.side,1)
-        local labware=0
-        for _,row in ipairs({{module.mutatron,4},{module.imprinter,2}}) do
-          local value=inventory(module.t,row[1].side,row[2])
-          if alive(value) and value.label=='Genetics Labware' then labware=labware+value.size end
-        end
         for chestSlot=1,call(module.t.getInventorySize,module.chest.side) do
           local value=inventory(module.t,module.chest.side,chestSlot)
           if alive(value) and value.name=='gendustry:gene_template' then template=template or value end
-          if alive(value) and value.label=='Genetics Labware' then labware=labware+value.size end
         end
         assert(alive(template) and template.name=='gendustry:gene_template',
           'Module '..label..' needs the standard Gene Template')
-        local needed=(automatic[profile..':'..slot] or 0)*3
-        assert(labware>=needed,'Module '..label..' needs '..needed
-          ..' Genetics Labware for the plan; found '..labware)
       end
     end
     assert(emptyBuffer(M.output),'Final-output ME interface buffer is occupied')
