@@ -122,7 +122,7 @@ end
 
 function M:scan()
   local found=self:discover()
-  self:print('OpenCombkeeper 0.3.2 - read-only discovery')
+  self:print('OpenCombkeeper 0.3.3 - read-only discovery')
   self:print('Transposers: '..#found.transposers)
   for _,module in ipairs(found.modules) do
     self:print('TRANSPOSER '..module.entry.address)
@@ -437,7 +437,7 @@ function M:bind(recover)
   end
   assert(not self.env.exists(self.pendingPath),'Unfinished binding. Run opencombkeeper bind-reset first')
   local found=self:discover()
-  local modules={}
+  local modules,probes={},{}
   for _,candidate in ipairs(found.modules) do
     local others,useful={},false
     for _,inventory in ipairs(candidate.inventories) do
@@ -448,12 +448,16 @@ function M:bind(recover)
     end
     if useful then
       assert(#candidate.interfaceSides<=1,'Several interfaces touch transposer '..candidate.entry.address)
-      if #candidate.interfaceSides==1 then
-        candidate.side=candidate.interfaceSides[1]; candidate.others=others; modules[#modules+1]=candidate
-      end
+    end
+    if #candidate.interfaceSides==1 then
+      candidate.side=candidate.interfaceSides[1]; candidate.others=others
+      candidate.managed=useful; probes[#probes+1]=candidate
+      if useful then modules[#modules+1]=candidate end
     end
   end
   assert(#modules>0,'No module with an adjacent ME interface found')
+  assert(#modules==9,'Need exactly 9 managed modules (8 production + final output); found '..#modules
+    ..'. Run opencombkeeper scan and check OC connections to every transposer')
   assert(#found.interfaces>=#modules,'Need one configurable interface per module: modules='..#modules..', interfaces='..#found.interfaces)
   assert(#found.databases>0,'One OC database is required')
   local interfaces={}
@@ -463,10 +467,14 @@ function M:bind(recover)
     if empty then interfaces[#interfaces+1]=entry else self:print('SKIP existing requests: '..entry.address) end
   end
   assert(#interfaces>=#modules,'Not enough interfaces without existing requests')
-  for _,module in ipairs(modules) do
+  -- Manual advanced mutatron assemblies are not topology modules, but their
+  -- interface buffers must still be watched while correlating component UUIDs.
+  -- Otherwise a marker delivered there looks like a failed ME request and costs
+  -- the full timeout even though delivery succeeded.
+  for _,module in ipairs(probes) do
     for slot=1,9 do
       assert(not alive(self:call(module.entry.proxy.getStackInSlot,module.side,slot)),
-        'Interface inventory must be empty: '..module.entry.address)
+        'Interface inventory must be empty during binding: '..module.entry.address)
     end
   end
   local database,databaseSlot
@@ -482,7 +490,7 @@ function M:bind(recover)
   local directory=self.pendingPath:match('^(.*)/[^/]+$')
   if directory and not self.env.exists(directory) then assert(self.env.mkdir(directory),'Cannot create '..directory) end
   self:print('Binding '..#modules..' modules using '..#interfaces..' empty-configuration candidates')
-  local used,bound={},{}
+  local mapped,used,bound={},{},{}
   local ok,reason=pcall(function()
     for index,interface in ipairs(interfaces) do
       self.env.writeText(self.pendingPath,PENDING_SCHEMA..'\n'..interface.address..' '..database.address..' '..databaseSlot..'\n')
@@ -496,7 +504,7 @@ function M:bind(recover)
       local match
       for attempt=0,BIND_TIMEOUT do
         match=nil
-        for _,module in ipairs(modules) do
+        for _,module in ipairs(probes) do
           local present=false
           for slot=1,9 do
             local value=self:call(module.entry.proxy.getStackInSlot,module.side,slot)
@@ -513,10 +521,15 @@ function M:bind(recover)
       self:call(interface.proxy.setInterfaceConfiguration,9)
       assert(self:call(interface.proxy.getInterfaceConfiguration,9)==nil,'Cannot clear marker request')
       if match then
-        assert(not used[match.entry.address],'Several interfaces map to one module')
-        used[match.entry.address]=true; match.interface=interface.address
-        self:waitEmpty(match); bound[#bound+1]=match
-        self:print('BOUND '..#bound..'/'..#modules..': '..match.entry.address..' -> '..interface.address)
+        assert(not mapped[match.entry.address],'Several interfaces map to one transposer')
+        mapped[match.entry.address]=true; self:waitEmpty(match)
+        if match.managed then
+          assert(not used[match.entry.address],'Several interfaces map to one module')
+          used[match.entry.address]=true; match.interface=interface.address; bound[#bound+1]=match
+          self:print('BOUND '..#bound..'/'..#modules..': '..match.entry.address..' -> '..interface.address)
+        else
+          self:print('SKIP manual/unmanaged transposer '..match.entry.address..' -> '..interface.address)
+        end
       else self:print('SKIP no marker delivered within '..BIND_TIMEOUT..' seconds: '..interface.address) end
       if #bound==#modules then break end
     end

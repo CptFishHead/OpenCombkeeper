@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 HARNESS = r"""
 function makeTopologyEnvironment()
   local files,saved,names,stacks,requests,proxies,all={},{},{},{},{},{},{}
-  local control={hide=nil,names=names,stacks=stacks,requests=requests,files=files,
+  local control={hide=nil,names=names,stacks=stacks,requests=requests,files=files,sleeps=0,
     clearDescriptorOnRequestClear=false}
   local function addTransposer(id,inventoryNames,upgrades)
     names[id]=inventoryNames; stacks[id]={}; if upgrades then stacks[id][1]=upgrades end
@@ -46,9 +46,13 @@ function makeTopologyEnvironment()
       [2]='gendustry:mutatron',[3]='gendustry:imprinter',[4]='minecraft:chest'},upgrades)
     addInterface(n,id)
   end
-  -- Advanced mutatrons are fully manual. Their four OC-visible interfaces are
-  -- deliberately not topology modules and never receive a transposer marker.
-  for n=9,12 do addInterface(n,nil) end
+  -- Advanced mutatrons are fully manual. They participate only in marker
+  -- observation so their interfaces can be skipped without a false timeout.
+  for n=9,12 do
+    local id='manual'..n
+    addTransposer(id,{[0]='appliedenergistics2:interface',[1]='gendustry:mutatron_advanced'})
+    addInterface(n,id)
+  end
   addTransposer('t13',{[0]='appliedenergistics2:interface',[1]='minecraft:chest'}); addInterface(13,'t13')
   all[#all+1]={address='db',kind='database',methods={computeHash=false,get=false,indexOf=false},proxy=proxies.db}
   local env={path='/data/topology',pendingPath='/data/bind-pending'}
@@ -62,7 +66,8 @@ function makeTopologyEnvironment()
   env.mkdir=function(path) files[path]=files[path] or ''; return true end
   env.serialize=function(value) saved.value=value; return 'SERIALIZED' end
   env.unserialize=function(text) if text=='SERIALIZED' then return saved.value end error('bad serialization') end
-  env.sleep=function() end; env.print=function() end; env.chooseRole=function() return 1 end
+  env.sleep=function() control.sleeps=control.sleeps+1 end
+  env.print=function() end; env.chooseRole=function() return 1 end
   return env,control
 end
 """
@@ -96,6 +101,17 @@ class TopologyTest(unittest.TestCase):
         self.control["clearDescriptorOnRequestClear"] = True
         topology = self.engine.bind(self.engine, False)
         self.assertEqual(9, len(topology["modules"]))
+
+    def test_manual_advanced_interfaces_do_not_consume_timeout(self):
+        topology = self.engine.bind(self.engine, False)
+        self.assertEqual(9, len(topology["modules"]))
+        self.assertEqual(0, self.control["sleeps"])
+
+    def test_bind_fails_before_probing_when_managed_module_is_missing(self):
+        self.control["hide"] = "t01"
+        with self.assertRaisesRegex(Exception, "Need exactly 9 managed modules"):
+            self.engine.bind(self.engine, False)
+        self.assertEqual(0, self.control["sleeps"])
 
     def test_bind_reset_tolerates_descriptor_already_gone(self):
         self.control["files"]["/data/bind-pending"] = "OCBIND1\ni1 db 1\n"
