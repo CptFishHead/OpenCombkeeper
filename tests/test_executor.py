@@ -104,6 +104,19 @@ class ExecutorTest(unittest.TestCase):
         self.assertEqual("mutation", engine.nextAction(engine)["type"])
         self.assertEqual(1, calls["value"])
 
+    def test_running_action_reserves_its_drone_from_parallel_scheduler(self):
+        plan = table(self.lua, {"schema": 1,
+            "mutations": [{"result": "a", "parents": ["root", "drone"]},
+                          {"result": "b", "parents": ["root", "drone"]}],
+            "lines": [{"id": 1, "role": "producer", "target": "a", "species": ["root", "a"],
+                       "moduleSlot": 1},
+                      {"id": 2, "role": "producer", "target": "b", "species": ["root", "b"],
+                       "moduleSlot": 2}], "manualTasks": []})
+        hardware = self.lua.eval("{availableDrones=function() return {drone=1} end}")
+        engine = self.module.new(plan, hardware, None)
+        first = engine.nextAction(engine); engine.reserve(engine, first)
+        self.assertEqual("blocked_resources", engine.nextAction(engine)["type"])
+
     def test_reserved_action_frees_scheduler_for_another_module(self):
         plan = table(self.lua, {"schema": 1,
             "mutations": [{"result": "a", "parents": ["root", "root"]},

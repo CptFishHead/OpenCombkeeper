@@ -143,6 +143,10 @@ function M:nextAction()
     if line.status=='running' then
       busy[line.profile..':'..line.moduleSlot]=true
       if line.role=='producer' and line.position==#line.route then outputBusy=true end
+      local reserved=line.runningAction and line.runningAction.drone
+      if availableDrones and reserved then
+        availableDrones[reserved]=math.max(0,(availableDrones[reserved] or 0)-1)
+      end
     end
   end
   for _,line in ipairs(self.state.lines) do
@@ -165,12 +169,20 @@ function M:nextAction()
           for _,parent in ipairs(mutation.parents or {}) do
             if parent~=line.route[line.position] then drone=parent; break end
           end
-          return {type='prepare_manual',task=task.id,line=line.id,profile=line.profile,
-            moduleSlot=line.moduleSlot,carrier=line.route[line.position],drone=drone or line.route[line.position],
-            result=result,parents=copy(mutation.parents)}
+          drone=drone or line.route[line.position]
+          local available=availableDrones and (availableDrones[drone] or 0)>0
+            or not availableDrones and (not self.hardware.countDrones or self.hardware.countDrones(drone)>0)
+          if available then
+            return {type='prepare_manual',task=task.id,line=line.id,profile=line.profile,
+              moduleSlot=line.moduleSlot,carrier=line.route[line.position],drone=drone,
+              result=result,parents=copy(mutation.parents)}
+          end
+          missingDrones[drone]=true
         end
-        waiting=waiting or {type='manual_task',task=task.id,line=line.id,result=result,
-          parents=copy(mutation.parents),calendarConditions=copy(mutation.calendarConditions or {})}
+        if task.prepared or task.preparing then
+          waiting=waiting or {type='manual_task',task=task.id,line=line.id,result=result,
+            parents=copy(mutation.parents),calendarConditions=copy(mutation.calendarConditions or {})}
+        end
       else
         local drone
         for _,parent in ipairs(mutation.parents or {}) do
@@ -214,7 +226,7 @@ function M:reserve(action)
   local line
   for _,candidate in ipairs(self.state.lines) do if candidate.id==action.line then line=candidate end end
   assert(line and line.status~='running' and line.status~='delivered','Line is not reservable')
-  line.status='running'; self:record('action_started',{line=line.id,type=action.type})
+  line.status='running'; line.runningAction=copy(action); self:record('action_started',{line=line.id,type=action.type})
   if action.type=='prepare_manual' then self.tasks[action.task].preparing=true end
   return true
 end
@@ -224,7 +236,7 @@ function M:retry(action)
   local line
   for _,candidate in ipairs(self.state.lines) do if candidate.id==action.line then line=candidate end end
   assert(line and (line.status=='running' or line.status=='waiting_input'),'Line is not retryable')
-  line.status='waiting_input'; self:record('action_retry',{line=line.id,type=action.type})
+  line.status='waiting_input'; line.runningAction=nil; self:record('action_retry',{line=line.id,type=action.type})
   if action.type=='prepare_manual' and self.tasks[action.task] then self.tasks[action.task].preparing=nil end
   return true
 end
@@ -233,6 +245,7 @@ function M:complete(action,result)
   assert(type(action)=='table' and type(result)=='table','Action and result required')
   local line
   for _,candidate in ipairs(self.state.lines) do if candidate.id==action.line then line=candidate end end
+  if line then line.runningAction=nil end
   if action.type=='prepare_manual' then
     local task=assert(self.tasks[action.task],'Unknown manual task')
     assert(line and line.position==task.step,'Stale manual preparation')
