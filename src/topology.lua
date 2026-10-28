@@ -5,6 +5,7 @@ local M={}
 
 local SCHEMA='OCTOPOLOGY2'
 local PENDING_SCHEMA='OCBIND1'
+local BIND_TIMEOUT=20
 local interfaceName='appliedenergistics2:interface'
 local machineKinds={
   ['gendustry:mutatron']='mutatron',
@@ -121,7 +122,7 @@ end
 
 function M:scan()
   local found=self:discover()
-  self:print('OpenCombkeeper 0.3.0 - read-only discovery')
+  self:print('OpenCombkeeper 0.3.1 - read-only discovery')
   self:print('Transposers: '..#found.transposers)
   for _,module in ipairs(found.modules) do
     self:print('TRANSPOSER '..module.entry.address)
@@ -382,22 +383,29 @@ function M:cleanupBinding()
   slot=tonumber(slot)
   local interface=self.env.proxy(address)
   local database=self.env.proxy(databaseAddress)
-  self:call(interface.setInterfaceConfiguration,9)
-  assert(self:call(interface.getInterfaceConfiguration,9)==nil,'Request 9 remains configured')
+  local configured=self:call(interface.getInterfaceConfiguration,9)
+  if configured~=nil then
+    self:call(interface.setInterfaceConfiguration,9)
+    assert(self:call(interface.getInterfaceConfiguration,9)==nil,'Request 9 remains configured')
+  end
   local value=self:call(database.get,slot)
   assert(not alive(value) or value.name=='minecraft:cobblestone','Reserved database entry changed')
-  self:call(database.clear,slot)
-  assert(self:call(database.get,slot)==nil,'Temporary database entry not cleared')
+  -- Some OC/AE2 builds discard the descriptor when the request is cleared.
+  -- Clearing an already empty database slot returns false there, so skip it.
+  if alive(value) then
+    self:call(database.clear,slot)
+    assert(self:call(database.get,slot)==nil,'Temporary database entry not cleared')
+  end
   assert(self.env.remove(self.pendingPath),'Cannot remove binding journal')
   return true
 end
 
 function M:waitEmpty(module)
-  for attempt=0,15 do
+  for attempt=0,BIND_TIMEOUT do
     local empty=true
     for slot=1,9 do if alive(self:call(module.entry.proxy.getStackInSlot,module.side,slot)) then empty=false end end
     if empty then return end
-    if attempt<15 then (self.env.sleep or os.sleep)(1) end
+    if attempt<BIND_TIMEOUT then (self.env.sleep or os.sleep)(1) end
   end
   error('Interface did not empty; check ME storage space and run opencombkeeper bind-reset')
 end
@@ -487,16 +495,15 @@ function M:bind(recover)
   local ok,reason=pcall(function()
     for index,interface in ipairs(interfaces) do
       self.env.writeText(self.pendingPath,PENDING_SCHEMA..'\n'..interface.address..' '..database.address..' '..databaseSlot..'\n')
-      if index==1 then
-        assert(self:call(interface.proxy.store,{name='minecraft:cobblestone'},database.address,databaseSlot,1),
-          'No cobblestone available in ME')
-      else
-        local marker=self:call(database.proxy.get,databaseSlot)
-        assert(marker and marker.name=='minecraft:cobblestone','Marker descriptor missing')
-      end
+      -- Refresh for every interface. On this server the descriptor may vanish
+      -- when the previous interface request is removed.
+      assert(self:call(interface.proxy.store,{name='minecraft:cobblestone'},database.address,databaseSlot,1),
+        'No cobblestone available through ME interface '..interface.address)
+      local marker=self:call(database.proxy.get,databaseSlot)
+      assert(marker and marker.name=='minecraft:cobblestone','Marker descriptor missing after store')
       assert(self:call(interface.proxy.setInterfaceConfiguration,9,database.address,databaseSlot,1),'Interface request rejected')
       local match
-      for attempt=0,15 do
+      for attempt=0,BIND_TIMEOUT do
         match=nil
         for _,module in ipairs(modules) do
           local present=false
@@ -510,7 +517,7 @@ function M:bind(recover)
           if present then assert(not match,'Marker visible at multiple modules'); match=module end
         end
         if match then break end
-        if attempt<15 then (self.env.sleep or os.sleep)(1) end
+        if attempt<BIND_TIMEOUT then (self.env.sleep or os.sleep)(1) end
       end
       self:call(interface.proxy.setInterfaceConfiguration,9)
       assert(self:call(interface.proxy.getInterfaceConfiguration,9)==nil,'Cannot clear marker request')
@@ -519,7 +526,7 @@ function M:bind(recover)
         used[match.entry.address]=true; match.interface=interface.address
         self:waitEmpty(match); bound[#bound+1]=match
         self:print('BOUND '..#bound..'/'..#modules..': '..match.entry.address..' -> '..interface.address)
-      else self:print('SKIP no marker delivered within 15 seconds: '..interface.address) end
+      else self:print('SKIP no marker delivered within '..BIND_TIMEOUT..' seconds: '..interface.address) end
       if #bound==#modules then break end
     end
     self:cleanupBinding()

@@ -8,7 +8,8 @@ ROOT = Path(__file__).resolve().parents[1]
 HARNESS = r"""
 function makeTopologyEnvironment()
   local files,saved,names,stacks,requests,proxies,all={},{},{},{},{},{},{}
-  local control={hide=nil,names=names,stacks=stacks,requests=requests,files=files}
+  local control={hide=nil,names=names,stacks=stacks,requests=requests,files=files,
+    clearDescriptorOnRequestClear=false}
   local function addTransposer(id,inventoryNames,upgrades)
     names[id]=inventoryNames; stacks[id]={}; if upgrades then stacks[id][1]=upgrades end
     proxies[id]={getInventoryName=function(side) return names[id][side] end,
@@ -26,6 +27,7 @@ function makeTopologyEnvironment()
         requests[id][slot]=databaseAddress and {database=databaseAddress,slot=databaseSlot,count=count} or nil
         stacks[transposerId][0]=stacks[transposerId][0] or {}
         stacks[transposerId][0][1]=databaseAddress and {name='minecraft:cobblestone',size=1} or nil
+        if not databaseAddress and control.clearDescriptorOnRequestClear then databaseSlots[1]=nil end
         return true
       end,
       store=function(filter,databaseAddress,databaseSlot,count)
@@ -89,6 +91,16 @@ class TopologyTest(unittest.TestCase):
         self.assertEqual(["plains"] * 4 + ["jungle", "desert", "winter", "hell"], climates)
         self.assertEqual("t13", topology["producerOutput"]["transposer"])
         self.assertEqual(0, len(self.engine.verify(self.engine, self.engine.load(self.engine))))
+
+    def test_bind_refreshes_descriptor_after_each_interface(self):
+        self.control["clearDescriptorOnRequestClear"] = True
+        topology = self.engine.bind(self.engine, False)
+        self.assertEqual(13, len(topology["modules"]))
+
+    def test_bind_reset_tolerates_descriptor_already_gone(self):
+        self.control["files"]["/data/bind-pending"] = "OCBIND1\ni1 db 1\n"
+        self.engine.bind(self.engine, True)
+        self.assertIsNone(self.control["files"]["/data/bind-pending"])
 
     def test_changed_machine_requests_rebind(self):
         topology = self.engine.bind(self.engine, False); self.control["names"]["t09"][1] = "minecraft:chest"

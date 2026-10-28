@@ -54,7 +54,7 @@ wget -fq https://raw.githubusercontent.com/CptFishHead/OpenCombkeeper/main/insta
 
 После установки: `opencombkeeper scan`, затем `opencombkeeper bind`.
 
-## Состояние версии 0.3.0
+## Состояние версии 0.3.1
 
 Готовы детерминированный планировщик, компактный каталог и проверяемый автомат
 состояний OpenOS. В поставку входит готовый план для 105 видов сот: 114 линий,

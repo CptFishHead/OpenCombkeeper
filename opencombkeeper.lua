@@ -1,4 +1,4 @@
--- OpenCombkeeper 0.3.0 OpenOS entry point.
+-- OpenCombkeeper 0.3.1 OpenOS entry point.
 local function loadFile(path)
   local chunk,reason=loadfile(path)
   assert(chunk,reason)
