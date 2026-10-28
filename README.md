@@ -55,7 +55,7 @@ wget -fq https://raw.githubusercontent.com/CptFishHead/OpenCombkeeper/main/insta
 После установки: `opencombkeeper scan`, затем `opencombkeeper bind` и
 `opencombkeeper hardware-check`.
 
-## Состояние версии 0.5.3
+## Состояние версии 0.5.4
 
 Исполнитель одновременно занимает свободные производственные модули. Промежуточные
 матки и принцессы остаются в локальном сундуке своего модуля; общие трутни

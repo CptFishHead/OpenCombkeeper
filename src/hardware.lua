@@ -212,12 +212,24 @@ local function new(environment)
   end
 
   local function findBee(species,kind)
-    local best
-    for _,value in pairs(readME()) do
-      local uid,physicalKind=bee(value)
-      if uid==species and physicalKind==kind and alive(value) then
-        if not best or value.size>best.size then best=value end
+    local function search(items)
+      local best
+      for _,value in pairs(items) do
+        local uid,physicalKind=bee(value)
+        if uid==species and physicalKind==kind and alive(value) then
+          if not best or value.size>best.size then best=value end
+        end
       end
+      return best
+    end
+    local best=search(readME())
+    if not best and M.meSnapshotAt then
+      local remaining=20-(computer.uptime()-M.meSnapshotAt)
+      if remaining>0 then
+        output('WAIT ME refresh '..math.ceil(remaining)..'s for '..species..' / '..kind)
+        sleep(remaining)
+      end
+      best=search(readME())
     end
     return best
   end
@@ -596,7 +608,7 @@ local function new(environment)
     assert(type(action)=='table' and type(action.type)=='string','Hardware action required')
     local operation=begin(action)
     local ok,result=pcall(function()
-      if action.type=='mutation' then return mutate(operation,action)
+      if action.type=='mutation' or action.type=='mate_producer' then return mutate(operation,action)
       elseif action.type=='incubate' then return incubate(operation,action)
       elseif action.type=='deliver_producer' then return deliverProducer(operation,action)
       elseif action.type=='store_drone_source' then return storeDroneSource(action) end
@@ -629,9 +641,11 @@ local function new(environment)
     for _,row in ipairs(pending) do
       assert(row.phase=='completed' and type(row.action)=='table' and type(row.result)=='table',
         'Operation '..operationKey(row.action)..' is not completed; inspect its module')
-      local expectedKind=row.action.type=='mutation'
+      local expectedKind=(row.action.type=='mutation' or row.action.type=='mate_producer')
           and (row.result.kind=='genetic_waste' and 'line_lost'
-            or row.result.species==row.action.result and 'mutation_done' or 'wrong_species')
+            or row.result.species==row.action.result
+              and (row.action.type=='mate_producer' and 'producer_mated' or 'mutation_done')
+              or 'wrong_species')
         or row.action.type=='incubate' and 'incubation_done'
         or (row.action.type=='deliver_producer' or row.action.type=='store_drone_source') and 'line_delivered'
       local recorded=false

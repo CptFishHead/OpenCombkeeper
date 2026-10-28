@@ -144,7 +144,7 @@ function makeHardwareEnvironment()
     unserialize=function(text) return clone(assert(serialized[text])) end}
   local computer={uptime=function() clock=clock+1; return clock end}
   local environment={component=component,filesystem=filesystem,serialization=serialization,
-    computer=computer,sleep=function() clock=clock+1 end,print=function() end,
+    computer=computer,sleep=function(duration) clock=clock+(duration or 1) end,print=function() end,
     readText=function(path) return files[path] end,
     writeText=function(path,text) files[path]=text end}
   local topology={schema='OCTOPOLOGY2',modules={
@@ -188,6 +188,16 @@ class HardwareTest(unittest.TestCase):
         self.assertIsNotNone(self.control["files"]["/home/.opencombkeeper-data/executor-state"])
         self.assertIsNone(self.control["files"]["/home/.opencombkeeper-data/hardware-operation"])
 
+    def test_starting_species_princess_is_mated_into_final_queen(self):
+        self.control["mutationResult"] = "root"
+        self.control.add("root", "drone", 1)
+        result = self.module.perform(self.action(
+            "{type='mate_producer',line=1,profile='plains',moduleSlot=1,"
+            "carrier='root',drone='root',result='root'}"))
+        self.assertEqual("queen", result["kind"])
+        self.assertEqual("root", result["species"])
+        self.assertEqual("root", self.stacks["prod"][4][1]["individual"]["ident"])
+
     def test_princess_imprinter_waste_stops_before_mutatron(self):
         self.control["imprinterWasteKind"] = "princess"
         result = self.module.perform(self.action(
@@ -217,6 +227,14 @@ class HardwareTest(unittest.TestCase):
         self.module.save(self.state())
 
     def test_manual_or_legacy_final_queen_can_be_delivered_from_me(self):
+        self.control.add("result", "queen", 1)
+        result = self.module.perform(self.action(
+            "{type='deliver_producer',profile='plains',moduleSlot=1,species='result'}"))
+        self.assertTrue(result["accepted"])
+        self.assertEqual("result", self.stacks["out"][1][1]["individual"]["ident"])
+
+    def test_final_queen_added_after_cached_me_snapshot_is_found(self):
+        self.assertEqual(0, self.module.countQueens("result"))
         self.control.add("result", "queen", 1)
         result = self.module.perform(self.action(
             "{type='deliver_producer',profile='plains',moduleSlot=1,species='result'}"))

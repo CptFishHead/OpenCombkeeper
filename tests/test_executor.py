@@ -46,6 +46,19 @@ class ExecutorTest(unittest.TestCase):
         self.assertIsNone(engine.nextAction(engine))
         self.assertEqual("done", engine.summary(engine)["status"])
 
+    def test_starting_species_producer_is_mated_before_delivery(self):
+        plan = table(self.lua, {"schema": 1, "mutations": [],
+            "lines": [{"id": 1, "role": "producer", "target": "root",
+                       "species": ["root"]}], "manualTasks": []})
+        hardware = self.lua.eval("{availableDrones=function() return {root=1} end}")
+        engine = self.module.new(plan, hardware, None)
+        mating = engine.nextAction(engine)
+        self.assertEqual("mate_producer", mating["type"])
+        self.assertEqual("root", mating["carrier"])
+        self.assertEqual("root", mating["drone"])
+        engine.complete(engine, mating, table(self.lua, {"kind": "queen", "species": "root"}))
+        self.assertEqual("deliver_producer", engine.nextAction(engine)["type"])
+
     def test_intermediate_queen_is_incubated_before_next_mutation(self):
         plan = table(self.lua, {"schema": 1,
             "mutations": [
