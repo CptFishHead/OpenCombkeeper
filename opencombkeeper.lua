@@ -1,4 +1,4 @@
--- OpenCombkeeper 0.5.6 OpenOS entry point.
+-- OpenCombkeeper 0.5.7 OpenOS entry point.
 local function loadFile(path)
   local chunk,reason=loadfile(path)
   assert(chunk,reason)
@@ -63,6 +63,31 @@ local function writeText(path,text)
   local closed,reason=file:close(); assert(closed~=false,reason)
 end
 
+local logPath=dataRoot..'/latest.log'
+local logLimit=64*1024
+local function rotateLogs()
+  pcall(function()
+    if not filesystem.exists(dataRoot) then assert(filesystem.makeDirectory(dataRoot)) end
+    local oldest=dataRoot..'/previous-2.log'
+    local previous=dataRoot..'/previous-1.log'
+    if filesystem.exists(oldest) then assert(filesystem.remove(oldest)) end
+    if filesystem.exists(previous) then assert(filesystem.rename(previous,oldest)) end
+    if filesystem.exists(logPath) then assert(filesystem.rename(logPath,previous)) end
+    local file=assert(io.open(logPath,'w')); assert(file:write('')); file:close()
+  end)
+end
+local function appendLog(...)
+  local arguments={...}
+  pcall(function()
+    if not filesystem.exists(dataRoot) then assert(filesystem.makeDirectory(dataRoot)) end
+    if filesystem.size and filesystem.exists(logPath) and filesystem.size(logPath)>=logLimit then rotateLogs() end
+    local parts={}
+    for index=1,#arguments do parts[index]=tostring(arguments[index]) end
+    local file=assert(io.open(logPath,'a'))
+    assert(file:write(table.concat(parts,' ')..'\n')); assert(file:flush()); file:close()
+  end)
+end
+
 local function components()
   local rows={}
   for address,kind in component.list() do
@@ -85,7 +110,15 @@ local topologyEngine=loadFile(root..'/topology.lua').new({
 
 local command=(...) or 'run'
 local argument=select(2,...)
-if command=='run' then dashboard=newDashboard(); if dashboard then print=dashboard.log end end
+if command=='run' then
+  rotateLogs()
+  dashboard=newDashboard()
+  print=function(...)
+    appendLog(...)
+    if dashboard then dashboard.log(...) else consolePrint(...) end
+  end
+  appendLog('--- OpenCombkeeper run started ---')
+end
 
 local effectRules={
   {key='radiation',label='Радиация (разрушает блоки)',default=false,
@@ -175,6 +208,10 @@ local function applyEffectPolicy(plan)
 end
 
 local function execute()
+if command=='log' then
+  consolePrint(readText(logPath) or 'No OpenCombkeeper run log yet.')
+  return true
+end
 if command=='scan' then topologyEngine:scan(); return true end
 if command=='effects' then return effectsMenu() end
 if command=='bind' or command=='rebind' then topologyEngine:bind(false); return true end
@@ -242,7 +279,8 @@ elseif command=='run' then
     print('ACTION '..action.type..' '..tostring(action.species or action.result or action.carrier or '')
       ..' @ '..key)
     worker.thread=thread.create(function()
-      worker.ok,worker.result=pcall(hardware.perform,action)
+      worker.ok,worker.result=xpcall(function() return hardware.perform(action) end,
+        function(reason) return debug.traceback(tostring(reason),2) end)
       worker.done=true
     end)
   end
@@ -287,14 +325,15 @@ elseif command=='run' then
   end
   local summary=engine:summary(); print('Status: '..summary.status)
 else
-  error('Usage: opencombkeeper scan|bind|rebind|bind-reset|topology|topology-check|effects|hardware-check|hardware-reset|hardware-recover|retry-blocked|state-reset|check|status|run')
+  error('Usage: opencombkeeper scan|bind|rebind|bind-reset|topology|topology-check|effects|hardware-check|hardware-reset|hardware-recover|retry-blocked|state-reset|check|status|log|run')
 end
 return true
 end
 
-local ok,result=pcall(execute)
+local ok,result=xpcall(execute,function(reason) return debug.traceback(tostring(reason),2) end)
+if not ok then appendLog('FATAL '..tostring(result)) end
 if dashboard then
   local ui=dashboard; dashboard=nil; print=consolePrint; pcall(ui.close)
 end
-if not ok then print('OpenCombkeeper stopped: '..tostring(result)); return false end
+if not ok then consolePrint('OpenCombkeeper stopped: '..tostring(result)); return false end
 return result
